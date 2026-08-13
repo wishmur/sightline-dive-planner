@@ -10,9 +10,11 @@ const H = 480;
 export function WorldMap({
   destinations,
   onSelect,
+  bare = false,
 }: {
   destinations: Destination[];
   onSelect: (destination: Destination) => void;
+  bare?: boolean;
 }) {
   const [hover, setHover] = useState<string | null>(null);
 
@@ -40,10 +42,16 @@ export function WorldMap({
   const active = pins.find((p) => p.d.id === hover);
 
   return (
-    <div className="glass-subtle relative overflow-hidden rounded-3xl p-2">
+    <div
+      className={
+        bare
+          ? "relative overflow-hidden"
+          : "glass-subtle relative overflow-hidden rounded-3xl p-2"
+      }
+    >
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="World map of dive destinations">
-        <path d={graticulePath} fill="none" stroke="currentColor" className="text-white/[0.05]" strokeWidth={0.5} />
-        <path d={landPath} className="fill-white/[0.07] stroke-white/15" strokeWidth={0.6} />
+        <path d={graticulePath} fill="none" stroke="var(--map-graticule)" strokeWidth={0.5} />
+        <path d={landPath} fill="var(--map-land)" stroke="var(--map-land-stroke)" strokeWidth={0.6} />
         {pins.map(({ d, x, y }) => (
           <g
             key={d.id}
@@ -58,7 +66,7 @@ export function WorldMap({
             <circle
               r={hover === d.id ? 5 : 3.4}
               className={hover === d.id ? "fill-accent" : "fill-primary"}
-              stroke="rgba(10,22,40,0.9)"
+              stroke="var(--background)"
               strokeWidth={1}
             />
           </g>
