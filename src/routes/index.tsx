@@ -7,6 +7,7 @@ import { DestinationFinder } from "@/components/sightline/DestinationFinder";
 import { WorldMap } from "@/components/sightline/WorldMap";
 import { DestinationCard } from "@/components/sightline/DestinationCard";
 import { FilterBar, ClearFiltersButton } from "@/components/sightline/FilterBar";
+import { ActiveFilterChips } from "@/components/sightline/ActiveFilterChips";
 import { logEvent } from "@/lib/analytics";
 import { DESTINATIONS, MONTHS, SPECIES_GROUPS, type Destination } from "@/lib/destinations";
 import { EMPTY_FILTERS, applyFilters, countActive, type Filters } from "@/lib/filters";
@@ -36,6 +37,7 @@ function Home() {
   const navigate = useNavigate();
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [hovered, setHovered] = useState<string | null>(null);
+  const [hoveredPin, setHoveredPin] = useState<string | null>(null);
 
   const shown = useMemo(() => applyFilters(filters), [filters]);
   const active = countActive(filters);
@@ -47,10 +49,19 @@ function Home() {
     }
   }
 
-  function openCollection(id: string) {
-    setFilters({ ...EMPTY_FILTERS, collection: id });
-    logEvent("search_destination", { collection: id, from: "discovery_tile" });
+  function scrollToExplore() {
     document.getElementById("explore")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function applyFromHero(next: { species: string[]; month: string }) {
+    setFilters({ ...EMPTY_FILTERS, species: next.species, month: next.month });
+    scrollToExplore();
+  }
+
+  function openCollection(id: string) {
+    setFilters((f) => ({ ...EMPTY_FILTERS, collection: f.collection === id ? "all" : id }));
+    logEvent("search_destination", { collection: id, from: "discovery_tile" });
+    scrollToExplore();
   }
 
   function openDestination(d: Destination) {
@@ -98,7 +109,7 @@ function Home() {
             transition={{ duration: 0.7, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
             className="mt-9"
           >
-            <DestinationFinder />
+            <DestinationFinder onApply={applyFromHero} />
             <p className="mt-5 text-xs tracking-wide text-muted-foreground">
               {DESTINATIONS.length} destinations · {SPECIES_GROUPS.length} species · source-backed
             </p>
@@ -129,7 +140,10 @@ function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.5, delay: i * 0.06 }}
-                className="group relative isolate flex h-64 flex-col justify-end overflow-hidden rounded-3xl p-5 text-left ring-1 ring-inset ring-border transition hover:ring-primary/50"
+                aria-pressed={filters.collection === c.id}
+                className={`group relative isolate flex h-64 flex-col justify-end overflow-hidden rounded-3xl p-5 text-left ring-1 ring-inset transition hover:ring-primary/50 ${
+                  filters.collection === c.id ? "ring-2 ring-primary" : "ring-border"
+                }`}
               >
                 <img
                   src={c.image}
@@ -175,6 +189,16 @@ function Home() {
             <FilterBar filters={filters} onChange={patch} />
           </div>
 
+          {active > 0 && (
+            <div className="mt-4">
+              <ActiveFilterChips
+                filters={filters}
+                onChange={patch}
+                onClearAll={() => setFilters(EMPTY_FILTERS)}
+              />
+            </div>
+          )}
+
           <div className="mt-8 grid gap-8 lg:grid-cols-12">
             <div className="lg:col-span-7">
               {shown.length === 0 ? (
@@ -189,7 +213,11 @@ function Home() {
                 <ul className="space-y-3">
                   {shown.map((d) => (
                     <li key={d.id}>
-                      <DestinationCard destination={d} onHover={setHovered} />
+                      <DestinationCard
+                        destination={d}
+                        onHover={setHovered}
+                        highlighted={hoveredPin === d.id}
+                      />
                     </li>
                   ))}
                 </ul>
@@ -200,12 +228,12 @@ function Home() {
               <div className="lg:sticky lg:top-24">
                 <WorldMap
                   destinations={shown}
-                  all={DESTINATIONS}
                   activeId={hovered}
+                  onHoverPin={setHoveredPin}
                   onSelect={openDestination}
                 />
                 <p className="mt-3 text-xs text-muted-foreground">
-                  Pins reflect the active filters. Faded pins do not match.
+                  Scroll to zoom, drag to pan. Pins reflect the active filters.
                 </p>
               </div>
             </div>
