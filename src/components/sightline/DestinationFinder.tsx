@@ -139,7 +139,7 @@ export function DestinationFinder() {
                   onClick={() =>
                     logEvent("view_destination", { destination: destination.id, from: "hero_finder" })
                   }
-                  className="glass-subtle group flex items-center gap-4 rounded-2xl px-5 py-4 transition hover:bg-white/[0.06]"
+                  className="glass-subtle group flex items-center gap-4 rounded-2xl px-5 py-4 transition hover:border-primary/40"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium group-hover:text-primary">
