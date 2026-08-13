@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowRight, BadgeCheck, Layers, RefreshCw, Search, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, BadgeCheck, Layers, RefreshCw, Search, ShieldCheck } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
 import { SiteFooter } from "@/components/sightline/SiteFooter";
 import { SuggestEdit } from "@/components/sightline/SuggestEdit";
@@ -70,7 +70,13 @@ function AboutPage() {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="mx-auto max-w-3xl"
         >
-          <p className="eyebrow text-primary">About</p>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to Sightline
+          </Link>
+          <p className="eyebrow mt-6 text-primary">About</p>
           <h1 className="mt-4 font-display text-4xl leading-[1.05] text-foreground sm:text-5xl">
             An independent dive destination reference.
           </h1>
@@ -165,7 +171,7 @@ function AboutPage() {
           <section>
             <p className="eyebrow">Maintainer</p>
             <h2 className="mt-2 font-display text-2xl text-foreground sm:text-3xl">
-              Built and maintained by Shailvi Kumar
+              Who maintains Sightline
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
               PADI Advanced Open Water diver with 110+ logged dives across multiple regions, and

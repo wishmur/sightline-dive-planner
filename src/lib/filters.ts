@@ -4,6 +4,7 @@ import {
   type Destination,
 } from "@/lib/destinations";
 import { getCollection } from "@/lib/collections";
+import { diveTypeLabel } from "@/lib/cards";
 
 /** Country -> continent grouping for the "Where" filter. */
 export const CONTINENTS: { name: string; countries: string[] }[] = (() => {
@@ -75,6 +76,19 @@ export const ENTRY_OPTIONS = [
   { value: "boat", label: "Boat" },
 ];
 
+/** Dive types derived from the highlight types present in the dataset. */
+export const DIVE_TYPE_OPTIONS = (() => {
+  const counts = new Map<string, number>();
+  for (const d of DESTINATIONS) {
+    for (const t of new Set(d.highlights.map((h) => h.type))) {
+      counts.set(t, (counts.get(t) ?? 0) + 1);
+    }
+  }
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([value]) => ({ value, label: diveTypeLabel(value) }));
+})();
+
 export const FORMAT_OPTIONS = [
   { value: "shore_access", label: "Shore access" },
   { value: "land_based_daily", label: "Land-based daily" },
@@ -92,6 +106,7 @@ export type Filters = {
   where: string; // "all" | "continent:Asia" | "country:Indonesia"
   month: string; // "any" | "0".."11"
   species: string[]; // species names
+  diveType: string; // "any" | highlight type
   cert: string; // "any" | min_cert value
   current: string; // "any" | value
   temp: string; // "any" | warm|temperate|cold
@@ -106,6 +121,7 @@ export const EMPTY_FILTERS: Filters = {
   where: "all",
   month: "any",
   species: [],
+  diveType: "any",
   cert: "any",
   current: "any",
   temp: "any",
@@ -121,6 +137,7 @@ export function countActive(f: Filters) {
   if (f.where !== "all") n++;
   if (f.month !== "any") n++;
   if (f.species.length) n++;
+  if (f.diveType !== "any") n++;
   if (f.cert !== "any") n++;
   if (f.current !== "any") n++;
   if (f.temp !== "any") n++;
@@ -169,6 +186,7 @@ export function applyFilters(f: Filters, list: Destination[] = DESTINATIONS) {
     }
 
     if (f.cert !== "any" && d.conditions.min_cert !== f.cert) return false;
+    if (f.diveType !== "any" && !d.highlights.some((h) => h.type === f.diveType)) return false;
     if (f.current !== "any" && d.conditions.current !== f.current) return false;
     if (f.temp !== "any" && !tempBand(d.conditions.water_temp_c).includes(f.temp)) return false;
     if (f.entry !== "any" && !d.conditions.entry.includes(f.entry)) return false;

@@ -14,6 +14,7 @@ import {
   CERT_OPTIONS,
   CONTINENTS,
   CURRENT_OPTIONS,
+  DIVE_TYPE_OPTIONS,
   ENTRY_OPTIONS,
   FORMAT_OPTIONS,
   SPECIES_NAMES,
@@ -213,6 +214,56 @@ export function FilterBar({
                 </button>
               </div>
             )}
+          </PopoverContent>
+        </Popover>
+
+        <Divider />
+
+        {/* Dive style */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <button aria-label="Dive type" className={`${SEG} lg:w-[11rem]`}>
+              <span className="min-w-0">
+                <Label>Dive type</Label>
+                <Value muted={filters.diveType === "any"}>
+                  {filters.diveType === "any"
+                    ? "Any type"
+                    : (DIVE_TYPE_OPTIONS.find((o) => o.value === filters.diveType)?.label ??
+                      filters.diveType)}
+                </Value>
+              </span>
+              <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent align="start" className="theme-light w-[min(20rem,92vw)] p-0">
+            <Command>
+              <CommandInput placeholder="Search dive types…" />
+              <CommandList className="max-h-80">
+                <CommandEmpty>No dive type found.</CommandEmpty>
+                <CommandGroup>
+                  <CommandItem value="Any type" onSelect={() => onChange({ diveType: "any" })}>
+                    <Check
+                      className={`mr-2 h-3.5 w-3.5 ${filters.diveType === "any" ? "opacity-100" : "opacity-0"}`}
+                    />
+                    Any type
+                  </CommandItem>
+                  {DIVE_TYPE_OPTIONS.map((o) => (
+                    <CommandItem
+                      key={o.value}
+                      value={o.label}
+                      onSelect={() =>
+                        onChange({ diveType: filters.diveType === o.value ? "any" : o.value })
+                      }
+                    >
+                      <Check
+                        className={`mr-2 h-3.5 w-3.5 ${filters.diveType === o.value ? "opacity-100" : "opacity-0"}`}
+                      />
+                      {o.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
           </PopoverContent>
         </Popover>
 

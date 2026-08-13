@@ -1,35 +1,42 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, GraduationCap, CalendarRange } from "lucide-react";
 import { bestMonthsLabel, type Destination } from "@/lib/destinations";
-import { certLabel, destinationTags } from "@/lib/cards";
+import { certLabel, destinationTagChips } from "@/lib/cards";
 import { destinationImage, destinationImageAlt } from "@/lib/imagery";
 import { logEvent } from "@/lib/analytics";
+import type { Filters } from "@/lib/filters";
 
 export function DestinationCard({
   destination: d,
   onHover,
+  onTag,
   from = "explore",
   highlighted = false,
 }: {
   destination: Destination;
   onHover?: (id: string | null) => void;
+  onTag?: (patch: Partial<Filters>) => void;
   from?: string;
   highlighted?: boolean;
 }) {
-  const tags = destinationTags(d).slice(0, 3);
+  const tags = destinationTagChips(d).slice(0, 3);
   const season = bestMonthsLabel(d.best_months_overall) ?? "Season varies";
 
   return (
-    <Link
-      to="/destinations/$slug"
-      params={{ slug: d.id }}
-      onClick={() => logEvent("view_destination", { destination: d.id, from })}
+    <div
       onMouseEnter={() => onHover?.(d.id)}
       onMouseLeave={() => onHover?.(null)}
-      className={`group flex h-full flex-col overflow-hidden rounded-2xl bg-card shadow-sm ring-1 ring-inset transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-primary/40 ${
+      className={`group relative flex h-full flex-col overflow-hidden rounded-2xl bg-card shadow-sm ring-1 ring-inset transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-primary/40 ${
         highlighted ? "-translate-y-0.5 shadow-lg ring-primary/50" : "ring-border"
       }`}
     >
+      <Link
+        to="/destinations/$slug"
+        params={{ slug: d.id }}
+        onClick={() => logEvent("view_destination", { destination: d.id, from })}
+        aria-label={`${d.name}, ${d.country}`}
+        className="absolute inset-0 z-10 rounded-2xl focus-visible:ring-2 focus-visible:ring-primary"
+      />
       <div className="relative aspect-[16/10] w-full overflow-hidden">
         <img
           src={destinationImage(d)}
@@ -54,13 +61,21 @@ export function DestinationCard({
           <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground transition group-hover:text-primary" />
         </div>
 
-        <ul className="mt-2.5 flex flex-wrap gap-1.5">
+        <ul className="relative z-20 mt-2.5 flex flex-wrap gap-1.5">
           {tags.map((t) => (
-            <li
-              key={t}
-              className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-secondary-foreground"
-            >
-              {t}
+            <li key={t.label}>
+              <button
+                type="button"
+                onClick={() => onTag?.(t.patch)}
+                title={onTag ? `Filter by ${t.label}` : undefined}
+                className={`rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium text-secondary-foreground transition ${
+                  onTag
+                    ? "cursor-pointer hover:bg-primary hover:text-primary-foreground"
+                    : "cursor-default"
+                }`}
+              >
+                {t.label}
+              </button>
             </li>
           ))}
         </ul>
@@ -76,6 +91,6 @@ export function DestinationCard({
           </span>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

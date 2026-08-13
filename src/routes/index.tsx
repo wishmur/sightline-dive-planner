@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowDown, ArrowRight, MapPin } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, MapPin } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
 import { WorldMap } from "@/components/sightline/WorldMap";
 import { DestinationCard } from "@/components/sightline/DestinationCard";
@@ -40,14 +40,18 @@ function Home() {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [hovered, setHovered] = useState<string | null>(null);
   const [hoveredPin, setHoveredPin] = useState<string | null>(null);
-  const [visible, setVisible] = useState(PAGE_SIZE);
+  const [page, setPage] = useState(0);
 
   const shown = useMemo(() => applyFilters(filters), [filters]);
   const active = countActive(filters);
 
+  const pageCount = Math.max(1, Math.ceil(shown.length / PAGE_SIZE));
+  const current = Math.min(page, pageCount - 1);
+  const pageItems = shown.slice(current * PAGE_SIZE, current * PAGE_SIZE + PAGE_SIZE);
+
   // Any filter change resets the grid back to the first page.
   useEffect(() => {
-    setVisible(PAGE_SIZE);
+    setPage(0);
   }, [filters]);
 
   function patch(next: Partial<Filters>) {
@@ -70,6 +74,11 @@ function Home() {
   function openDestination(d: Destination) {
     logEvent("click_map_pin", { destination: d.id });
     navigate({ to: "/destinations/$slug", params: { slug: d.id } });
+  }
+
+  function applyTag(next: Partial<Filters>) {
+    setFilters((f) => ({ ...f, ...next }));
+    scrollToExplore();
   }
 
   return (
@@ -234,26 +243,56 @@ function Home() {
           ) : (
             <>
               <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {shown.slice(0, visible).map((d) => (
+                {pageItems.map((d) => (
                   <li key={d.id}>
                     <DestinationCard
                       destination={d}
                       onHover={setHovered}
+                      onTag={applyTag}
                       highlighted={hoveredPin === d.id}
                     />
                   </li>
                 ))}
               </ul>
 
-              {visible < shown.length && (
-                <div className="mt-8 flex justify-center">
+              {pageCount > 1 && (
+                <nav
+                  aria-label="Destination results pages"
+                  className="mt-8 flex items-center justify-center gap-4"
+                >
                   <button
-                    onClick={() => setVisible((v) => v + PAGE_SIZE)}
-                    className="rounded-full bg-card px-6 py-3 text-sm font-semibold text-foreground ring-1 ring-inset ring-border transition hover:text-primary hover:ring-primary/40"
+                    onClick={() => setPage(Math.max(0, current - 1))}
+                    disabled={current === 0}
+                    aria-label="Previous page"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-card px-4 py-2.5 text-sm font-semibold text-foreground ring-1 ring-inset ring-border transition hover:text-primary hover:ring-primary/40 disabled:pointer-events-none disabled:opacity-40"
                   >
-                    Show {Math.min(PAGE_SIZE, shown.length - visible)} more
+                    <ArrowLeft className="h-4 w-4" /> Previous
                   </button>
-                </div>
+                  <div className="flex items-center gap-2">
+                    {Array.from({ length: pageCount }, (_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setPage(i)}
+                        aria-label={`Page ${i + 1}`}
+                        aria-current={i === current ? "true" : undefined}
+                        className={`h-2 w-2 rounded-full transition ${
+                          i === current ? "w-5 bg-primary" : "bg-border hover:bg-primary/50"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-xs tabular-nums text-muted-foreground">
+                    {current + 1} / {pageCount}
+                  </span>
+                  <button
+                    onClick={() => setPage(Math.min(pageCount - 1, current + 1))}
+                    disabled={current >= pageCount - 1}
+                    aria-label="Next page"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-card px-4 py-2.5 text-sm font-semibold text-foreground ring-1 ring-inset ring-border transition hover:text-primary hover:ring-primary/40 disabled:pointer-events-none disabled:opacity-40"
+                  >
+                    Next <ArrowRight className="h-4 w-4" />
+                  </button>
+                </nav>
               )}
             </>
           )}

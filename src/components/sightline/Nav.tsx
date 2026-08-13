@@ -9,9 +9,9 @@ export function SightlineNav() {
         </Link>
         <Link
           to="/about"
-          className="hidden text-[0.7rem] text-muted-foreground transition hover:text-foreground md:block"
+          className="text-xs text-muted-foreground transition hover:text-foreground"
         >
-          Built &amp; maintained by Shailvi Kumar
+          © Shailvi
         </Link>
       </div>
     </header>
