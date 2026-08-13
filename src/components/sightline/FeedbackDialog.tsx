@@ -50,7 +50,7 @@ export function FeedbackDialog({
       <DialogTrigger className="inline-flex items-center gap-2 text-sm text-muted-foreground underline decoration-dotted underline-offset-4 transition hover:text-foreground">
         <AlertCircle className="h-4 w-4" /> Something wrong here?
       </DialogTrigger>
-      <DialogContent className="glass border-white/10 sm:max-w-lg">
+      <DialogContent className="theme-light sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="font-display text-2xl font-medium">Report a correction</DialogTitle>
           <DialogDescription>
@@ -64,14 +64,14 @@ export function FeedbackDialog({
             onChange={(e) => setMessage(e.target.value)}
             rows={5}
             placeholder="What's inaccurate, missing, or out of date?"
-            className="w-full rounded-2xl bg-white/[0.04] p-4 text-sm outline-none ring-1 ring-inset ring-white/10 placeholder:text-muted-foreground focus:ring-primary/50"
+            className="w-full rounded-2xl bg-secondary p-4 text-sm outline-none ring-1 ring-inset ring-border placeholder:text-muted-foreground focus:ring-primary/50"
           />
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email (optional)"
-            className="w-full rounded-full bg-white/[0.04] px-5 py-3 text-sm outline-none ring-1 ring-inset ring-white/10 placeholder:text-muted-foreground focus:ring-primary/50"
+            className="w-full rounded-full bg-secondary px-5 py-3 text-sm outline-none ring-1 ring-inset ring-border placeholder:text-muted-foreground focus:ring-primary/50"
           />
           <button
             type="submit"
