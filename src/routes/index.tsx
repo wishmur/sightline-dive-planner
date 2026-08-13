@@ -1,9 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { useMemo, useState } from "react";
-import { ArrowRight, MapPin } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowDown, ArrowRight, MapPin } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
-import { DestinationFinder } from "@/components/sightline/DestinationFinder";
 import { WorldMap } from "@/components/sightline/WorldMap";
 import { DestinationCard } from "@/components/sightline/DestinationCard";
 import { FilterBar, ClearFiltersButton } from "@/components/sightline/FilterBar";
@@ -13,6 +12,8 @@ import { DESTINATIONS, MONTHS, SPECIES_GROUPS, type Destination } from "@/lib/de
 import { EMPTY_FILTERS, applyFilters, countActive, type Filters } from "@/lib/filters";
 import { COLLECTIONS, COLLECTION_COUNTS } from "@/lib/collections";
 import { HERO_IMAGE } from "@/lib/imagery";
+
+const PAGE_SIZE = 6;
 
 export const Route = createFileRoute("/")({
   head: () => {
@@ -38,9 +39,15 @@ function Home() {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [hovered, setHovered] = useState<string | null>(null);
   const [hoveredPin, setHoveredPin] = useState<string | null>(null);
+  const [visible, setVisible] = useState(PAGE_SIZE);
 
   const shown = useMemo(() => applyFilters(filters), [filters]);
   const active = countActive(filters);
+
+  // Any filter change resets the grid back to the first page.
+  useEffect(() => {
+    setVisible(PAGE_SIZE);
+  }, [filters]);
 
   function patch(next: Partial<Filters>) {
     setFilters((f) => ({ ...f, ...next }));
@@ -51,11 +58,6 @@ function Home() {
 
   function scrollToExplore() {
     document.getElementById("explore")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function applyFromHero(next: { species: string[]; month: string }) {
-    setFilters({ ...EMPTY_FILTERS, species: next.species, month: next.month });
-    scrollToExplore();
   }
 
   function openCollection(id: string) {
