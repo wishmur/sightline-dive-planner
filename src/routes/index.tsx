@@ -19,6 +19,7 @@ import {
   SPECIES_GROUPS,
   bestMonthsLabel,
   yearRoundSpecies,
+  formatFormat,
 } from "@/lib/destinations";
 
 export const Route = createFileRoute("/")({
@@ -193,7 +194,7 @@ function Home() {
                 </p>
                 <p className="mt-4 text-sm text-foreground/80">{chips.join(" · ")}</p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Minimum certification: {d.conditions.min_cert}
+                  Minimum certification: {formatFormat(d.conditions.min_cert)}
                 </p>
               </Link>
             );
