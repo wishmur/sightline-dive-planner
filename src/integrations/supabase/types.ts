@@ -14,7 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          payload: Json
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          payload?: Json
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          payload?: Json
+          session_id?: string
+        }
+        Relationships: []
+      }
+      feedback: {
+        Row: {
+          created_at: string
+          destination_id: string
+          email: string | null
+          id: string
+          message: string
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          destination_id: string
+          email?: string | null
+          id?: string
+          message: string
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          destination_id?: string
+          email?: string | null
+          id?: string
+          message?: string
+          session_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
