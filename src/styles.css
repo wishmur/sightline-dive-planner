@@ -259,3 +259,31 @@
   border: 1px solid var(--border);
   box-shadow: none;
 }
+
+/* Discovery card imagery: very slow, restrained idle drift (2-3% scale). */
+@keyframes discovery-drift {
+  0% {
+    transform: scale(1.02) translate3d(-0.6%, 0.4%, 0);
+  }
+  50% {
+    transform: scale(1.05) translate3d(0.6%, -0.4%, 0);
+  }
+  100% {
+    transform: scale(1.02) translate3d(-0.6%, 0.4%, 0);
+  }
+}
+
+.discovery-drift {
+  animation: discovery-drift 34s ease-in-out infinite;
+  will-change: transform;
+}
+
+.group:hover .discovery-drift {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .discovery-drift {
+    animation: none;
+  }
+}
