@@ -1,9 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { useMemo, useState } from "react";
-import { ArrowRight, MapPin } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowDown, ArrowRight, MapPin } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
-import { DestinationFinder } from "@/components/sightline/DestinationFinder";
 import { WorldMap } from "@/components/sightline/WorldMap";
 import { DestinationCard } from "@/components/sightline/DestinationCard";
 import { FilterBar, ClearFiltersButton } from "@/components/sightline/FilterBar";
@@ -13,6 +12,8 @@ import { DESTINATIONS, MONTHS, SPECIES_GROUPS, type Destination } from "@/lib/de
 import { EMPTY_FILTERS, applyFilters, countActive, type Filters } from "@/lib/filters";
 import { COLLECTIONS, COLLECTION_COUNTS } from "@/lib/collections";
 import { HERO_IMAGE } from "@/lib/imagery";
+
+const PAGE_SIZE = 6;
 
 export const Route = createFileRoute("/")({
   head: () => {
@@ -38,9 +39,15 @@ function Home() {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [hovered, setHovered] = useState<string | null>(null);
   const [hoveredPin, setHoveredPin] = useState<string | null>(null);
+  const [visible, setVisible] = useState(PAGE_SIZE);
 
   const shown = useMemo(() => applyFilters(filters), [filters]);
   const active = countActive(filters);
+
+  // Any filter change resets the grid back to the first page.
+  useEffect(() => {
+    setVisible(PAGE_SIZE);
+  }, [filters]);
 
   function patch(next: Partial<Filters>) {
     setFilters((f) => ({ ...f, ...next }));
@@ -51,11 +58,6 @@ function Home() {
 
   function scrollToExplore() {
     document.getElementById("explore")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function applyFromHero(next: { species: string[]; month: string }) {
-    setFilters({ ...EMPTY_FILTERS, species: next.species, month: next.month });
-    scrollToExplore();
   }
 
   function openCollection(id: string) {
@@ -84,7 +86,7 @@ function Home() {
         />
         <div
           aria-hidden
-          className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(6,16,32,0.82)_0%,rgba(6,16,32,0.42)_38%,rgba(6,16,32,0.92)_100%)]"
+          className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(6,16,32,0.62)_0%,rgba(6,16,32,0.22)_38%,rgba(6,16,32,0.78)_100%)]"
         />
         <div className="mx-auto w-full max-w-7xl px-6 pt-36 pb-14 lg:px-10 lg:pb-20">
           <motion.div
@@ -94,11 +96,11 @@ function Home() {
             className="max-w-3xl"
           >
             <p className="eyebrow text-primary">Independent dive intelligence</p>
-            <h1 className="mt-4 font-display text-5xl leading-[1.02] text-foreground sm:text-6xl lg:text-7xl">
+            <h1 className="mt-4 font-display text-5xl leading-[1.02] text-white [text-shadow:0_2px_24px_rgba(6,16,32,0.55)] sm:text-6xl lg:text-7xl">
               Find your next dive.
             </h1>
-            <p className="mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">
-              Search by what you want to see and when you can travel. Every season, condition and
+            <p className="mt-5 max-w-xl text-base text-white/85 [text-shadow:0_1px_16px_rgba(6,16,32,0.6)] sm:text-lg">
+              Search by what you want to see, when you can travel, and how you like to dive. Every
               claim is traceable to a source.
             </p>
           </motion.div>
@@ -109,8 +111,14 @@ function Home() {
             transition={{ duration: 0.7, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
             className="mt-9"
           >
-            <DestinationFinder onApply={applyFromHero} />
-            <p className="mt-5 text-xs tracking-wide text-muted-foreground">
+            <button
+              onClick={scrollToExplore}
+              className="group inline-flex items-center gap-2.5 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg transition hover:brightness-110"
+            >
+              Explore {DESTINATIONS.length} destinations
+              <ArrowDown className="h-4 w-4 transition group-hover:translate-y-0.5" />
+            </button>
+            <p className="mt-5 text-xs tracking-wide text-white/60">
               {DESTINATIONS.length} destinations · {SPECIES_GROUPS.length} species · source-backed
             </p>
           </motion.div>
@@ -199,45 +207,55 @@ function Home() {
             </div>
           )}
 
-          <div className="mt-8 grid gap-8 lg:grid-cols-12">
-            <div className="lg:col-span-7">
-              {shown.length === 0 ? (
-                <div className="rounded-2xl bg-card p-10 text-center ring-1 ring-inset ring-border">
-                  <MapPin className="mx-auto h-5 w-5 text-muted-foreground" />
-                  <p className="mt-3 text-sm font-medium">No destination matches every filter.</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Try widening the month or marine life selection.
-                  </p>
-                </div>
-              ) : (
-                <ul className="space-y-3">
-                  {shown.map((d) => (
-                    <li key={d.id}>
-                      <DestinationCard
-                        destination={d}
-                        onHover={setHovered}
-                        highlighted={hoveredPin === d.id}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            <div className="lg:col-span-5">
-              <div className="lg:sticky lg:top-24">
-                <WorldMap
-                  destinations={shown}
-                  activeId={hovered}
-                  onHoverPin={setHoveredPin}
-                  onSelect={openDestination}
-                />
-                <p className="mt-3 text-xs text-muted-foreground">
-                  Scroll to zoom, drag to pan. Pins reflect the active filters.
-                </p>
-              </div>
-            </div>
+          {/* FULL-WIDTH MAP */}
+          <div className="mt-8">
+            <WorldMap
+              destinations={shown}
+              activeId={hovered}
+              onHoverPin={setHoveredPin}
+              onSelect={openDestination}
+              heightClass="h-[22rem] sm:h-[28rem] lg:h-[32rem]"
+            />
+            <p className="mt-3 text-xs text-muted-foreground">
+              Scroll or pinch to zoom, drag to pan. Pins reflect the active filters.
+            </p>
           </div>
+
+          {/* RESULT GRID */}
+          {shown.length === 0 ? (
+            <div className="mt-10 rounded-2xl bg-card p-10 text-center ring-1 ring-inset ring-border">
+              <MapPin className="mx-auto h-5 w-5 text-muted-foreground" />
+              <p className="mt-3 text-sm font-medium">No destination matches every filter.</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Try widening the month or marine life selection.
+              </p>
+            </div>
+          ) : (
+            <>
+              <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {shown.slice(0, visible).map((d) => (
+                  <li key={d.id}>
+                    <DestinationCard
+                      destination={d}
+                      onHover={setHovered}
+                      highlighted={hoveredPin === d.id}
+                    />
+                  </li>
+                ))}
+              </ul>
+
+              {visible < shown.length && (
+                <div className="mt-8 flex justify-center">
+                  <button
+                    onClick={() => setVisible((v) => v + PAGE_SIZE)}
+                    className="rounded-full bg-card px-6 py-3 text-sm font-semibold text-foreground ring-1 ring-inset ring-border transition hover:text-primary hover:ring-primary/40"
+                  >
+                    Show {Math.min(PAGE_SIZE, shown.length - visible)} more
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </section>
 
