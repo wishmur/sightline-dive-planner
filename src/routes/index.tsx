@@ -28,7 +28,13 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const POPULAR = ["Manta ray", "Whale shark", "Hammerhead shark", "Mola mola", "Thresher shark"];
+const POPULAR = [
+  "Reef manta ray",
+  "Giant oceanic manta ray",
+  "Whale shark",
+  "Scalloped hammerhead",
+  "Humpback whale",
+];
 
 function Home() {
   const navigate = useNavigate();
