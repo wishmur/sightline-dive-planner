@@ -326,6 +326,8 @@ export function WorldMap({
             if (e.key === "Enter" || e.key === " ") onSelect(active.d);
           }}
         >
+          {/* invisible bridge across the gap between pin and card */}
+          <span aria-hidden className="absolute -left-4 -right-4 top-full h-6" />
           <p className="truncate text-sm font-semibold text-foreground">{active.d.name}</p>
           <p className="truncate text-xs text-muted-foreground">
             {active.d.region}, {active.d.country}
