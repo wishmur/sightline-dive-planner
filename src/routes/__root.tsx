@@ -103,6 +103,33 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap",
       },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://sightline-dive-planner.lovable.app/#organization",
+              name: "Sightline",
+              url: "https://sightline-dive-planner.lovable.app",
+              slogan: "The world, from below.",
+              description:
+                "Independent, non-commercial dive destination reference maintained by a diver.",
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://sightline-dive-planner.lovable.app/#website",
+              name: "Sightline",
+              url: "https://sightline-dive-planner.lovable.app",
+              inLanguage: "en",
+              publisher: { "@id": "https://sightline-dive-planner.lovable.app/#organization" },
+            },
+          ],
+        }),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,

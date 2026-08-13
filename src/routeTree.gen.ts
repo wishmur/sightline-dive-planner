@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SpeciesSlugRouteImport } from './routes/species.$slug'
 import { Route as DestinationsSlugRouteImport } from './routes/destinations.$slug'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -38,12 +44,14 @@ const DestinationsSlugRoute = DestinationsSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/species/$slug': typeof SpeciesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/species/$slug': typeof SpeciesSlugRoute
 }
@@ -51,26 +59,46 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/species/$slug': typeof SpeciesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/destinations/$slug' | '/species/$slug'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/sitemap.xml'
+    | '/destinations/$slug'
+    | '/species/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/destinations/$slug' | '/species/$slug'
-  id: '__root__' | '/' | '/about' | '/destinations/$slug' | '/species/$slug'
+  to: '/' | '/about' | '/sitemap.xml' | '/destinations/$slug' | '/species/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/sitemap.xml'
+    | '/destinations/$slug'
+    | '/species/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   DestinationsSlugRoute: typeof DestinationsSlugRoute
   SpeciesSlugRoute: typeof SpeciesSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -105,6 +133,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   DestinationsSlugRoute: DestinationsSlugRoute,
   SpeciesSlugRoute: SpeciesSlugRoute,
 }
