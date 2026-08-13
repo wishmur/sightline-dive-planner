@@ -1,17 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
 import { DestinationFinder } from "@/components/sightline/DestinationFinder";
 import { WorldMap } from "@/components/sightline/WorldMap";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  ClearFiltersButton,
+  DestinationFilters,
+} from "@/components/sightline/DestinationFilters";
 import { logEvent } from "@/lib/analytics";
 import {
   DESTINATIONS,
@@ -21,12 +17,13 @@ import {
   yearRoundSpecies,
   formatFormat,
 } from "@/lib/destinations";
+import { EMPTY_FILTERS, applyFilters, countActive, type Filters } from "@/lib/filters";
 
 export const Route = createFileRoute("/")({
   head: () => {
     const title = "Sightline — dive destination and species season reference";
     const description =
-      "Search 36 dive destinations by species or place. Month-by-month species seasonality, operating windows, conditions, certification and cited sources.";
+      "Search 36 dive destinations by species, month, region, conditions and experience level. Month-by-month seasonality, operating windows and cited sources.";
     return {
       meta: [
         { title },
@@ -43,59 +40,39 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const navigate = useNavigate();
-  const [query, setQuery] = useState("");
-  const [region, setRegion] = useState<string>("all");
-  const [month, setMonth] = useState<string>("any");
+  const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
 
-  const regions = useMemo(
-    () => [...new Set(DESTINATIONS.map((d) => d.region))].sort(),
-    [],
-  );
+  const shown = useMemo(() => applyFilters(filters), [filters]);
+  const active = countActive(filters);
 
-  const shown = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const m = month === "any" ? null : Number(month);
-    return DESTINATIONS.filter((d) => {
-      if (region !== "all" && d.region !== region) return false;
-      if (
-        q &&
-        !`${d.name} ${d.region} ${d.country}`.toLowerCase().includes(q)
-      )
-        return false;
-      if (m !== null) {
-        if (d.operating_months[m] === "closed") return false;
-        const s = d.best_months_overall[m];
-        if (s !== "peak" && s !== "shoulder") return false;
-      }
-      return true;
-    });
-  }, [query, region, month]);
+  function patch(next: Partial<Filters>) {
+    setFilters((f) => ({ ...f, ...next }));
+    if (next.month && next.month !== "any") {
+      logEvent("filter_month", { month: MONTHS[Number(next.month)], from: "browse" });
+    }
+  }
 
   return (
     <div className="theme-light min-h-screen overflow-x-hidden">
       <SightlineNav />
 
       {/* HERO */}
-      <section className="relative px-6 pt-36 pb-20 lg:px-10">
+      <section className="relative px-6 pt-28 pb-14 lg:px-10">
         <div className="mx-auto max-w-6xl">
           <motion.h1
-            initial={{ opacity: 0, y: 22 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="font-display max-w-3xl text-5xl font-medium leading-[0.95] tracking-tight sm:text-6xl lg:text-[4.5rem]"
+            transition={{ duration: 0.6 }}
+            className="font-display text-4xl font-medium leading-[1] tracking-tight sm:text-5xl lg:text-[3.75rem]"
           >
-            Plan the dive,
-            <span className="block text-muted-foreground">not just the destination.</span>
+            Find your next dive.
           </motion.h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-            Find where to dive based on what you want to see and when you're going.
-          </p>
 
-          <div className="mt-12">
+          <div className="mt-8">
             <DestinationFinder />
           </div>
 
-          <p className="mt-8 text-xs tracking-wide text-muted-foreground">
+          <p className="mt-6 text-xs tracking-wide text-muted-foreground">
             {DESTINATIONS.length} destinations · {SPECIES_GROUPS.length} species · source-backed
           </p>
         </div>
@@ -106,12 +83,13 @@ function Home() {
         <div className="mb-8">
           <h2 className="font-display text-3xl font-medium lg:text-4xl">Explore the world</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            {DESTINATIONS.length} researched dive destinations
+            {shown.length} of {DESTINATIONS.length} researched dive destinations
+            {active > 0 ? " match your filters" : ""}
           </p>
         </div>
         <WorldMap
           bare
-          destinations={DESTINATIONS}
+          destinations={shown}
           onSelect={(d) => {
             logEvent("click_map_pin", { destination: d.id });
             navigate({ to: "/destinations/$slug", params: { slug: d.id } });
@@ -123,51 +101,15 @@ function Home() {
       <section className="mx-auto max-w-6xl px-6 pb-32 lg:px-10">
         <h2 className="font-display text-3xl font-medium lg:text-4xl">Explore destinations</h2>
 
-        <div className="mt-8 flex flex-wrap items-center gap-3">
-          <div className="flex min-w-[16rem] flex-1 items-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5">
-            <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search destinations"
-              aria-label="Search destinations"
-              className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-            />
-          </div>
+        <div className="mt-8">
+          <DestinationFilters filters={filters} onChange={patch} />
+        </div>
 
-          <Select value={region} onValueChange={setRegion}>
-            <SelectTrigger aria-label="Region" className="w-[13rem] rounded-xl bg-card">
-              <SelectValue placeholder="Region" />
-            </SelectTrigger>
-            <SelectContent className="theme-light max-h-72">
-              <SelectItem value="all">All regions</SelectItem>
-              {regions.map((r) => (
-                <SelectItem key={r} value={r}>
-                  {r}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={month}
-            onValueChange={(v) => {
-              setMonth(v);
-              if (v !== "any") logEvent("filter_month", { month: MONTHS[Number(v)], from: "browse" });
-            }}
-          >
-            <SelectTrigger aria-label="Month" className="w-[11rem] rounded-xl bg-card">
-              <SelectValue placeholder="Month" />
-            </SelectTrigger>
-            <SelectContent className="theme-light max-h-72">
-              <SelectItem value="any">Any month</SelectItem>
-              {MONTHS.map((m, i) => (
-                <SelectItem key={m} value={String(i)}>
-                  {m}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="mt-4 flex flex-wrap items-center gap-4">
+          <p className="text-sm text-muted-foreground">
+            {shown.length} destination{shown.length === 1 ? "" : "s"}
+          </p>
+          {active > 0 && <ClearFiltersButton onClick={() => setFilters(EMPTY_FILTERS)} />}
         </div>
 
         <div className="mt-10 grid gap-x-10 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
