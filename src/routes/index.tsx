@@ -5,6 +5,13 @@ import { Search } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
 import { DestinationFinder } from "@/components/sightline/DestinationFinder";
 import { WorldMap } from "@/components/sightline/WorldMap";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { logEvent } from "@/lib/analytics";
 import {
   DESTINATIONS,
