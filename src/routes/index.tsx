@@ -207,45 +207,55 @@ function Home() {
             </div>
           )}
 
-          <div className="mt-8 grid gap-8 lg:grid-cols-12">
-            <div className="lg:col-span-7">
-              {shown.length === 0 ? (
-                <div className="rounded-2xl bg-card p-10 text-center ring-1 ring-inset ring-border">
-                  <MapPin className="mx-auto h-5 w-5 text-muted-foreground" />
-                  <p className="mt-3 text-sm font-medium">No destination matches every filter.</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Try widening the month or marine life selection.
-                  </p>
-                </div>
-              ) : (
-                <ul className="space-y-3">
-                  {shown.map((d) => (
-                    <li key={d.id}>
-                      <DestinationCard
-                        destination={d}
-                        onHover={setHovered}
-                        highlighted={hoveredPin === d.id}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            <div className="lg:col-span-5">
-              <div className="lg:sticky lg:top-24">
-                <WorldMap
-                  destinations={shown}
-                  activeId={hovered}
-                  onHoverPin={setHoveredPin}
-                  onSelect={openDestination}
-                />
-                <p className="mt-3 text-xs text-muted-foreground">
-                  Scroll to zoom, drag to pan. Pins reflect the active filters.
-                </p>
-              </div>
-            </div>
+          {/* FULL-WIDTH MAP */}
+          <div className="mt-8">
+            <WorldMap
+              destinations={shown}
+              activeId={hovered}
+              onHoverPin={setHoveredPin}
+              onSelect={openDestination}
+              heightClass="h-[22rem] sm:h-[28rem] lg:h-[32rem]"
+            />
+            <p className="mt-3 text-xs text-muted-foreground">
+              Scroll or pinch to zoom, drag to pan. Pins reflect the active filters.
+            </p>
           </div>
+
+          {/* RESULT GRID */}
+          {shown.length === 0 ? (
+            <div className="mt-10 rounded-2xl bg-card p-10 text-center ring-1 ring-inset ring-border">
+              <MapPin className="mx-auto h-5 w-5 text-muted-foreground" />
+              <p className="mt-3 text-sm font-medium">No destination matches every filter.</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Try widening the month or marine life selection.
+              </p>
+            </div>
+          ) : (
+            <>
+              <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {shown.slice(0, visible).map((d) => (
+                  <li key={d.id}>
+                    <DestinationCard
+                      destination={d}
+                      onHover={setHovered}
+                      highlighted={hoveredPin === d.id}
+                    />
+                  </li>
+                ))}
+              </ul>
+
+              {visible < shown.length && (
+                <div className="mt-8 flex justify-center">
+                  <button
+                    onClick={() => setVisible((v) => v + PAGE_SIZE)}
+                    className="rounded-full bg-card px-6 py-3 text-sm font-semibold text-foreground ring-1 ring-inset ring-border transition hover:text-primary hover:ring-primary/40"
+                  >
+                    Show {Math.min(PAGE_SIZE, shown.length - visible)} more
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </section>
 
