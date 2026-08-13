@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, BadgeCheck, Layers, RefreshCw, Search, ShieldCheck } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
 import { SiteFooter } from "@/components/sightline/SiteFooter";
-import { SuggestEdit } from "@/components/sightline/SuggestEdit";
+import { feedbackUrl } from "@/lib/feedback";
 import { DESTINATIONS, SPECIES_GROUPS } from "@/lib/destinations";
 
 export const Route = createFileRoute("/about")({
