@@ -46,6 +46,34 @@ export const Route = createFileRoute("/destinations/$slug")({
         { property: "og:type", content: "article" },
         { name: "twitter:card", content: "summary_large_image" },
       ],
+      links: d
+        ? [
+            {
+              rel: "canonical",
+              href: `https://sightline-dive-planner.lovable.app/destinations/${d.id}`,
+            },
+          ]
+        : [],
+      scripts: d
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "TouristDestination",
+                name: `${d.name}, ${d.country}`,
+                description: d.summary,
+                url: `https://sightline-dive-planner.lovable.app/destinations/${d.id}`,
+                address: {
+                  "@type": "PostalAddress",
+                  addressCountry: d.country,
+                  addressRegion: d.region,
+                },
+                touristType: "Scuba divers",
+              }),
+            },
+          ]
+        : [],
     };
   },
   loader: ({ params }): Destination => {
