@@ -1,14 +1,18 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
-import { MapPin } from "lucide-react";
+import { Search } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
-import { SearchBar } from "@/components/sightline/SearchBar";
 import { DestinationFinder } from "@/components/sightline/DestinationFinder";
 import { WorldMap } from "@/components/sightline/WorldMap";
-import { MonthStrip, MonthStripLegend } from "@/components/sightline/MonthStrip";
 import { logEvent } from "@/lib/analytics";
-import { DESTINATIONS, SPECIES_GROUPS } from "@/lib/destinations";
+import {
+  DESTINATIONS,
+  MONTHS,
+  SPECIES_GROUPS,
+  bestMonthsLabel,
+  yearRoundSpecies,
+} from "@/lib/destinations";
 
 export const Route = createFileRoute("/")({
   head: () => {
