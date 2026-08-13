@@ -8,7 +8,7 @@ import { DESTINATIONS, SPECIES_GROUPS } from "@/lib/destinations";
 
 export const Route = createFileRoute("/about")({
   head: () => {
-    const title = "About Sightline — an independent dive destination reference";
+    const title = "About Sightline — Independent dive destination reference";
     const description =
       "How Sightline is researched, sourced and verified: an independent, non-commercial dive destination reference. No operator pays for inclusion or ranking.";
     return {
