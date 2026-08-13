@@ -18,7 +18,8 @@ import { ConfidenceTag } from "@/components/sightline/Confidence";
 import { Sources } from "@/components/sightline/Sources";
 import { SectionNav, type SectionLink } from "@/components/sightline/SectionNav";
 import { ReadMore } from "@/components/sightline/ReadMore";
-import { FeedbackDialog } from "@/components/sightline/FeedbackDialog";
+import { SuggestEdit } from "@/components/sightline/SuggestEdit";
+import { SiteFooter } from "@/components/sightline/SiteFooter";
 import { logEvent } from "@/lib/analytics";
 import {
   MONTHS,
@@ -406,7 +407,7 @@ function DestinationPage() {
           </Section>
 
           {/* SOURCES */}
-          <Section id="sources" eyebrow="Sources" title="Everything above is traceable">
+          <Section id="sources" eyebrow="Sources & verification" title="Everything above is traceable">
             <div className="rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-8">
               <Sources
                 urls={d.sources}
@@ -419,12 +420,16 @@ function DestinationPage() {
                 <span>
                   {d.coordinates.lat.toFixed(3)}, {d.coordinates.lng.toFixed(3)}
                 </span>
-                <FeedbackDialog destinationId={d.id} destinationName={d.name} />
+              </div>
+              <div className="mt-5 border-t border-border pt-5">
+                <SuggestEdit destinationId={d.id} destinationName={d.name} />
               </div>
             </div>
           </Section>
         </div>
       </div>
+
+      <SiteFooter />
     </div>
   );
 }

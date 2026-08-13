@@ -7,9 +7,12 @@ export function SightlineNav() {
         <Link to="/" className="font-wordmark text-2xl font-semibold text-foreground">
           Sightline<span className="text-primary">.</span>
         </Link>
-        <p className="hidden text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground md:block">
-          Independent dive intelligence
-        </p>
+        <Link
+          to="/about"
+          className="hidden text-[0.7rem] text-muted-foreground transition hover:text-foreground md:block"
+        >
+          Built &amp; maintained by Shailvi Kumar
+        </Link>
       </div>
     </header>
   );

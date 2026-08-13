@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SpeciesSlugRouteImport } from './routes/species.$slug'
 import { Route as DestinationsSlugRouteImport } from './routes/destinations.$slug'
 
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -31,36 +37,47 @@ const DestinationsSlugRoute = DestinationsSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/species/$slug': typeof SpeciesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/species/$slug': typeof SpeciesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/species/$slug': typeof SpeciesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/destinations/$slug' | '/species/$slug'
+  fullPaths: '/' | '/about' | '/destinations/$slug' | '/species/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/destinations/$slug' | '/species/$slug'
-  id: '__root__' | '/' | '/destinations/$slug' | '/species/$slug'
+  to: '/' | '/about' | '/destinations/$slug' | '/species/$slug'
+  id: '__root__' | '/' | '/about' | '/destinations/$slug' | '/species/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   DestinationsSlugRoute: typeof DestinationsSlugRoute
   SpeciesSlugRoute: typeof SpeciesSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   DestinationsSlugRoute: DestinationsSlugRoute,
   SpeciesSlugRoute: SpeciesSlugRoute,
 }

@@ -5,6 +5,7 @@ import { SightlineNav } from "@/components/sightline/Nav";
 import { MonthStrip, MonthStripLegend } from "@/components/sightline/MonthStrip";
 import { ConfidenceTag } from "@/components/sightline/Confidence";
 import { Sources } from "@/components/sightline/Sources";
+import { SiteFooter } from "@/components/sightline/SiteFooter";
 import { logEvent } from "@/lib/analytics";
 import { MONTHS, getSpeciesGroup, type SpeciesGroup } from "@/lib/destinations";
 
@@ -176,6 +177,7 @@ function SpeciesPage() {
           )}
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }
