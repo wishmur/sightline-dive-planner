@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, BadgeCheck, Layers, RefreshCw, Search, ShieldCheck } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
 import { SiteFooter } from "@/components/sightline/SiteFooter";
-import { SuggestEdit } from "@/components/sightline/SuggestEdit";
+import { feedbackUrl } from "@/lib/feedback";
 import { DESTINATIONS, SPECIES_GROUPS } from "@/lib/destinations";
 
 export const Route = createFileRoute("/about")({
@@ -78,12 +78,13 @@ function AboutPage() {
           </Link>
           <p className="eyebrow mt-6 text-primary">About</p>
           <h1 className="mt-4 font-display text-4xl leading-[1.05] text-foreground sm:text-5xl">
-            An independent dive destination reference.
+            Built by a diver, for better dive trips.
           </h1>
           <p className="mt-5 text-base leading-relaxed text-muted-foreground">
-            Sightline is a non-commercial reference built to help divers compare destinations by
-            marine life, seasonality, conditions, experience requirements and trip format — with the
-            sources behind each claim kept in view.
+            Sightline started because planning my own dive travel meant piecing together operator
+            sites, research papers, forums, trip reports, and word of mouth. I wanted one place that
+            made the useful parts comparable: what you can actually see, when to go, what conditions
+            to expect, and whether the diving fits your experience.
           </p>
           <div className="mt-8 flex flex-wrap gap-3 text-xs text-muted-foreground">
             <span className="rounded-full bg-white/[0.07] px-3 py-1.5 ring-1 ring-inset ring-white/15">
@@ -118,8 +119,8 @@ function AboutPage() {
             <div className="mt-8 rounded-3xl bg-primary/[0.07] p-6 ring-1 ring-inset ring-primary/25 lg:p-8">
               <ShieldCheck className="h-5 w-5 text-primary" />
               <p className="mt-3 font-display text-xl leading-snug text-foreground">
-                Sightline is an independent, non-commercial project. No destination, dive operator,
-                or booking platform pays for inclusion or ranking.
+                Sightline is independent, non-commercial, and free to use. No destination, dive
+                operator, or booking platform pays for inclusion or ranking.
               </p>
             </div>
           </section>
@@ -171,17 +172,16 @@ function AboutPage() {
           <section>
             <p className="eyebrow">Maintainer</p>
             <h2 className="mt-2 font-display text-2xl text-foreground sm:text-3xl">
-              Who maintains Sightline
+              About the diver
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              PADI Advanced Open Water diver with 110+ logged dives across multiple regions, and
-              experience across recreational, deep, drift, wreck and night diving as well as Nitrox.
-              Sightline started as a way to answer planning questions the existing sources kept
-              answering badly.
+              115+ logged dives across multiple regions, with experience across deep, drift, wreck,
+              night, Nitrox, and a lot of dive-trip planning. Sightline is the reference I wanted for
+              myself, and I'm keeping it useful for other divers too.
             </p>
             <dl className="mt-6 grid gap-3 sm:grid-cols-3">
               {[
-                ["110+", "logged dives"],
+                ["115+", "logged dives"],
                 ["PADI AOW", "certification"],
                 ["Nitrox", "plus deep, drift, wreck, night"],
               ].map(([value, label]) => (
@@ -201,9 +201,33 @@ function AboutPage() {
           {/* FEEDBACK */}
           <section className="rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-8">
             <p className="eyebrow">Help improve it</p>
-            <h2 className="mt-2 font-display text-2xl text-foreground">Corrections welcome</h2>
-            <div className="mt-4">
-              <SuggestEdit />
+            <h2 className="mt-2 font-display text-2xl text-foreground">
+              Help make Sightline better
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+              Been somewhere listed here? Spot something outdated? Want a destination added? Have an
+              idea for a feature that would make planning easier?
+            </p>
+            <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+              Send it my way. I review new information, verify it against reliable sources, and
+              update the dataset when it holds up.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              {[
+                { label: "Suggest a correction", kind: "edit" as const },
+                { label: "Request a destination", kind: "request" as const },
+                { label: "Suggest a feature", kind: "feature" as const },
+              ].map((a) => (
+                <a
+                  key={a.kind}
+                  href={feedbackUrl(a.kind)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-4 py-2.5 text-sm font-semibold text-primary ring-1 ring-inset ring-primary/25 transition hover:bg-primary/15"
+                >
+                  {a.label} <ArrowRight className="h-3.5 w-3.5" />
+                </a>
+              ))}
             </div>
             <Link
               to="/"

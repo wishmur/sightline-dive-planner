@@ -107,11 +107,11 @@ function Home() {
           >
             <p className="eyebrow text-primary">Independent dive intelligence</p>
             <h1 className="mt-4 font-display text-5xl leading-[1.02] text-white [text-shadow:0_2px_24px_rgba(6,16,32,0.55)] sm:text-6xl lg:text-7xl">
-              Find your next dive.
+              Find the dive worth traveling for.
             </h1>
-            <p className="mt-5 max-w-xl text-base text-white/85 [text-shadow:0_1px_16px_rgba(6,16,32,0.6)] sm:text-lg">
-              Search by what you want to see, when you can travel, and how you like to dive. Every
-              claim is traceable to a source.
+            <p className="mt-[18px] max-w-xl text-base text-white/85 [text-shadow:0_1px_16px_rgba(6,16,32,0.6)] sm:text-lg">
+              Compare destinations by marine life, season, conditions, and experience, with sources
+              behind every claim.
             </p>
           </motion.div>
 
@@ -119,17 +119,18 @@ function Home() {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-9"
+            className="mt-6"
           >
             <button
               onClick={scrollToExplore}
               className="group inline-flex items-center gap-2.5 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg transition hover:brightness-110"
             >
-              Explore {DESTINATIONS.length} destinations
+              Explore destinations
               <ArrowDown className="h-4 w-4 transition group-hover:translate-y-0.5" />
             </button>
-            <p className="mt-5 text-xs tracking-wide text-white/60">
-              {DESTINATIONS.length} destinations · {SPECIES_GROUPS.length} species · source-backed
+            <p className="mt-3 text-xs tracking-wide text-white/60">
+              {DESTINATIONS.length} destinations · {SPECIES_GROUPS.length} species · independently
+              researched
             </p>
           </motion.div>
         </div>
