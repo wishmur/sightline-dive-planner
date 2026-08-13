@@ -6,10 +6,12 @@ export function SiteFooter() {
     <footer className="theme-light border-t border-border px-6 py-12 lg:px-10">
       <div className="mx-auto flex max-w-7xl flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <Link to="/" className="font-wordmark text-xl font-semibold text-foreground">
-            Sightline<span className="text-primary">.</span>
+          <Link to="/" className="font-wordmark text-xl font-semibold tracking-[0.14em] text-foreground">
+            SIGHTLINE<span className="text-primary">.</span>
           </Link>
-          <p className="mt-1 text-sm text-muted-foreground">Independent dive intelligence.</p>
+          <p className="mt-1.5 text-xs tracking-[0.18em] text-muted-foreground uppercase">
+            The world, from below.
+          </p>
         </div>
 
         <div className="text-sm sm:text-right">
