@@ -9,9 +9,9 @@ export function SightlineNav() {
         </Link>
         <Link
           to="/about"
-          className="text-xs text-muted-foreground transition hover:text-foreground"
+          className="text-sm font-medium text-foreground/80 transition hover:text-primary"
         >
-          © Shailvi
+          About the diver
         </Link>
       </div>
     </header>
