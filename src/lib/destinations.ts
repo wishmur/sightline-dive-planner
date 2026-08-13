@@ -148,3 +148,25 @@ export function search(query: string, limit = 8): SearchResult[] {
 export function formatFormat(value: string) {
   return value.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 }
+
+export type FinderMatch = {
+  destination: Destination;
+  status: Extract<MonthState, "peak" | "shoulder">;
+};
+
+/** Destinations where the species is peak/shoulder in the given month and diving is not closed. */
+export function findDestinations(slug: string, monthIndex: number): FinderMatch[] {
+  const group = getSpeciesGroup(slug);
+  if (!group) return [];
+  const matches: FinderMatch[] = [];
+  for (const { destination, species } of group.matches) {
+    const status = species.months[monthIndex];
+    if (status !== "peak" && status !== "shoulder") continue;
+    if (destination.operating_months[monthIndex] === "closed") continue;
+    matches.push({ destination, status });
+  }
+  return matches.sort((a, b) => {
+    if (a.status !== b.status) return a.status === "peak" ? -1 : 1;
+    return a.destination.name.localeCompare(b.destination.name);
+  });
+}

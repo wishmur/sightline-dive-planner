@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { MapPin } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
 import { SearchBar } from "@/components/sightline/SearchBar";
+import { DestinationFinder } from "@/components/sightline/DestinationFinder";
 import { WorldMap } from "@/components/sightline/WorldMap";
 import { MonthStrip, MonthStripLegend } from "@/components/sightline/MonthStrip";
 import { logEvent } from "@/lib/analytics";
@@ -55,58 +56,67 @@ function Home() {
       <SightlineNav />
 
       {/* HERO */}
-      <section className="relative px-6 pt-36 pb-16 lg:px-10">
+      <section className="relative px-6 pt-32 pb-14 lg:px-10">
         <div
           aria-hidden
           className="pointer-events-none absolute -top-32 left-1/3 h-[520px] w-[520px] rounded-full bg-primary/15 blur-[140px]"
         />
         <div className="mx-auto max-w-6xl">
-          <p className="eyebrow">A reference, not a booking site</p>
+          <p className="eyebrow">Independent dive intelligence</p>
           <motion.h1
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
-            className="font-display mt-4 max-w-4xl text-5xl font-medium leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl"
+            className="font-display mt-4 max-w-3xl text-5xl font-medium leading-[0.95] tracking-tight sm:text-6xl lg:text-[4.25rem]"
           >
-            I want to see mantas in September.
-            <span className="block text-muted-foreground">Where should I go?</span>
+            Plan the dive,
+            <span className="block text-muted-foreground">not just the destination.</span>
           </motion.h1>
-          <p className="mt-7 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            {DESTINATIONS.length} dive destinations, {SPECIES_GROUPS.length} species, twelve months
-            each — with operating windows, conditions and the sources behind every claim.
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+            Compare dive destinations by marine life, season, conditions, experience level and trip
+            format — with sources behind every claim.
           </p>
 
           <div className="mt-10">
-            <SearchBar />
+            <DestinationFinder />
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center gap-2">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground">Popular</span>
+          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span className="text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground">
+              Popular
+            </span>
             {popular.map((g) => (
               <Link
                 key={g!.slug}
                 to="/species/$slug"
                 params={{ slug: g!.slug }}
                 onClick={() => logEvent("search_species", { species: g!.slug, from: "popular" })}
-                className="rounded-full bg-white/[0.05] px-4 py-1.5 text-xs text-muted-foreground ring-1 ring-inset ring-white/10 transition hover:text-foreground"
+                className="text-xs text-muted-foreground underline decoration-white/15 underline-offset-4 transition hover:text-foreground hover:decoration-primary"
               >
                 {g!.name}
               </Link>
             ))}
+          </div>
+
+          <div className="mt-8 max-w-2xl border-t border-white/[0.07] pt-5">
+            <p className="text-xs tracking-wide text-muted-foreground">
+              {DESTINATIONS.length} destinations · {SPECIES_GROUPS.length} species · 12 months ·
+              source-backed
+            </p>
+            <div className="mt-4 max-w-xl">
+              <SearchBar />
+            </div>
           </div>
         </div>
       </section>
 
       {/* MAP */}
       <section className="mx-auto max-w-6xl px-6 pb-16 lg:px-10">
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="eyebrow">The world</p>
-            <h2 className="font-display mt-2 text-3xl font-medium lg:text-4xl">
-              Every destination on the map
-            </h2>
-          </div>
-          <p className="text-sm text-muted-foreground">Click a pin to open its guide.</p>
+        <div className="mb-6">
+          <h2 className="font-display text-3xl font-medium lg:text-4xl">Explore the world</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {DESTINATIONS.length} researched dive destinations
+          </p>
         </div>
         <WorldMap
           destinations={DESTINATIONS}
