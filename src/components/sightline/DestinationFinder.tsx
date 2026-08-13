@@ -1,28 +1,49 @@
-import { Link } from "@tanstack/react-router";
-import { ChevronDown, Check, Search, ArrowRight } from "lucide-react";
+import { ChevronDown, Check, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { logEvent } from "@/lib/analytics";
-import { MONTHS, SPECIES_GROUPS, findDestinations, type FinderMatch } from "@/lib/destinations";
+import { MONTHS, SPECIES_GROUPS } from "@/lib/destinations";
 
-export function DestinationFinder() {
+/**
+ * Hero finder. It never produces its own results — it applies its values to the
+ * single shared filter state on the homepage.
+ */
+export function DestinationFinder({
+  onApply,
+}: {
+  onApply: (patch: { species: string[]; month: string }) => void;
+}) {
   const [speciesOpen, setSpeciesOpen] = useState(false);
   const [monthOpen, setMonthOpen] = useState(false);
   const [speciesSlug, setSpeciesSlug] = useState<string | null>(null);
   const [month, setMonth] = useState<number | null>(null);
-  const [results, setResults] = useState<FinderMatch[] | null>(null);
 
   const species = useMemo(
     () => SPECIES_GROUPS.find((g) => g.slug === speciesSlug) ?? null,
     [speciesSlug],
   );
-  const ready = Boolean(speciesSlug) && month !== null;
+  const ready = Boolean(species) || month !== null;
 
   function run() {
-    if (!speciesSlug || month === null) return;
-    logEvent("filter_month", { species: speciesSlug, month: MONTHS[month], from: "hero_finder" });
-    setResults(findDestinations(speciesSlug, month));
+    if (!ready) return;
+    if (species) {
+      logEvent("search_species", { species: species.slug, from: "hero_finder" });
+    }
+    if (month !== null) {
+      logEvent("filter_month", { month: MONTHS[month], from: "hero_finder" });
+    }
+    onApply({
+      species: species ? [species.name] : [],
+      month: month === null ? "any" : String(month),
+    });
   }
 
   return (
@@ -36,7 +57,7 @@ export function DestinationFinder() {
                 What do you want to see?
               </span>
               <span className="flex w-full items-center justify-between gap-3 text-sm">
-                <span className={species ? "text-foreground" : "text-muted-foreground"}>
+                <span className={species ? "font-medium text-foreground" : "text-muted-foreground"}>
                   {species ? species.name : "Any species"}
                 </span>
                 <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
@@ -49,6 +70,18 @@ export function DestinationFinder() {
               <CommandList>
                 <CommandEmpty>No species found.</CommandEmpty>
                 <CommandGroup>
+                  <CommandItem
+                    value="Any species"
+                    onSelect={() => {
+                      setSpeciesSlug(null);
+                      setSpeciesOpen(false);
+                    }}
+                  >
+                    <Check
+                      className={`mr-2 h-3.5 w-3.5 ${speciesSlug === null ? "opacity-100" : "opacity-0"}`}
+                    />
+                    Any species
+                  </CommandItem>
                   {SPECIES_GROUPS.map((g) => (
                     <CommandItem
                       key={g.slug}
@@ -56,7 +89,6 @@ export function DestinationFinder() {
                       onSelect={() => {
                         setSpeciesSlug(g.slug);
                         setSpeciesOpen(false);
-                        setResults(null);
                       }}
                     >
                       <Check
@@ -81,7 +113,9 @@ export function DestinationFinder() {
                 When are you diving?
               </span>
               <span className="flex w-full items-center justify-between gap-3 text-sm">
-                <span className={month !== null ? "text-foreground" : "text-muted-foreground"}>
+                <span
+                  className={month !== null ? "font-medium text-foreground" : "text-muted-foreground"}
+                >
                   {month !== null ? MONTHS[month] : "Any month"}
                 </span>
                 <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
@@ -96,7 +130,6 @@ export function DestinationFinder() {
                   onClick={() => {
                     setMonth(i);
                     setMonthOpen(false);
-                    setResults(null);
                   }}
                   className={`rounded-lg px-2 py-2 text-xs transition ${
                     month === i
@@ -108,10 +141,21 @@ export function DestinationFinder() {
                 </button>
               ))}
             </div>
+            {month !== null && (
+              <button
+                onClick={() => {
+                  setMonth(null);
+                  setMonthOpen(false);
+                }}
+                className="mt-2 w-full rounded-lg px-2 py-1.5 text-xs text-muted-foreground transition hover:bg-primary/[0.08] hover:text-foreground"
+              >
+                Any month
+              </button>
+            )}
           </PopoverContent>
         </Popover>
 
-        <div className="p-2 sm:p-2">
+        <div className="p-2">
           <button
             onClick={run}
             disabled={!ready}
@@ -122,40 +166,6 @@ export function DestinationFinder() {
           </button>
         </div>
       </div>
-
-      {results && (
-        <div className="mt-5">
-          <p className="text-xs text-muted-foreground">
-            {results.length === 0
-              ? `No destination has ${species?.name.toLowerCase()} in peak or shoulder season in ${MONTHS[month!]}.`
-              : `${results.length} destination${results.length === 1 ? "" : "s"} for ${species?.name.toLowerCase()} in ${MONTHS[month!]}`}
-          </p>
-          <ul className="mt-3 space-y-2">
-            {results.map(({ destination, status }) => (
-              <li key={destination.id}>
-                <Link
-                  to="/destinations/$slug"
-                  params={{ slug: destination.id }}
-                  onClick={() =>
-                    logEvent("view_destination", { destination: destination.id, from: "hero_finder" })
-                  }
-                  className="glass-subtle group flex items-center gap-4 rounded-2xl px-5 py-4 transition hover:border-primary/40"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium group-hover:text-primary">
-                      {destination.name}
-                    </p>
-                    <p className="truncate text-xs text-muted-foreground">
-                      {destination.region}, {destination.country} · {status} in {MONTHS[month!]}
-                    </p>
-                  </div>
-                  <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 }

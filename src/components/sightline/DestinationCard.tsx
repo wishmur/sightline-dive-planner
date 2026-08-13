@@ -9,10 +9,12 @@ export function DestinationCard({
   destination: d,
   onHover,
   from = "explore",
+  highlighted = false,
 }: {
   destination: Destination;
   onHover?: (id: string | null) => void;
   from?: string;
+  highlighted?: boolean;
 }) {
   const tags = destinationTags(d);
   const season = bestMonthsLabel(d.best_months_overall) ?? "Season varies";
@@ -24,7 +26,9 @@ export function DestinationCard({
       onClick={() => logEvent("view_destination", { destination: d.id, from })}
       onMouseEnter={() => onHover?.(d.id)}
       onMouseLeave={() => onHover?.(null)}
-      className="group flex gap-4 rounded-2xl bg-card p-3 shadow-sm ring-1 ring-inset ring-border transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-primary/40 sm:gap-5 sm:p-4"
+      className={`group flex gap-4 rounded-2xl bg-card p-3 shadow-sm ring-1 ring-inset transition hover:-translate-y-0.5 hover:shadow-lg hover:ring-primary/40 sm:gap-5 sm:p-4 ${
+        highlighted ? "-translate-y-0.5 shadow-lg ring-primary/50" : "ring-border"
+      }`}
     >
       <div className="relative h-[7.5rem] w-[7.5rem] shrink-0 overflow-hidden rounded-xl sm:h-32 sm:w-36">
         <img
