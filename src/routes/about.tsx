@@ -76,7 +76,7 @@ function AboutPage() {
           >
             <ArrowLeft className="h-4 w-4" /> Back to Sightline
           </Link>
-          <p className="eyebrow mt-6 text-primary">About</p>
+          <p className="eyebrow mt-6 text-primary">Sightline · The world, from below.</p>
           <h1 className="mt-4 font-display text-4xl leading-[1.05] text-foreground sm:text-5xl">
             Built by a diver, for better dive trips.
           </h1>
