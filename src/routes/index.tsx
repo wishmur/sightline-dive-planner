@@ -1,14 +1,26 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
-import { MapPin } from "lucide-react";
+import { Search } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
-import { SearchBar } from "@/components/sightline/SearchBar";
 import { DestinationFinder } from "@/components/sightline/DestinationFinder";
 import { WorldMap } from "@/components/sightline/WorldMap";
-import { MonthStrip, MonthStripLegend } from "@/components/sightline/MonthStrip";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { logEvent } from "@/lib/analytics";
-import { DESTINATIONS, SPECIES_GROUPS } from "@/lib/destinations";
+import {
+  DESTINATIONS,
+  MONTHS,
+  SPECIES_GROUPS,
+  bestMonthsLabel,
+  yearRoundSpecies,
+  formatFormat,
+} from "@/lib/destinations";
 
 export const Route = createFileRoute("/")({
   head: () => {
@@ -29,96 +41,76 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const POPULAR = [
-  "Reef manta ray",
-  "Giant oceanic manta ray",
-  "Whale shark",
-  "Scalloped hammerhead",
-  "Humpback whale",
-];
-
 function Home() {
   const navigate = useNavigate();
-  const [region, setRegion] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [region, setRegion] = useState<string>("all");
+  const [month, setMonth] = useState<string>("any");
 
   const regions = useMemo(
     () => [...new Set(DESTINATIONS.map((d) => d.region))].sort(),
     [],
   );
-  const shown = region ? DESTINATIONS.filter((d) => d.region === region) : DESTINATIONS;
 
-  const popular = POPULAR.map((name) =>
-    SPECIES_GROUPS.find((g) => g.name.toLowerCase() === name.toLowerCase()),
-  ).filter(Boolean);
+  const shown = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const m = month === "any" ? null : Number(month);
+    return DESTINATIONS.filter((d) => {
+      if (region !== "all" && d.region !== region) return false;
+      if (
+        q &&
+        !`${d.name} ${d.region} ${d.country}`.toLowerCase().includes(q)
+      )
+        return false;
+      if (m !== null) {
+        if (d.operating_months[m] === "closed") return false;
+        const s = d.best_months_overall[m];
+        if (s !== "peak" && s !== "shoulder") return false;
+      }
+      return true;
+    });
+  }, [query, region, month]);
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
+    <div className="theme-light min-h-screen overflow-x-hidden">
       <SightlineNav />
 
       {/* HERO */}
-      <section className="relative px-6 pt-32 pb-14 lg:px-10">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -top-32 left-1/3 h-[520px] w-[520px] rounded-full bg-primary/15 blur-[140px]"
-        />
+      <section className="relative px-6 pt-36 pb-20 lg:px-10">
         <div className="mx-auto max-w-6xl">
-          <p className="eyebrow">Independent dive intelligence</p>
           <motion.h1
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
-            className="font-display mt-4 max-w-3xl text-5xl font-medium leading-[0.95] tracking-tight sm:text-6xl lg:text-[4.25rem]"
+            className="font-display max-w-3xl text-5xl font-medium leading-[0.95] tracking-tight sm:text-6xl lg:text-[4.5rem]"
           >
             Plan the dive,
             <span className="block text-muted-foreground">not just the destination.</span>
           </motion.h1>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            Compare dive destinations by marine life, season, conditions, experience level and trip
-            format — with sources behind every claim.
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
+            Find where to dive based on what you want to see and when you're going.
           </p>
 
-          <div className="mt-10">
+          <div className="mt-12">
             <DestinationFinder />
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
-            <span className="text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground">
-              Popular
-            </span>
-            {popular.map((g) => (
-              <Link
-                key={g!.slug}
-                to="/species/$slug"
-                params={{ slug: g!.slug }}
-                onClick={() => logEvent("search_species", { species: g!.slug, from: "popular" })}
-                className="text-xs text-muted-foreground underline decoration-white/15 underline-offset-4 transition hover:text-foreground hover:decoration-primary"
-              >
-                {g!.name}
-              </Link>
-            ))}
-          </div>
-
-          <div className="mt-8 max-w-2xl border-t border-white/[0.07] pt-5">
-            <p className="text-xs tracking-wide text-muted-foreground">
-              {DESTINATIONS.length} destinations · {SPECIES_GROUPS.length} species · 12 months ·
-              source-backed
-            </p>
-            <div className="mt-4 max-w-xl">
-              <SearchBar />
-            </div>
-          </div>
+          <p className="mt-8 text-xs tracking-wide text-muted-foreground">
+            {DESTINATIONS.length} destinations · {SPECIES_GROUPS.length} species · source-backed
+          </p>
         </div>
       </section>
 
       {/* MAP */}
-      <section className="mx-auto max-w-6xl px-6 pb-16 lg:px-10">
-        <div className="mb-6">
+      <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
+        <div className="mb-8">
           <h2 className="font-display text-3xl font-medium lg:text-4xl">Explore the world</h2>
           <p className="mt-2 text-sm text-muted-foreground">
             {DESTINATIONS.length} researched dive destinations
           </p>
         </div>
         <WorldMap
+          bare
           destinations={DESTINATIONS}
           onSelect={(d) => {
             logEvent("click_map_pin", { destination: d.id });
@@ -128,67 +120,92 @@ function Home() {
       </section>
 
       {/* DESTINATION LIST */}
-      <section className="mx-auto max-w-6xl px-6 pb-28 lg:px-10">
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="eyebrow">Reference</p>
-            <h2 className="font-display mt-2 text-3xl font-medium lg:text-4xl">All destinations</h2>
+      <section className="mx-auto max-w-6xl px-6 pb-32 lg:px-10">
+        <h2 className="font-display text-3xl font-medium lg:text-4xl">Explore destinations</h2>
+
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="flex min-w-[16rem] flex-1 items-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5">
+            <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search destinations"
+              aria-label="Search destinations"
+              className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+            />
           </div>
-          <MonthStripLegend />
-        </div>
 
-        <div className="mb-8 flex flex-wrap gap-2">
-          <button
-            onClick={() => setRegion(null)}
-            className={`rounded-full px-4 py-2 text-xs font-medium transition ${
-              region === null ? "bg-primary text-primary-foreground" : "bg-white/[0.05] text-muted-foreground hover:text-foreground"
-            }`}
+          <Select value={region} onValueChange={setRegion}>
+            <SelectTrigger aria-label="Region" className="w-[13rem] rounded-xl bg-card">
+              <SelectValue placeholder="Region" />
+            </SelectTrigger>
+            <SelectContent className="theme-light max-h-72">
+              <SelectItem value="all">All regions</SelectItem>
+              {regions.map((r) => (
+                <SelectItem key={r} value={r}>
+                  {r}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={month}
+            onValueChange={(v) => {
+              setMonth(v);
+              if (v !== "any") logEvent("filter_month", { month: MONTHS[Number(v)], from: "browse" });
+            }}
           >
-            All regions
-          </button>
-          {regions.map((r) => (
-            <button
-              key={r}
-              onClick={() => setRegion(r)}
-              className={`rounded-full px-4 py-2 text-xs font-medium transition ${
-                region === r ? "bg-primary text-primary-foreground" : "bg-white/[0.05] text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {r}
-            </button>
-          ))}
+            <SelectTrigger aria-label="Month" className="w-[11rem] rounded-xl bg-card">
+              <SelectValue placeholder="Month" />
+            </SelectTrigger>
+            <SelectContent className="theme-light max-h-72">
+              <SelectItem value="any">Any month</SelectItem>
+              {MONTHS.map((m, i) => (
+                <SelectItem key={m} value={String(i)}>
+                  {m}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          {shown.map((d) => (
-            <Link
-              key={d.id}
-              to="/destinations/$slug"
-              params={{ slug: d.id }}
-              onClick={() => logEvent("view_destination", { destination: d.id, from: "home_list" })}
-              className="glass-subtle group rounded-3xl p-6 transition hover:bg-white/[0.06]"
-            >
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <MapPin className="h-3.5 w-3.5 text-primary" />
-                <span className="eyebrow !text-[0.65rem]">
+        <div className="mt-10 grid gap-x-10 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
+          {shown.map((d) => {
+            const chips = [yearRoundSpecies(d), bestMonthsLabel(d.best_months_overall)].filter(
+              Boolean,
+            ) as string[];
+            return (
+              <Link
+                key={d.id}
+                to="/destinations/$slug"
+                params={{ slug: d.id }}
+                onClick={() => logEvent("view_destination", { destination: d.id, from: "home_list" })}
+                className="group block"
+              >
+                <h3 className="font-display text-2xl font-medium transition group-hover:text-primary">
+                  {d.name}
+                </h3>
+                <p className="mt-1 text-xs uppercase tracking-[0.16em] text-muted-foreground">
                   {d.region}, {d.country}
-                </span>
-              </div>
-              <h3 className="font-display mt-2 text-2xl font-medium group-hover:text-primary">
-                {d.name}
-              </h3>
-              <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                {d.summary}
-              </p>
-              <div className="mt-5">
-                <MonthStrip months={d.best_months_overall} operating={d.operating_months} height={18} />
-              </div>
-              <p className="mt-4 text-xs text-muted-foreground">
-                {d.species.length} species tracked · min cert {d.conditions.min_cert}
-              </p>
-            </Link>
-          ))}
+                </p>
+                <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                  {d.summary}
+                </p>
+                <p className="mt-4 text-sm text-foreground/80">{chips.join(" · ")}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Minimum certification: {formatFormat(d.conditions.min_cert)}
+                </p>
+              </Link>
+            );
+          })}
         </div>
+
+        {shown.length === 0 && (
+          <p className="mt-10 text-sm text-muted-foreground">
+            No destinations match those filters.
+          </p>
+        )}
       </section>
     </div>
   );

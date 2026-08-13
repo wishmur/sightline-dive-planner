@@ -3,7 +3,6 @@ import { ChevronDown, Check, Search, ArrowRight } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { MonthStrip } from "@/components/sightline/MonthStrip";
 import { logEvent } from "@/lib/analytics";
 import { MONTHS, SPECIES_GROUPS, findDestinations, type FinderMatch } from "@/lib/destinations";
 
@@ -28,11 +27,11 @@ export function DestinationFinder() {
 
   return (
     <div className="w-full max-w-3xl">
-      <div className="glass flex flex-col gap-px overflow-hidden rounded-3xl sm:flex-row sm:items-stretch">
+      <div className="glass flex flex-col gap-px overflow-hidden rounded-2xl sm:flex-row sm:items-stretch">
         {/* species */}
         <Popover open={speciesOpen} onOpenChange={setSpeciesOpen}>
           <PopoverTrigger asChild>
-            <button className="flex flex-1 flex-col items-start gap-1 px-6 py-4 text-left transition hover:bg-white/[0.04]">
+            <button className="flex flex-1 flex-col items-start gap-1 px-6 py-4 text-left transition hover:bg-primary/[0.06]">
               <span className="text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground">
                 What do you want to see?
               </span>
@@ -44,7 +43,7 @@ export function DestinationFinder() {
               </span>
             </button>
           </PopoverTrigger>
-          <PopoverContent align="start" className="w-[min(22rem,90vw)] p-0">
+          <PopoverContent align="start" className="theme-light w-[min(22rem,90vw)] p-0">
             <Command>
               <CommandInput placeholder="Search species…" />
               <CommandList>
@@ -72,12 +71,12 @@ export function DestinationFinder() {
           </PopoverContent>
         </Popover>
 
-        <span aria-hidden className="hidden w-px self-stretch bg-white/10 sm:block" />
+        <span aria-hidden className="hidden w-px self-stretch bg-border sm:block" />
 
         {/* month */}
         <Popover open={monthOpen} onOpenChange={setMonthOpen}>
           <PopoverTrigger asChild>
-            <button className="flex flex-col items-start gap-1 px-6 py-4 text-left transition hover:bg-white/[0.04] sm:w-56">
+            <button className="flex flex-col items-start gap-1 px-6 py-4 text-left transition hover:bg-primary/[0.06] sm:w-56">
               <span className="text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground">
                 When are you diving?
               </span>
@@ -89,7 +88,7 @@ export function DestinationFinder() {
               </span>
             </button>
           </PopoverTrigger>
-          <PopoverContent align="start" className="w-[min(20rem,90vw)] p-3">
+          <PopoverContent align="start" className="theme-light w-[min(20rem,90vw)] p-3">
             <div className="grid grid-cols-3 gap-1.5">
               {MONTHS.map((m, i) => (
                 <button
@@ -102,7 +101,7 @@ export function DestinationFinder() {
                   className={`rounded-lg px-2 py-2 text-xs transition ${
                     month === i
                       ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-white/[0.06] hover:text-foreground"
+                      : "text-muted-foreground hover:bg-primary/[0.08] hover:text-foreground"
                   }`}
                 >
                   {m.slice(0, 3)}
@@ -116,7 +115,7 @@ export function DestinationFinder() {
           <button
             onClick={run}
             disabled={!ready}
-            className="flex h-full w-full items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-35"
+            className="flex h-full w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-35"
           >
             <Search className="h-4 w-4" />
             Find destinations
@@ -140,7 +139,7 @@ export function DestinationFinder() {
                   onClick={() =>
                     logEvent("view_destination", { destination: destination.id, from: "hero_finder" })
                   }
-                  className="glass-subtle group flex items-center gap-4 rounded-2xl px-5 py-4 transition hover:bg-white/[0.06]"
+                  className="glass-subtle group flex items-center gap-4 rounded-2xl px-5 py-4 transition hover:border-primary/40"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium group-hover:text-primary">
@@ -149,13 +148,6 @@ export function DestinationFinder() {
                     <p className="truncate text-xs text-muted-foreground">
                       {destination.region}, {destination.country} · {status} in {MONTHS[month!]}
                     </p>
-                  </div>
-                  <div className="hidden w-48 shrink-0 sm:block">
-                    <MonthStrip
-                      months={destination.best_months_overall}
-                      operating={destination.operating_months}
-                      height={12}
-                    />
                   </div>
                   <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary" />
                 </Link>

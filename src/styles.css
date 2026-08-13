@@ -175,3 +175,54 @@
     border: 1px solid rgba(255,255,255,0.08);
   }
 }
+
+/* Map surface colors, themed */
+:root {
+  --map-land: rgba(255, 255, 255, 0.07);
+  --map-land-stroke: rgba(255, 255, 255, 0.15);
+  --map-graticule: rgba(255, 255, 255, 0.05);
+}
+
+/*
+ * Light editorial scope. Applied to a page wrapper (and to portalled popovers)
+ * so the same semantic tokens render as pale paper + navy ink.
+ */
+.theme-light {
+  --background: oklch(0.985 0.004 240);        /* near-white with a blue cast */
+  --foreground: oklch(0.26 0.05 250);          /* deep navy ink */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.26 0.05 250);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.26 0.05 250);
+  --primary: oklch(0.6 0.17 232);              /* accessible cyan-blue */
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.96 0.008 240);
+  --secondary-foreground: oklch(0.26 0.05 250);
+  --muted: oklch(0.96 0.008 240);
+  --muted-foreground: oklch(0.52 0.03 248);
+  --accent: oklch(0.66 0.15 40);
+  --accent-foreground: oklch(0.99 0 0);
+  --border: oklch(0.26 0.05 250 / 10%);
+  --input: oklch(0.26 0.05 250 / 14%);
+  --ring: oklch(0.58 0.13 226);
+  --map-land: oklch(0.26 0.05 250 / 6%);
+  --map-land-stroke: oklch(0.26 0.05 250 / 14%);
+  --map-graticule: oklch(0.26 0.05 250 / 5%);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.theme-light .glass {
+  background: color-mix(in oklab, var(--card) 88%, transparent);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--border);
+  box-shadow: 0 18px 40px -28px oklch(0.26 0.05 250 / 35%);
+}
+
+.theme-light .glass-subtle {
+  background: color-mix(in oklab, var(--card) 70%, transparent);
+  backdrop-filter: none;
+  border: 1px solid var(--border);
+  box-shadow: none;
+}

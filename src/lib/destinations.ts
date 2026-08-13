@@ -149,6 +149,33 @@ export function formatFormat(value: string) {
   return value.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 }
 
+const MONTH_ABBR = MONTHS.map((m) => m.slice(0, 3));
+
+/** "Best Aug–Oct" / "Peak year-round" from the destination's overall month states. */
+export function bestMonthsLabel(months: MonthState[]): string | null {
+  const peaks = months.map((m, i) => (m === "peak" ? i : -1)).filter((i) => i >= 0);
+  if (peaks.length === 0) return null;
+  if (peaks.length === 12) return "Peak year-round";
+
+  // longest circular run of peak months
+  let best = { start: peaks[0]!, len: 1 };
+  for (const start of peaks) {
+    let len = 1;
+    while (len < 12 && months[(start + len) % 12] === "peak") len++;
+    if (len > best.len) best = { start, len };
+  }
+  const end = (best.start + best.len - 1) % 12;
+  return best.len === 1
+    ? `Best in ${MONTH_ABBR[best.start]}`
+    : `Best ${MONTH_ABBR[best.start]}–${MONTH_ABBR[end]}`;
+}
+
+/** Species present at peak in every month, phrased for a card chip. */
+export function yearRoundSpecies(destination: Destination): string | null {
+  const s = destination.species.find((sp) => sp.months.every((m) => m === "peak"));
+  return s ? `${s.name} year-round` : null;
+}
+
 export type FinderMatch = {
   destination: Destination;
   status: Extract<MonthState, "peak" | "shoulder">;
