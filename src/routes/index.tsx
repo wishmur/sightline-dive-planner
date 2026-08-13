@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowDown, ArrowLeft, ArrowRight, MapPin } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
+import { DiscoveryCards } from "@/components/sightline/DiscoveryCards";
 import { WorldMap } from "@/components/sightline/WorldMap";
 import { DestinationCard } from "@/components/sightline/DestinationCard";
 import { FilterBar, ClearFiltersButton } from "@/components/sightline/FilterBar";
@@ -11,7 +12,6 @@ import { SiteFooter } from "@/components/sightline/SiteFooter";
 import { logEvent } from "@/lib/analytics";
 import { DESTINATIONS, MONTHS, SPECIES_GROUPS, type Destination } from "@/lib/destinations";
 import { EMPTY_FILTERS, applyFilters, countActive, type Filters } from "@/lib/filters";
-import { COLLECTIONS, COLLECTION_COUNTS } from "@/lib/collections";
 import { HERO_IMAGE } from "@/lib/imagery";
 
 const PAGE_SIZE = 6;
@@ -141,50 +141,17 @@ function Home() {
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <h2 className="font-display text-2xl text-foreground sm:text-3xl">
-                Start with the kind of diving you want
+              <p className="eyebrow text-primary">What are you diving for?</p>
+              <h2 className="mt-3 font-display text-2xl text-foreground sm:text-3xl">
+                Start with what excites you.
               </h2>
               <p className="mt-2 text-sm text-muted-foreground">
-                Four ways in. Each one filters the full reference.
+                Pick an experience and see where in the world it takes you.
               </p>
             </div>
           </div>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {COLLECTIONS.map((c, i) => (
-              <motion.button
-                key={c.id}
-                onClick={() => openCollection(c.id)}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.5, delay: i * 0.06 }}
-                aria-pressed={filters.collection === c.id}
-                className={`group relative isolate flex h-64 flex-col justify-end overflow-hidden rounded-3xl p-5 text-left ring-1 ring-inset transition hover:ring-primary/50 ${
-                  filters.collection === c.id ? "ring-2 ring-primary" : "ring-border"
-                }`}
-              >
-                <img
-                  src={c.image}
-                  alt=""
-                  loading="lazy"
-                  width={1024}
-                  height={768}
-                  className="absolute inset-0 -z-10 h-full w-full object-cover transition duration-700 group-hover:scale-105"
-                />
-                <span
-                  aria-hidden
-                  className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(6,16,32,0.15)_0%,rgba(6,16,32,0.88)_78%)]"
-                />
-                <span className="font-display text-xl text-foreground">{c.title}</span>
-                <span className="mt-1.5 text-xs text-muted-foreground">{c.items.join(" · ")}</span>
-                <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-primary">
-                  {COLLECTION_COUNTS[c.id]} destinations
-                  <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
-                </span>
-              </motion.button>
-            ))}
-          </div>
+          <DiscoveryCards activeId={filters.collection} onSelect={openCollection} />
         </div>
       </section>
 
