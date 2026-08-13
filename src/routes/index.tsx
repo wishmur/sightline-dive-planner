@@ -1,29 +1,23 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
+import { ArrowRight, MapPin } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
 import { DestinationFinder } from "@/components/sightline/DestinationFinder";
 import { WorldMap } from "@/components/sightline/WorldMap";
-import {
-  ClearFiltersButton,
-  DestinationFilters,
-} from "@/components/sightline/DestinationFilters";
+import { DestinationCard } from "@/components/sightline/DestinationCard";
+import { FilterBar, ClearFiltersButton } from "@/components/sightline/FilterBar";
 import { logEvent } from "@/lib/analytics";
-import {
-  DESTINATIONS,
-  MONTHS,
-  SPECIES_GROUPS,
-  bestMonthsLabel,
-  yearRoundSpecies,
-  formatFormat,
-} from "@/lib/destinations";
+import { DESTINATIONS, MONTHS, SPECIES_GROUPS, type Destination } from "@/lib/destinations";
 import { EMPTY_FILTERS, applyFilters, countActive, type Filters } from "@/lib/filters";
+import { COLLECTIONS, COLLECTION_COUNTS } from "@/lib/collections";
+import { HERO_IMAGE } from "@/lib/imagery";
 
 export const Route = createFileRoute("/")({
   head: () => {
-    const title = "Sightline — dive destination and species season reference";
+    const title = "Sightline — find your next dive by marine life and season";
     const description =
-      "Search 36 dive destinations by species, month, region, conditions and experience level. Month-by-month seasonality, operating windows and cited sources.";
+      "Compare 36 researched dive destinations by marine life, month, conditions, experience level and trip format — with sources behind every claim.";
     return {
       meta: [
         { title },
@@ -41,6 +35,7 @@ export const Route = createFileRoute("/")({
 function Home() {
   const navigate = useNavigate();
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
+  const [hovered, setHovered] = useState<string | null>(null);
 
   const shown = useMemo(() => applyFilters(filters), [filters]);
   const active = countActive(filters);
@@ -48,107 +43,185 @@ function Home() {
   function patch(next: Partial<Filters>) {
     setFilters((f) => ({ ...f, ...next }));
     if (next.month && next.month !== "any") {
-      logEvent("filter_month", { month: MONTHS[Number(next.month)], from: "browse" });
+      logEvent("filter_month", { month: MONTHS[Number(next.month)], from: "explore" });
     }
   }
 
+  function openCollection(id: string) {
+    setFilters({ ...EMPTY_FILTERS, collection: id });
+    logEvent("search_destination", { collection: id, from: "discovery_tile" });
+    document.getElementById("explore")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function openDestination(d: Destination) {
+    logEvent("click_map_pin", { destination: d.id });
+    navigate({ to: "/destinations/$slug", params: { slug: d.id } });
+  }
+
   return (
-    <div className="theme-light min-h-screen overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden">
       <SightlineNav />
 
       {/* HERO */}
-      <section className="relative px-6 pt-28 pb-14 lg:px-10">
-        <div className="mx-auto max-w-6xl">
-          <motion.h1
-            initial={{ opacity: 0, y: 18 }}
+      <section className="theme-deep relative isolate flex min-h-[38rem] items-end overflow-hidden lg:min-h-[42rem]">
+        <img
+          src={HERO_IMAGE}
+          alt="Diver drifting above a coral reef wall in deep blue water"
+          width={1920}
+          height={1280}
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(6,16,32,0.82)_0%,rgba(6,16,32,0.42)_38%,rgba(6,16,32,0.92)_100%)]"
+        />
+        <div className="mx-auto w-full max-w-7xl px-6 pt-36 pb-14 lg:px-10 lg:pb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="font-display text-4xl font-medium leading-[1] tracking-tight sm:text-5xl lg:text-[3.75rem]"
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-3xl"
           >
-            Find your next dive.
-          </motion.h1>
+            <p className="eyebrow text-primary">Independent dive intelligence</p>
+            <h1 className="mt-4 font-display text-5xl leading-[1.02] text-foreground sm:text-6xl lg:text-7xl">
+              Find your next dive.
+            </h1>
+            <p className="mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">
+              Search by what you want to see and when you can travel. Every season, condition and
+              claim is traceable to a source.
+            </p>
+          </motion.div>
 
-          <div className="mt-8">
+          <motion.div
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-9"
+          >
             <DestinationFinder />
+            <p className="mt-5 text-xs tracking-wide text-muted-foreground">
+              {DESTINATIONS.length} destinations · {SPECIES_GROUPS.length} species · source-backed
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* DISCOVERY SHORTCUTS */}
+      <section className="theme-deep px-6 py-16 lg:px-10 lg:py-20">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 className="font-display text-2xl text-foreground sm:text-3xl">
+                Start with the kind of diving you want
+              </h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Four ways in. Each one filters the full reference.
+              </p>
+            </div>
           </div>
 
-          <p className="mt-6 text-xs tracking-wide text-muted-foreground">
-            {DESTINATIONS.length} destinations · {SPECIES_GROUPS.length} species · source-backed
-          </p>
-        </div>
-      </section>
-
-      {/* MAP */}
-      <section className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
-        <div className="mb-8">
-          <h2 className="font-display text-3xl font-medium lg:text-4xl">Explore the world</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {shown.length} of {DESTINATIONS.length} researched dive destinations
-            {active > 0 ? " match your filters" : ""}
-          </p>
-        </div>
-        <WorldMap
-          bare
-          destinations={shown}
-          onSelect={(d) => {
-            logEvent("click_map_pin", { destination: d.id });
-            navigate({ to: "/destinations/$slug", params: { slug: d.id } });
-          }}
-        />
-      </section>
-
-      {/* DESTINATION LIST */}
-      <section className="mx-auto max-w-6xl px-6 pb-32 lg:px-10">
-        <h2 className="font-display text-3xl font-medium lg:text-4xl">Explore destinations</h2>
-
-        <div className="mt-8">
-          <DestinationFilters filters={filters} onChange={patch} />
-        </div>
-
-        <div className="mt-4 flex flex-wrap items-center gap-4">
-          <p className="text-sm text-muted-foreground">
-            {shown.length} destination{shown.length === 1 ? "" : "s"}
-          </p>
-          {active > 0 && <ClearFiltersButton onClick={() => setFilters(EMPTY_FILTERS)} />}
-        </div>
-
-        <div className="mt-10 grid gap-x-10 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
-          {shown.map((d) => {
-            const chips = [yearRoundSpecies(d), bestMonthsLabel(d.best_months_overall)].filter(
-              Boolean,
-            ) as string[];
-            return (
-              <Link
-                key={d.id}
-                to="/destinations/$slug"
-                params={{ slug: d.id }}
-                onClick={() => logEvent("view_destination", { destination: d.id, from: "home_list" })}
-                className="group block"
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {COLLECTIONS.map((c, i) => (
+              <motion.button
+                key={c.id}
+                onClick={() => openCollection(c.id)}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.5, delay: i * 0.06 }}
+                className="group relative isolate flex h-64 flex-col justify-end overflow-hidden rounded-3xl p-5 text-left ring-1 ring-inset ring-border transition hover:ring-primary/50"
               >
-                <h3 className="font-display text-2xl font-medium transition group-hover:text-primary">
-                  {d.name}
-                </h3>
-                <p className="mt-1 text-xs uppercase tracking-[0.16em] text-muted-foreground">
-                  {d.region}, {d.country}
-                </p>
-                <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                  {d.summary}
-                </p>
-                <p className="mt-4 text-sm text-foreground/80">{chips.join(" · ")}</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Minimum certification: {formatFormat(d.conditions.min_cert)}
-                </p>
-              </Link>
-            );
-          })}
+                <img
+                  src={c.image}
+                  alt=""
+                  loading="lazy"
+                  width={1024}
+                  height={768}
+                  className="absolute inset-0 -z-10 h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                />
+                <span
+                  aria-hidden
+                  className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(6,16,32,0.15)_0%,rgba(6,16,32,0.88)_78%)]"
+                />
+                <span className="font-display text-xl text-foreground">{c.title}</span>
+                <span className="mt-1.5 text-xs text-muted-foreground">{c.items.join(" · ")}</span>
+                <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-primary">
+                  {COLLECTION_COUNTS[c.id]} destinations
+                  <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
+                </span>
+              </motion.button>
+            ))}
+          </div>
         </div>
-
-        {shown.length === 0 && (
-          <p className="mt-10 text-sm text-muted-foreground">
-            No destinations match those filters.
-          </p>
-        )}
       </section>
+
+      {/* EXPLORE */}
+      <section id="explore" className="theme-light scroll-mt-20 px-6 py-16 lg:px-10 lg:py-24">
+        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 className="font-display text-3xl text-foreground sm:text-4xl">
+                Explore destinations
+              </h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {shown.length} of {DESTINATIONS.length} destinations match
+                {active > 0 ? " your filters" : ""}.
+              </p>
+            </div>
+            {active > 0 && <ClearFiltersButton onClick={() => setFilters(EMPTY_FILTERS)} />}
+          </div>
+
+          <div className="mt-7">
+            <FilterBar filters={filters} onChange={patch} />
+          </div>
+
+          <div className="mt-8 grid gap-8 lg:grid-cols-12">
+            <div className="lg:col-span-7">
+              {shown.length === 0 ? (
+                <div className="rounded-2xl bg-card p-10 text-center ring-1 ring-inset ring-border">
+                  <MapPin className="mx-auto h-5 w-5 text-muted-foreground" />
+                  <p className="mt-3 text-sm font-medium">No destination matches every filter.</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Try widening the month or marine life selection.
+                  </p>
+                </div>
+              ) : (
+                <ul className="space-y-3">
+                  {shown.map((d) => (
+                    <li key={d.id}>
+                      <DestinationCard destination={d} onHover={setHovered} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <div className="lg:col-span-5">
+              <div className="lg:sticky lg:top-24">
+                <WorldMap
+                  destinations={shown}
+                  all={DESTINATIONS}
+                  activeId={hovered}
+                  onSelect={openDestination}
+                />
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Pins reflect the active filters. Faded pins do not match.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="theme-light border-t border-border px-6 py-10 lg:px-10">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
+          <p>
+            Sightline · {DESTINATIONS.length} researched destinations · every claim carries a source
+            and a confidence value
+          </p>
+          <p>Reference only. Verify operating windows with your operator.</p>
+        </div>
+      </footer>
     </div>
   );
 }
