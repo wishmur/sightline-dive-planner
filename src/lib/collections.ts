@@ -6,6 +6,8 @@ export type Collection = {
   title: string;
   items: string[];
   image: string;
+  /** Existing project scenes this category can gently crossfade between. */
+  images: string[];
   match: (d: Destination) => boolean;
 };
 
@@ -27,13 +29,15 @@ export const COLLECTIONS: Collection[] = [
     title: "Big animals",
     items: ["Mantas", "Sharks", "Whales", "Mola"],
     image: SCENES.bigAnimals,
+    images: [SCENES.manta, SCENES.whaleshark, SCENES.hammerhead],
     match: (d) => hasType(d, ["pelagic", "shark", "cetacean"]) || hasSpecies(d, BIG),
   },
   {
     id: "reefs",
     title: "Reefs & color",
-    items: ["Coral", "Walls", "Tropical diving"],
+    items: ["Coral", "Walls", "Tropical reefs"],
     image: SCENES.reef,
+    images: [SCENES.coral, SCENES.reef, SCENES.wall],
     match: (d) =>
       hasType(d, ["reef", "wall", "formation"]) && (d.conditions.water_temp_c[0] ?? 0) >= 22,
   },
@@ -42,13 +46,15 @@ export const COLLECTIONS: Collection[] = [
     title: "Macro & weird stuff",
     items: ["Frogfish", "Octopus", "Nudibranchs"],
     image: SCENES.macro,
+    images: [SCENES.macro, SCENES.muck],
     match: (d) => hasType(d, ["macro", "muck", "blackwater", "night"]) || hasSpecies(d, SMALL),
   },
   {
     id: "adventure",
     title: "Adventure diving",
-    items: ["Current", "Remote sites", "Liveaboards"],
+    items: ["Current", "Remote", "Liveaboards"],
     image: SCENES.adventure,
+    images: [SCENES.current, SCENES.adventure, SCENES.wreck],
     match: (d) =>
       d.conditions.current === "strong" ||
       hasType(d, ["drift"]) ||
