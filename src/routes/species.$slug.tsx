@@ -38,10 +38,10 @@ export const Route = createFileRoute("/species/$slug")({
 
 function Fallback({ text }: { text: string }) {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="theme-light min-h-screen">
       <SightlineNav />
       <div className="mx-auto max-w-3xl px-6 pt-40 text-center">
-        <h1 className="font-display text-4xl font-medium">Unavailable</h1>
+        <h1 className="font-display text-4xl">Unavailable</h1>
         <p className="mt-3 text-muted-foreground">{text}</p>
         <Link to="/" className="mt-8 inline-block text-primary underline underline-offset-4">
           Back to search
@@ -64,16 +64,16 @@ function SpeciesPage() {
     : group.matches.filter((m) => m.species.months[month] !== "absent");
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="theme-light min-h-screen">
       <SightlineNav />
 
-      <header className="border-b border-white/5 px-6 pt-36 pb-12 lg:px-10">
+      <header className="border-b border-border px-6 pt-36 pb-12 lg:px-10">
         <div className="mx-auto max-w-6xl">
           <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-4 w-4" /> All destinations
           </Link>
           <p className="eyebrow">Species results</p>
-          <h1 className="font-display mt-3 text-5xl font-medium tracking-tight lg:text-6xl">
+          <h1 className="mt-3 font-display text-4xl sm:text-5xl">
             {group.name}
           </h1>
           <p className="mt-2 italic text-muted-foreground">{group.scientific}</p>
@@ -89,7 +89,7 @@ function SpeciesPage() {
                 logEvent("filter_month", { species: group.slug, month: null });
               }}
               className={`rounded-full px-4 py-2 text-xs font-medium transition ${
-                month === null ? "bg-primary text-primary-foreground" : "bg-white/[0.05] text-muted-foreground hover:text-foreground"
+                month === null ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
               }`}
             >
               Any month
@@ -102,7 +102,7 @@ function SpeciesPage() {
                   logEvent("filter_month", { species: group.slug, month: i + 1 });
                 }}
                 className={`rounded-full px-4 py-2 text-xs font-medium transition ${
-                  month === i ? "bg-primary text-primary-foreground" : "bg-white/[0.05] text-muted-foreground hover:text-foreground"
+                  month === i ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {m.slice(0, 3)}
@@ -117,7 +117,7 @@ function SpeciesPage() {
 
         <div className="mt-8 space-y-4">
           {matches.map(({ destination, species }) => (
-            <article key={destination.id} className="glass-subtle rounded-3xl p-6 lg:p-8">
+            <article key={destination.id} className="rounded-3xl bg-card shadow-sm ring-1 ring-inset ring-border p-6 lg:p-8">
               <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
                 <div>
                   <div className="flex flex-wrap items-center gap-3">
@@ -125,7 +125,7 @@ function SpeciesPage() {
                       to="/destinations/$slug"
                       params={{ slug: destination.id }}
                       onClick={() => logEvent("view_destination", { destination: destination.id, from: "species_results" })}
-                      className="font-display text-2xl font-medium hover:text-primary"
+                      className="font-display text-2xl hover:text-primary"
                     >
                       {destination.name}
                     </Link>
@@ -136,8 +136,8 @@ function SpeciesPage() {
                   </div>
                   <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{species.note}</p>
                   <div className="mt-4 flex flex-wrap gap-2 text-[11px] uppercase tracking-wider text-muted-foreground">
-                    <span className="rounded-full bg-white/[0.05] px-3 py-1">{species.reliability}</span>
-                    <span className="rounded-full bg-white/[0.05] px-3 py-1">{species.encounter_type}</span>
+                    <span className="rounded-full bg-secondary px-3 py-1">{species.reliability}</span>
+                    <span className="rounded-full bg-secondary px-3 py-1">{species.encounter_type}</span>
                   </div>
                   <div className="mt-4">
                     <Sources urls={species.sources} context="species_result" destinationId={destination.id} />
@@ -170,7 +170,7 @@ function SpeciesPage() {
             </article>
           ))}
           {matches.length === 0 && (
-            <p className="glass-subtle rounded-3xl p-10 text-center text-muted-foreground">
+            <p className="rounded-3xl bg-card shadow-sm ring-1 ring-inset ring-border p-10 text-center text-muted-foreground">
               No destinations record this species in {month !== null ? MONTHS[month] : "any month"}.
             </p>
           )}
