@@ -24,7 +24,7 @@ export function logEvent(event_type: EventType, payload: Record<string, unknown>
   if (typeof window === "undefined") return;
   void supabase
     .from("events")
-    .insert({ session_id: getSessionId(), event_type, payload })
+    .insert({ session_id: getSessionId(), event_type, payload: payload as never })
     .then(({ error }) => {
       if (error) console.error("event log failed", error.message);
     });
