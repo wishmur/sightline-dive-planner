@@ -45,13 +45,19 @@ export function WorldMap({
     <div
       className={
         bare
-          ? "relative overflow-hidden"
+          ? "relative overflow-hidden rounded-3xl"
           : "glass-subtle relative overflow-hidden rounded-3xl p-2"
       }
     >
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="World map of dive destinations">
+        <rect x={0} y={0} width={W} height={H} rx={18} fill="var(--map-ocean)" />
         <path d={graticulePath} fill="none" stroke="var(--map-graticule)" strokeWidth={0.5} />
-        <path d={landPath} fill="var(--map-land)" stroke="var(--map-land-stroke)" strokeWidth={0.6} />
+        <path
+          d={landPath}
+          fill="var(--map-land)"
+          stroke="var(--map-land-stroke)"
+          strokeWidth={0.9}
+        />
         {pins.map(({ d, x, y }) => (
           <g
             key={d.id}
@@ -62,12 +68,12 @@ export function WorldMap({
             onClick={() => onSelect(d)}
           >
             <title>{`${d.name} — ${d.country}`}</title>
-            <circle r={10} className="fill-primary/15" />
+            <circle r={hover === d.id ? 13 : 9} className="fill-primary/25" />
             <circle
-              r={hover === d.id ? 5 : 3.4}
+              r={hover === d.id ? 6 : 4.2}
               className={hover === d.id ? "fill-accent" : "fill-primary"}
-              stroke="var(--background)"
-              strokeWidth={1}
+              stroke="oklch(1 0 0)"
+              strokeWidth={1.4}
             />
           </g>
         ))}
