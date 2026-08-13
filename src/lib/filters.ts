@@ -3,6 +3,7 @@ import {
   SPECIES_GROUPS,
   type Destination,
 } from "@/lib/destinations";
+import { getCollection } from "@/lib/collections";
 
 /** Country -> continent grouping for the "Where" filter. */
 export const CONTINENTS: { name: string; countries: string[] }[] = (() => {
@@ -56,9 +57,11 @@ export const CERT_OPTIONS = [
 ];
 
 export const CURRENT_OPTIONS = [
+  { value: "none", label: "None" },
   { value: "mild", label: "Mild" },
   { value: "moderate", label: "Moderate" },
   { value: "strong", label: "Strong" },
+  { value: "variable", label: "Variable" },
 ];
 
 export const TEMP_OPTIONS = [
@@ -95,6 +98,7 @@ export type Filters = {
   format: string; // "any" | format value
   entry: string; // "any" | shore|boat
   operatingOnly: boolean;
+  collection: string; // "all" | collection id
 };
 
 export const EMPTY_FILTERS: Filters = {
@@ -108,6 +112,7 @@ export const EMPTY_FILTERS: Filters = {
   format: "any",
   entry: "any",
   operatingOnly: false,
+  collection: "all",
 };
 
 export function countActive(f: Filters) {
@@ -122,6 +127,7 @@ export function countActive(f: Filters) {
   if (f.format !== "any") n++;
   if (f.entry !== "any") n++;
   if (f.operatingOnly) n++;
+  if (f.collection !== "all") n++;
   return n;
 }
 
@@ -150,6 +156,11 @@ export function applyFilters(f: Filters, list: Destination[] = DESTINATIONS) {
 
   return list.filter((d) => {
     if (q && !`${d.name} ${d.region} ${d.country}`.toLowerCase().includes(q)) return false;
+
+    if (f.collection !== "all") {
+      const collection = getCollection(f.collection);
+      if (collection && !collection.match(d)) return false;
+    }
 
     if (f.where !== "all") {
       const [kind, value] = f.where.split(":");
