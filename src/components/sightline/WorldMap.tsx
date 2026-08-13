@@ -55,6 +55,33 @@ export function WorldMap({
   const viewRef = useRef(view);
   viewRef.current = view;
 
+  // Hover-intent: keep the preview open while the cursor travels from the pin
+  // into the tooltip, and only close after it has left both for ~250ms.
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cancelClose = useCallback(() => {
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  }, []);
+  const openHover = useCallback(
+    (id: string) => {
+      cancelClose();
+      setHover(id);
+      onHoverPin?.(id);
+    },
+    [cancelClose, onHoverPin],
+  );
+  const scheduleClose = useCallback(() => {
+    cancelClose();
+    closeTimer.current = setTimeout(() => {
+      closeTimer.current = null;
+      setHover(null);
+      onHoverPin?.(null);
+    }, 250);
+  }, [cancelClose, onHoverPin]);
+  useEffect(() => cancelClose, [cancelClose]);
+
   const pins = useMemo(
     () =>
       destinations.map((d) => {
@@ -153,6 +180,16 @@ export function WorldMap({
     if (pointers.current.size === 0) setDragging(false);
   }
 
+  /** Tap/click on empty map area closes any locked preview. */
+  function onMapClick() {
+    if (!moved.current) {
+      setPicked(null);
+      cancelClose();
+      setHover(null);
+      onHoverPin?.(null);
+    }
+  }
+
   const shownId = hover ?? picked ?? activeId ?? null;
   const active = pins.find((p) => p.d.id === shownId);
   const previewX = active ? ((active.x * view.k + view.x) / W) * 100 : 0;
@@ -173,6 +210,7 @@ export function WorldMap({
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
+      onClick={onMapClick}
     >
       <svg
         viewBox={`0 0 ${W} ${H}`}
@@ -216,16 +254,15 @@ export function WorldMap({
                 key={d.id}
                 transform={`translate(${x},${y})`}
                 className="cursor-pointer"
-                onMouseEnter={() => {
-                  setHover(d.id);
-                  onHoverPin?.(d.id);
-                }}
-                onMouseLeave={() => {
-                  setHover((h) => (h === d.id ? null : h));
-                  onHoverPin?.(null);
-                }}
-                onClick={() => {
-                  if (!moved.current) setPicked(d.id);
+                onMouseEnter={() => openHover(d.id)}
+                onMouseLeave={scheduleClose}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!moved.current) {
+                    cancelClose();
+                    setPicked(d.id);
+                    setHover(d.id);
+                  }
                 }}
               >
                 <title>{`${d.name} — ${d.country}`}</title>
@@ -273,8 +310,21 @@ export function WorldMap({
 
       {active && inView && (
         <div
-          className="glass absolute z-10 w-[16rem] -translate-x-1/2 -translate-y-[calc(100%+0.9rem)] rounded-2xl p-4 text-left shadow-xl"
+          role="button"
+          tabIndex={0}
+          className="glass absolute z-20 w-[16rem] -translate-x-1/2 -translate-y-[calc(100%+0.9rem)] cursor-pointer rounded-2xl p-4 text-left shadow-xl"
           style={{ left: `${previewX}%`, top: `${previewY}%` }}
+          onMouseEnter={() => openHover(active.d.id)}
+          onMouseLeave={scheduleClose}
+          onPointerDown={(e) => e.stopPropagation()}
+          onPointerUp={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(active.d);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") onSelect(active.d);
+          }}
         >
           <p className="truncate text-sm font-semibold text-foreground">{active.d.name}</p>
           <p className="truncate text-xs text-muted-foreground">
@@ -290,7 +340,10 @@ export function WorldMap({
             {bestMonthsLabel(active.d.best_months_overall) ?? "Season varies"}
           </p>
           <button
-            onClick={() => onSelect(active.d)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(active.d);
+            }}
             className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
           >
             View destination
