@@ -7,6 +7,7 @@ import { WorldMap } from "@/components/sightline/WorldMap";
 import { DestinationCard } from "@/components/sightline/DestinationCard";
 import { FilterBar, ClearFiltersButton } from "@/components/sightline/FilterBar";
 import { ActiveFilterChips } from "@/components/sightline/ActiveFilterChips";
+import { SiteFooter } from "@/components/sightline/SiteFooter";
 import { logEvent } from "@/lib/analytics";
 import { DESTINATIONS, MONTHS, SPECIES_GROUPS, type Destination } from "@/lib/destinations";
 import { EMPTY_FILTERS, applyFilters, countActive, type Filters } from "@/lib/filters";
@@ -259,15 +260,7 @@ function Home() {
         </div>
       </section>
 
-      <footer className="theme-light border-t border-border px-6 py-10 lg:px-10">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
-          <p>
-            Sightline · {DESTINATIONS.length} researched destinations · every claim carries a source
-            and a confidence value
-          </p>
-          <p>Reference only. Verify operating windows with your operator.</p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
