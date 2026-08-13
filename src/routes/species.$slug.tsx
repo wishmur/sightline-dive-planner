@@ -177,6 +177,7 @@ function SpeciesPage() {
           )}
         </div>
       </section>
+      <SiteFooter />
     </div>
   );
 }
