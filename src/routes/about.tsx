@@ -170,7 +170,7 @@ function AboutPage() {
 
           {/* MAINTAINER */}
           <section>
-            <p className="eyebrow">Maintainer</p>
+            <p className="eyebrow">About the diver</p>
             <h2 className="mt-2 font-display text-2xl text-foreground sm:text-3xl">
               About the diver
             </h2>
