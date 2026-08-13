@@ -16,6 +16,8 @@ import { SightlineNav } from "@/components/sightline/Nav";
 import { MonthStrip, MonthStripLegend } from "@/components/sightline/MonthStrip";
 import { ConfidenceTag } from "@/components/sightline/Confidence";
 import { Sources } from "@/components/sightline/Sources";
+import { SectionNav, type SectionLink } from "@/components/sightline/SectionNav";
+import { ReadMore } from "@/components/sightline/ReadMore";
 import { FeedbackDialog } from "@/components/sightline/FeedbackDialog";
 import { logEvent } from "@/lib/analytics";
 import {
@@ -70,6 +72,16 @@ function Fallback({ text }: { text: string }) {
   );
 }
 
+const SECTIONS: SectionLink[] = [
+  { id: "overview", label: "Overview" },
+  { id: "season", label: "Season" },
+  { id: "why", label: "Why dive here" },
+  { id: "marine-life", label: "Marine life" },
+  { id: "conditions", label: "Conditions" },
+  { id: "how-to-dive", label: "How to dive" },
+  { id: "sources", label: "Sources" },
+];
+
 function DestinationPage() {
   const d = Route.useLoaderData() as Destination;
   const [month, setMonth] = useState<number | null>(null);
@@ -92,7 +104,10 @@ function DestinationPage() {
       <SightlineNav />
 
       {/* HERO */}
-      <header className="theme-deep relative isolate flex min-h-[32rem] items-end overflow-hidden">
+      <header
+        id="overview"
+        className="theme-deep relative isolate flex min-h-[32rem] scroll-mt-16 items-end overflow-hidden"
+      >
         <img
           src={destinationImage(d)}
           alt={destinationImageAlt(d)}
@@ -149,15 +164,17 @@ function DestinationPage() {
         </div>
       </header>
 
+      <SectionNav sections={SECTIONS} />
+
       <div className="theme-light">
         <div className="mx-auto max-w-6xl space-y-16 px-6 py-16 lg:px-10 lg:py-20">
           {/* SEASON */}
-          <Section eyebrow="Season" title="When this place works">
+          <Section id="season" eyebrow="Season" title="When this place works">
             <div className="rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-8">
               <MonthStrip months={d.best_months_overall} operating={d.operating_months} height={36} />
-              <p className="mt-6 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-                {d.operating_note}
-              </p>
+              <div className="mt-6 max-w-3xl">
+                <ReadMore text={d.operating_note} />
+              </div>
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <ConfidenceTag value={d.operating_confidence} label="operating" />
                 <Sources urls={d.operating_sources} context="operating_months" destinationId={d.id} />
@@ -169,7 +186,7 @@ function DestinationPage() {
           </Section>
 
           {/* WHY DIVE HERE */}
-          <Section eyebrow="Why dive here" title="What this place is known for">
+          <Section id="why" eyebrow="Why dive here" title="What this place is known for">
             <ol className="grid gap-4 md:grid-cols-2">
               {shownHighlights.map((h) => (
                 <li
@@ -186,7 +203,9 @@ function DestinationPage() {
                     <ConfidenceTag value={h.confidence} />
                   </div>
                   <h3 className="mt-4 font-display text-xl text-foreground">{h.label}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{h.note}</p>
+                  <div className="mt-2">
+                    <ReadMore text={h.note} limit={220} />
+                  </div>
                   {h.seasonality && (
                     <p className="mt-3 text-sm font-medium text-accent">Seasonality — {h.seasonality}</p>
                   )}
@@ -207,6 +226,7 @@ function DestinationPage() {
 
           {/* MARINE LIFE */}
           <Section
+            id="marine-life"
             eyebrow="Marine life"
             title="Twelve-month species timelines"
             aside={
@@ -256,7 +276,9 @@ function DestinationPage() {
                       <span className="text-xs italic text-muted-foreground">{s.scientific}</span>
                       <ConfidenceTag value={s.confidence} />
                     </div>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.note}</p>
+                    <div className="mt-2">
+                      <ReadMore text={s.note} limit={200} />
+                    </div>
                     <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
                       <span className="rounded-full bg-secondary px-2.5 py-1">{s.reliability}</span>
                       <span className="rounded-full bg-secondary px-2.5 py-1">{s.encounter_type}</span>
@@ -295,7 +317,7 @@ function DestinationPage() {
           </Section>
 
           {/* CONDITIONS */}
-          <Section eyebrow="Conditions" title="What the water is like">
+          <Section id="conditions" eyebrow="Conditions" title="What the water is like">
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <Stat
                 icon={<ThermometerSun className="h-5 w-5" />}
@@ -323,9 +345,9 @@ function DestinationPage() {
                 </p>
                 <ConfidenceTag value={d.conditions.confidence} />
               </div>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                {d.conditions.experience_note}
-              </p>
+              <div className="mt-4">
+                <ReadMore text={d.conditions.experience_note} />
+              </div>
               <p className="mt-4 text-sm text-muted-foreground">
                 Entries — {d.conditions.entry.join(", ")}
               </p>
@@ -348,7 +370,7 @@ function DestinationPage() {
           </Section>
 
           {/* LOGISTICS */}
-          <Section eyebrow="Logistics" title="How people dive it">
+          <Section id="how-to-dive" eyebrow="Logistics" title="How people dive it">
             <div className="grid gap-4 md:grid-cols-2">
               {d.trip_formats.map((t) => {
                 const boat = t.format === "liveaboard" || t.format === "expedition";
@@ -374,7 +396,9 @@ function DestinationPage() {
                       <Anchor className="h-3.5 w-3.5" />
                       {t.orientation}
                     </p>
-                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{t.note}</p>
+                    <div className="mt-3">
+                      <ReadMore text={t.note} limit={200} />
+                    </div>
                   </div>
                 );
               })}
@@ -382,9 +406,14 @@ function DestinationPage() {
           </Section>
 
           {/* SOURCES */}
-          <Section eyebrow="Sources" title="Everything above is traceable">
+          <Section id="sources" eyebrow="Sources" title="Everything above is traceable">
             <div className="rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-8">
-              <Sources urls={d.sources} context="sources_section" destinationId={d.id} />
+              <Sources
+                urls={d.sources}
+                context="sources_section"
+                destinationId={d.id}
+                variant="list"
+              />
               <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-border pt-6 text-xs text-muted-foreground">
                 <span>Last verified {d.last_verified}</span>
                 <span>
@@ -437,18 +466,20 @@ function HeroStat({ label, value }: { label: string; value: string }) {
 }
 
 function Section({
+  id,
   eyebrow,
   title,
   aside,
   children,
 }: {
+  id?: string;
   eyebrow: string;
   title: string;
   aside?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
-    <section>
+    <section id={id} className="scroll-mt-20">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="eyebrow">{eyebrow}</p>
