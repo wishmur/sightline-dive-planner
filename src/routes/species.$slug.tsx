@@ -52,7 +52,7 @@ function Fallback({ text }: { text: string }) {
 }
 
 function SpeciesPage() {
-  const group = Route.useLoaderData();
+  const group = Route.useLoaderData() as SpeciesGroup;
   const [month, setMonth] = useState<number | null>(null);
 
   useEffect(() => {

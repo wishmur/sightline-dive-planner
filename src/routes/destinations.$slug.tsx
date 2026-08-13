@@ -57,7 +57,7 @@ function Fallback({ text }: { text: string }) {
 }
 
 function DestinationPage() {
-  const d = Route.useLoaderData();
+  const d = Route.useLoaderData() as Destination;
   const [month, setMonth] = useState<number | null>(null);
 
   useEffect(() => {
