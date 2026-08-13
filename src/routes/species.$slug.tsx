@@ -6,7 +6,7 @@ import { MonthStrip, MonthStripLegend } from "@/components/sightline/MonthStrip"
 import { ConfidenceTag } from "@/components/sightline/Confidence";
 import { Sources } from "@/components/sightline/Sources";
 import { logEvent } from "@/lib/analytics";
-import { MONTHS, getSpeciesGroup } from "@/lib/destinations";
+import { MONTHS, getSpeciesGroup, type SpeciesGroup } from "@/lib/destinations";
 
 export const Route = createFileRoute("/species/$slug")({
   head: ({ params }) => {
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/species/$slug")({
       ],
     };
   },
-  loader: ({ params }) => {
+  loader: ({ params }): SpeciesGroup => {
     const group = getSpeciesGroup(params.slug);
     if (!group) throw notFound();
     return group;
