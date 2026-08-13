@@ -109,7 +109,7 @@ function Home() {
             <h1 className="mt-4 font-display text-[2.75rem] leading-[1.03] text-white [text-shadow:0_2px_24px_rgba(6,16,32,0.55)] sm:text-5xl lg:text-6xl lg:whitespace-nowrap">
               Go deeper than the destination.
             </h1>
-            <p className="mt-4 max-w-[34rem] text-base leading-relaxed text-white/85 [text-shadow:0_1px_16px_rgba(6,16,32,0.6)] sm:text-lg">
+            <p className="mt-5 max-w-[40rem] text-base leading-relaxed text-white/85 [text-shadow:0_1px_16px_rgba(6,16,32,0.6)] sm:text-lg">
               Compare dive destinations by what’s underwater, when to go, and what the diving
               actually demands. Every claim is traceable to a source.
             </p>
@@ -119,19 +119,19 @@ function Home() {
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-7"
+            className="mt-4 max-w-[40rem]"
           >
+            <p className="text-sm tracking-wide text-white/80 [text-shadow:0_1px_12px_rgba(6,16,32,0.5)]">
+              {DESTINATIONS.length} destinations · {SPECIES_GROUPS.length} species · independently
+              researched
+            </p>
             <button
               onClick={scrollToExplore}
-              className="group inline-flex items-center gap-2.5 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg transition hover:brightness-110"
+              className="mt-5 group inline-flex items-center gap-2.5 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg transition hover:brightness-110"
             >
               Explore destinations
               <ArrowDown className="h-4 w-4 transition group-hover:translate-y-0.5" />
             </button>
-            <p className="mt-2.5 text-xs tracking-wide text-white/60">
-              {DESTINATIONS.length} destinations · {SPECIES_GROUPS.length} species · independently
-              researched
-            </p>
           </motion.div>
         </div>
       </section>
