@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { MONTHS } from "@/lib/destinations";
-import { certLabel } from "@/lib/cards";
+import { certLabel, diveTypeLabel } from "@/lib/cards";
 import { getCollection } from "@/lib/collections";
 import {
   CURRENT_OPTIONS,
@@ -44,6 +44,9 @@ export function activeChips(f: Filters): Chip[] {
   }
   if (f.cert !== "any") {
     chips.push({ key: "cert", label: certLabel(f.cert), clear: { cert: "any" } });
+  }
+  if (f.diveType !== "any") {
+    chips.push({ key: "diveType", label: diveTypeLabel(f.diveType), clear: { diveType: "any" } });
   }
   if (f.current !== "any") {
     chips.push({
