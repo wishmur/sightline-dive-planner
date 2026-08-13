@@ -18,9 +18,9 @@ const PAGE_SIZE = 6;
 
 export const Route = createFileRoute("/")({
   head: () => {
-    const title = "Sightline — find your next dive by marine life and season";
+    const title = "Sightline — Independent dive destination reference";
     const description =
-      "Compare 36 researched dive destinations by marine life, month, conditions, experience level and trip format — with sources behind every claim.";
+      "Compare dive destinations and species by season, conditions, and experience level. Independently researched, with sources behind every claim.";
     return {
       meta: [
         { title },
