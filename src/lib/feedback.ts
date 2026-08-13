@@ -4,7 +4,7 @@
  */
 export const FEEDBACK_FORM_URL = "https://forms.gle/PLACEHOLDER-sightline-feedback";
 
-type FeedbackKind = "edit" | "request";
+type FeedbackKind = "edit" | "request" | "feature";
 
 /**
  * Builds a feedback URL, passing context through query params so the form can
