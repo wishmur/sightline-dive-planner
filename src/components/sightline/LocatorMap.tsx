@@ -86,12 +86,12 @@ export function LocatorMap({
             strokeLinejoin="round"
           />
           <g transform={`translate(${x},${y})`}>
-            <circle r={16 / zoom} fill="url(#sl-loc-glow)" />
+            <circle r={26 / zoom} fill="url(#sl-loc-glow)" />
             <circle
-              r={5 / zoom}
+              r={7 / zoom}
               fill="var(--accent)"
               stroke="oklch(1 0 0 / 85%)"
-              strokeWidth={2 / zoom}
+              strokeWidth={2.5 / zoom}
             />
           </g>
         </g>
