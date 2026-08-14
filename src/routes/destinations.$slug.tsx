@@ -468,7 +468,7 @@ function DestinationPage() {
                 const primary = i === 0;
                 return (
                   <div
-                    key={t.format}
+                    key={`${t.format}-${i}`}
                     className="flex flex-col border-t border-border pt-5 sm:border-t-0 sm:pt-0 [&:not(:first-child)]:sm:border-l [&:not(:first-child)]:sm:border-border [&:not(:first-child)]:sm:pl-8 first:border-t-0 first:pt-0"
                   >
                     <div

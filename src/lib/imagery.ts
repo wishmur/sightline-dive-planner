@@ -202,15 +202,15 @@ const SUBJECT_SCENES: [RegExp, SceneKey][] = [
   [/humpback|minke|dolphin|orca|cetacean|pilot whale|sperm whale/i, "whale"],
   [/sea lion|seal|pinniped|otter/i, "sealion"],
   [/sardine|baitball|bait ball|jack|trevally|barracuda|schooling fish|potato cod|grouper/i, "baitball"],
-  [/shark/i, "hammerhead"],
+  [/shark/i, "bigAnimals"],
   [/wreck|liberty|thistlegorm|corsair|navy pier|numidia|aida|salvatierra|fang ming|c-59/i, "wreck"],
   [/cenote|cavern|cave|tunnel|swim-through|blue hole|fissure|rift|monument/i, "cavern"],
   [/muck|black sand|volcanic sand|blackwater/i, "muck"],
   [/frogfish|nudibranch|critter|octopus|seahorse|pipefish|cuttlefish|rhinopias|shrimp|macro|cryptic|toadfish/i, "macro"],
   [/kelp/i, "kelp"],
   [/glacial|meltwater|freshwater|halocline/i, "cavern"],
-  [/wall|pinnacle|drop-off|walls/i, "wall"],
-  [/current|drift|pass|channel|kuroshio|corner/i, "current"],
+  [/current|drift|pass\b|channel|kuroshio|corner/i, "current"],
+  [/wall|pinnacle|drop-off/i, "wall"],
   [/coral|reef|biodiversity|atoll|lagoon|thila/i, "coral"],
 ];
 
