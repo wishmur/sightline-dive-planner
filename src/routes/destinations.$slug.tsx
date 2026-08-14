@@ -636,10 +636,12 @@ function Stat({
   const pct = (n: number) =>
     gauge ? Math.max(0, Math.min(100, ((n - gauge.min) / (gauge.max - gauge.min)) * 100)) : 0;
   return (
-    <div className="rounded-2xl bg-card p-5 shadow-sm ring-1 ring-inset ring-border">
-      <span className="text-primary">{icon}</span>
-      <p className="eyebrow mt-3">{label}</p>
-      <p className="mt-1.5 text-lg font-semibold capitalize leading-snug">{value}</p>
+    <div className="rounded-2xl bg-card p-4 shadow-sm ring-1 ring-inset ring-border">
+      <div className="flex items-center gap-2 text-primary">
+        {icon}
+        <p className="eyebrow text-muted-foreground">{label}</p>
+      </div>
+      <p className="mt-2 text-base font-semibold capitalize leading-snug sm:text-lg">{value}</p>
       {gauge && (
         <div className="mt-3">
           <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-foreground/[0.07]">
