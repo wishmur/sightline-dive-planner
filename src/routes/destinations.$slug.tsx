@@ -201,6 +201,7 @@ function DestinationPage() {
         <div className="mx-auto max-w-6xl space-y-16 px-6 py-16 lg:px-10 lg:py-20">
           {/* SEASON */}
           <Section id="season" eyebrow="Season" title="When this place works">
+            <div className="grid gap-4 lg:grid-cols-[1fr_19rem]">
             <div className="rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-8">
               <MonthStrip months={d.best_months_overall} operating={d.operating_months} height={36} />
               <div className="mt-6 max-w-3xl">
@@ -213,6 +214,14 @@ function DestinationPage() {
               <div className="mt-7 border-t border-border pt-6">
                 <MonthStripLegend />
               </div>
+            </div>
+              <aside className="rounded-3xl bg-card p-4 shadow-sm ring-1 ring-inset ring-border">
+                <LocatorMap lat={d.coordinates.lat} lng={d.coordinates.lng} label={d.name} />
+                <p className="eyebrow mt-4">Where this is</p>
+                <p className="mt-1.5 text-sm text-muted-foreground">
+                  {d.region}, {d.country}
+                </p>
+              </aside>
             </div>
           </Section>
 
