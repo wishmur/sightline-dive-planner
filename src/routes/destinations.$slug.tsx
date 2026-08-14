@@ -510,8 +510,7 @@ function DestinationPage() {
           <Section id="sources" eyebrow="Sources & verification" title="Check the evidence.">
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
               <div>
-                <p className="eyebrow">Check the evidence</p>
-                <p className="mt-2 text-sm font-semibold text-foreground">
+                <p className="text-sm font-semibold text-foreground">
                   {d.sources.length} source{d.sources.length === 1 ? "" : "s"} · Last reviewed{" "}
                   {d.last_verified}
                 </p>
