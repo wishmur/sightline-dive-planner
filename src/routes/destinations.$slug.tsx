@@ -32,7 +32,7 @@ import {
   type Destination,
 } from "@/lib/destinations";
 import { certLabel, destinationTags } from "@/lib/cards";
-import { destinationImage, destinationImageAlt } from "@/lib/imagery";
+import { destinationImage, destinationImageAlt, highlightImage } from "@/lib/imagery";
 
 export const Route = createFileRoute("/destinations/$slug")({
   head: ({ params }) => {
@@ -204,7 +204,12 @@ function DestinationPage() {
           <Section id="season" eyebrow="Season" title="When this place works">
             <div className="grid gap-4 lg:grid-cols-[1fr_19rem]">
             <div className="rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-8">
-              <MonthStrip months={d.best_months_overall} operating={d.operating_months} height={36} />
+              <MonthStrip
+                months={d.best_months_overall}
+                operating={d.operating_months}
+                selectedMonth={month}
+                height={36}
+              />
               <div className="mt-6 max-w-3xl">
                 <ReadMore text={d.operating_note} />
               </div>
@@ -232,8 +237,15 @@ function DestinationPage() {
               {shownHighlights.map((h) => (
                 <li
                   key={h.rank}
-                  className="flex flex-col rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border"
+                  className="flex flex-col rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border sm:flex-row sm:gap-5"
                 >
+                  <img
+                    src={highlightImage(h.type, d)}
+                    alt={`${h.type.replace(/_/g, " ")} diving at ${d.name}`}
+                    loading="lazy"
+                    className="mb-4 h-32 w-full shrink-0 rounded-2xl object-cover sm:mb-0 sm:h-auto sm:w-[38%] sm:self-stretch"
+                  />
+                  <div className="flex min-w-0 flex-1 flex-col">
                   <div className="flex items-center gap-3">
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/12 text-xs font-bold text-primary">
                       {String(h.rank).padStart(2, "0")}
@@ -252,6 +264,7 @@ function DestinationPage() {
                   )}
                   <div className="mt-4 pt-1">
                     <Sources urls={h.sources} context="highlight" destinationId={d.id} />
+                  </div>
                   </div>
                 </li>
               ))}
@@ -331,6 +344,7 @@ function DestinationPage() {
                   <MonthStrip
                     months={s.months}
                     operating={d.operating_months}
+                    selectedMonth={month}
                     onMonthClick={(i) => {
                       setMonth(i);
                       logEvent("filter_month", {
@@ -364,17 +378,41 @@ function DestinationPage() {
                 icon={<ThermometerSun className="h-5 w-5" />}
                 label="Water temp"
                 value={`${d.conditions.water_temp_c[0]}–${d.conditions.water_temp_c[1]}°C`}
+                gauge={{
+                  min: 15,
+                  max: 32,
+                  from: d.conditions.water_temp_c[0]!,
+                  to: d.conditions.water_temp_c[1]!,
+                  scale: "15°C — 32°C",
+                }}
               />
               <Stat
                 icon={<Eye className="h-5 w-5" />}
                 label="Visibility"
                 value={`${d.conditions.viz_range_m[0]}–${d.conditions.viz_range_m[1]} m`}
+                gauge={{
+                  min: 0,
+                  max: 40,
+                  from: d.conditions.viz_range_m[0]!,
+                  to: d.conditions.viz_range_m[1]!,
+                  scale: "0 m — 40 m",
+                }}
               />
-              <Stat icon={<Waves className="h-5 w-5" />} label="Current" value={d.conditions.current} />
+              <Stat
+                icon={<Waves className="h-5 w-5" />}
+                label="Current"
+                value={d.conditions.current}
+                steps={{ active: currentStep(d.conditions.current), total: 4, scale: "mild — strong" }}
+              />
               <Stat
                 icon={<Droplets className="h-5 w-5" />}
                 label="Thermoclines"
                 value={d.conditions.thermoclines ? "Expected" : "Not typical"}
+                steps={{
+                  active: d.conditions.thermoclines ? 2 : 1,
+                  total: 2,
+                  scale: d.conditions.thermoclines ? "likely" : "unlikely",
+                }}
               />
             </div>
 
@@ -458,15 +496,14 @@ function DestinationPage() {
                 urls={d.sources}
                 context="sources_section"
                 destinationId={d.id}
-                variant="list"
               />
-              <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-border pt-6 text-xs text-muted-foreground">
+              <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-4 text-xs text-muted-foreground">
                 <span>Last verified {d.last_verified}</span>
+                <span aria-hidden>·</span>
                 <span>
                   {d.coordinates.lat.toFixed(3)}, {d.coordinates.lng.toFixed(3)}
                 </span>
-              </div>
-              <div className="mt-5 border-t border-border pt-5">
+                <span aria-hidden>·</span>
                 <SuggestEdit destinationId={d.id} destinationName={d.name} />
               </div>
             </div>
@@ -544,12 +581,60 @@ function Section({
   );
 }
 
-function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function currentStep(current: string) {
+  const c = current.toLowerCase();
+  if (c.includes("strong")) return 4;
+  if (c.includes("moderate") || c.includes("variable")) return 3;
+  if (c.includes("mild") || c.includes("light")) return 2;
+  return 1;
+}
+
+function Stat({
+  icon,
+  label,
+  value,
+  gauge,
+  steps,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  gauge?: { min: number; max: number; from: number; to: number; scale: string };
+  steps?: { active: number; total: number; scale: string };
+}) {
+  const pct = (n: number) =>
+    gauge ? Math.max(0, Math.min(100, ((n - gauge.min) / (gauge.max - gauge.min)) * 100)) : 0;
   return (
     <div className="rounded-2xl bg-card p-5 shadow-sm ring-1 ring-inset ring-border">
       <span className="text-primary">{icon}</span>
       <p className="eyebrow mt-3">{label}</p>
       <p className="mt-1.5 text-lg font-semibold capitalize leading-snug">{value}</p>
+      {gauge && (
+        <div className="mt-3">
+          <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-foreground/[0.07]">
+            <span
+              className="absolute inset-y-0 rounded-full bg-primary"
+              style={{ left: `${pct(gauge.from)}%`, width: `${Math.max(3, pct(gauge.to) - pct(gauge.from))}%` }}
+            />
+          </div>
+          <p className="mt-1.5 text-[10px] font-medium text-muted-foreground">{gauge.scale}</p>
+        </div>
+      )}
+      {steps && (
+        <div className="mt-3">
+          <div className="flex gap-[3px]">
+            {Array.from({ length: steps.total }).map((_, i) => (
+              <span
+                key={i}
+                className={`h-1.5 flex-1 rounded-full ${
+                  i < steps.active ? "bg-primary" : "bg-foreground/[0.07]"
+                }`}
+              />
+            ))}
+          </div>
+          <p className="mt-1.5 text-[10px] font-medium text-muted-foreground">{steps.scale}</p>
+        </div>
+      )}
     </div>
   );
 }

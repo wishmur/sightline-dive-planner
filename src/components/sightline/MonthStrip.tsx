@@ -17,12 +17,14 @@ export function MonthStrip({
   months,
   operating,
   onMonthClick,
+  selectedMonth = null,
   height = 28,
   showLabels = true,
 }: {
   months: MonthState[];
   operating: OperatingState[];
   onMonthClick?: (monthIndex: number) => void;
+  selectedMonth?: number | null;
   height?: number;
   showLabels?: boolean;
 }) {
@@ -33,17 +35,23 @@ export function MonthStrip({
         const closed = op === "closed";
         const label = `${MONTHS[i]}: ${state}, ${OP_LABEL[op]}`;
         const Cell = onMonthClick ? "button" : "div";
+        const selected = selectedMonth === i;
         return (
           <Cell
             key={i}
             role="listitem"
             title={label}
             aria-label={label}
+            aria-current={selected ? "true" : undefined}
             onClick={onMonthClick ? () => onMonthClick(i) : undefined}
             className="group relative flex-1 text-center"
           >
             <div
-              className={`relative w-full overflow-hidden rounded-md transition group-hover:brightness-110 ${FILL[state]}`}
+              className={`relative w-full overflow-hidden rounded-md transition group-hover:brightness-110 ${FILL[state]} ${
+                selected
+                  ? "scale-y-110 ring-2 ring-accent ring-offset-1 ring-offset-card"
+                  : ""
+              }`}
               style={{ height }}
             >
               {op !== "open" && (
@@ -61,7 +69,11 @@ export function MonthStrip({
               )}
             </div>
             {showLabels && (
-              <span className="mt-1.5 block text-[10px] font-medium text-muted-foreground">
+              <span
+                className={`mt-1.5 block text-[10px] font-medium ${
+                  selected ? "text-accent font-bold" : "text-muted-foreground"
+                }`}
+              >
                 {MONTH_INITIALS[i]}
               </span>
             )}

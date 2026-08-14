@@ -146,3 +146,41 @@ export function destinationImage(d: Destination) {
 export function destinationImageAlt(d: Destination) {
   return `Underwater scene representing diving at ${d.name}, ${d.country}`;
 }
+
+/** Highlight type -> a scene photo, reusing the existing library. */
+const HIGHLIGHT_SCENES: Record<string, SceneKey> = {
+  pelagic: "whaleshark",
+  shark: "hammerhead",
+  cetacean: "whale",
+  manta: "manta",
+  reef: "reef",
+  wall: "wall",
+  formation: "coral",
+  coral: "coral",
+  macro: "macro",
+  muck: "muck",
+  blackwater: "muck",
+  night: "macro",
+  wreck: "wreck",
+  drift: "current",
+  current: "current",
+  cave: "cavern",
+  cavern: "cavern",
+  cenote: "cavern",
+  freshwater: "cavern",
+  kelp: "kelp",
+  cold_water: "cold",
+  cold: "cold",
+  expedition: "adventure",
+  remote: "adventure",
+  adventure: "adventure",
+  pinnacle: "wall",
+  baitball: "baitball",
+  seal: "sealion",
+  pinniped: "sealion",
+};
+
+export function highlightImage(type: string, d: Destination) {
+  const key = HIGHLIGHT_SCENES[type?.toLowerCase?.() ?? ""];
+  return key ? SCENES[key] : destinationImage(d);
+}
