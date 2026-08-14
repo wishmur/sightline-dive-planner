@@ -271,7 +271,7 @@ function DestinationPage() {
             eyebrow="Marine life"
             title="Twelve-month species timelines"
             aside={
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap items-center gap-0.5">
                 <button
                   onClick={() => {
                     setMonth(null);
