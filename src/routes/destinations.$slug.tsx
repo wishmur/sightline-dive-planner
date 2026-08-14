@@ -20,6 +20,7 @@ import { SectionNav, type SectionLink } from "@/components/sightline/SectionNav"
 import { ReadMore } from "@/components/sightline/ReadMore";
 import { SuggestEdit } from "@/components/sightline/SuggestEdit";
 import { Operators } from "@/components/sightline/Operators";
+import { LocatorMap } from "@/components/sightline/LocatorMap";
 import { SiteFooter } from "@/components/sightline/SiteFooter";
 import { logEvent } from "@/lib/analytics";
 import {
