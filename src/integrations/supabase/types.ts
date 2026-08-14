@@ -68,6 +68,45 @@ export type Database = {
         }
         Relationships: []
       }
+      operators: {
+        Row: {
+          blurb: string | null
+          created_at: string
+          destination_id: string
+          email: string | null
+          id: string
+          name: string
+          session_id: string | null
+          source_url: string | null
+          status: string
+          website: string | null
+        }
+        Insert: {
+          blurb?: string | null
+          created_at?: string
+          destination_id: string
+          email?: string | null
+          id?: string
+          name: string
+          session_id?: string | null
+          source_url?: string | null
+          status?: string
+          website?: string | null
+        }
+        Update: {
+          blurb?: string | null
+          created_at?: string
+          destination_id?: string
+          email?: string | null
+          id?: string
+          name?: string
+          session_id?: string | null
+          source_url?: string | null
+          status?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
