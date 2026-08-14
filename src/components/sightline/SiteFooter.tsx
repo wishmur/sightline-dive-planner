@@ -18,12 +18,14 @@ export function SiteFooter() {
         </div>
 
         <div className="min-w-0 text-sm sm:text-right">
-          <nav className="flex flex-col gap-1 text-muted-foreground">
+          <nav className="flex flex-col gap-1.5 font-medium text-foreground/80">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 sm:justify-end">
               <Link to="/about" className="transition hover:text-primary">
                 About Sightline
               </Link>
-              <span aria-hidden>·</span>
+              <span aria-hidden className="text-muted-foreground/60">
+                ·
+              </span>
               <Link to="/about" hash="methodology" className="transition hover:text-primary">
                 Methodology
               </Link>
@@ -34,7 +36,9 @@ export function SiteFooter() {
                 triggerClassName="transition hover:text-primary"
                 trigger="Suggest an edit"
               />
-              <span aria-hidden>·</span>
+              <span aria-hidden className="text-muted-foreground/60">
+                ·
+              </span>
               <FeedbackDialog
                 kind="request"
                 triggerClassName="transition hover:text-primary"
@@ -42,7 +46,7 @@ export function SiteFooter() {
               />
             </div>
           </nav>
-          <p className="mt-2 text-xs text-muted-foreground">
+          <p className="mt-3 text-xs text-muted-foreground">
             <Link to="/about" className="transition hover:text-primary">
               © Shailvi
             </Link>

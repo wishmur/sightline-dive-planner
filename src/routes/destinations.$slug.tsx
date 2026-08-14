@@ -18,7 +18,7 @@ import { ConfidenceTag } from "@/components/sightline/Confidence";
 import { Sources } from "@/components/sightline/Sources";
 import { SectionNav, type SectionLink } from "@/components/sightline/SectionNav";
 import { ReadMore } from "@/components/sightline/ReadMore";
-import { SuggestEdit } from "@/components/sightline/SuggestEdit";
+import { FeedbackDialog } from "@/components/sightline/FeedbackDialog";
 import { Operators } from "@/components/sightline/Operators";
 import { LocatorMap } from "@/components/sightline/LocatorMap";
 import { SiteFooter } from "@/components/sightline/SiteFooter";
@@ -416,8 +416,8 @@ function DestinationPage() {
               />
             </div>
 
-            <div className="mt-3 rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-7">
-              <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+            <div className="mt-6 border-t border-border pt-6">
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-10">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2.5">
                     <GraduationCap className="h-4 w-4 shrink-0 text-primary" />
@@ -435,7 +435,7 @@ function DestinationPage() {
                   </p>
                 </div>
                 {d.conditions.required_certs.length > 0 && (
-                  <div className="min-w-0 lg:border-l lg:border-border lg:pl-6">
+                  <div className="min-w-0 lg:border-l lg:border-border lg:pl-10">
                     <p className="eyebrow">Recommended & required</p>
                     <ul className="mt-3 space-y-2.5">
                       {d.conditions.required_certs.map((c) => (
@@ -450,7 +450,7 @@ function DestinationPage() {
                   </div>
                 )}
               </div>
-              <div className="mt-5 border-t border-border pt-4">
+              <div className="mt-6">
                 <Sources urls={d.conditions.sources} context="conditions" destinationId={d.id} />
               </div>
             </div>
@@ -459,7 +459,7 @@ function DestinationPage() {
           {/* LOGISTICS */}
           <Section id="how-to-dive" eyebrow="Logistics" title="How people dive it">
             <div
-              className={`grid gap-3 sm:grid-cols-2 ${
+              className={`grid gap-y-8 sm:grid-cols-2 sm:gap-x-8 ${
                 d.trip_formats.length > 2 ? "lg:grid-cols-3" : ""
               }`}
             >
@@ -469,9 +469,7 @@ function DestinationPage() {
                 return (
                   <div
                     key={t.format}
-                    className={`flex flex-col rounded-3xl bg-card p-5 shadow-sm ring-1 ring-inset ${
-                      primary ? "ring-primary/35" : "ring-border"
-                    }`}
+                    className="flex flex-col border-t border-border pt-5 sm:border-t-0 sm:pt-0 [&:not(:first-child)]:sm:border-l [&:not(:first-child)]:sm:border-border [&:not(:first-child)]:sm:pl-8 first:border-t-0 first:pt-0"
                   >
                     <div
                       className={`flex items-center gap-2 ${boat ? "text-primary" : "text-accent"}`}
@@ -481,27 +479,20 @@ function DestinationPage() {
                         {formatFormat(t.format)}
                       </span>
                       {primary && (
-                        <span className="ml-auto rounded-full bg-primary/12 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-primary">
+                        <span className="ml-auto text-[9px] font-bold uppercase tracking-[0.12em] text-primary">
                           Most common
                         </span>
                       )}
                     </div>
-                    <dl className="mt-4 space-y-1.5 border-y border-border py-3 text-sm">
-                      <div className="flex items-baseline justify-between gap-3">
-                        <dt className="text-xs text-muted-foreground">Duration</dt>
-                        <dd className="text-right font-semibold text-foreground">
-                          {t.typical_duration}
-                        </dd>
-                      </div>
-                      <div className="flex items-baseline justify-between gap-3">
-                        <dt className="text-xs text-muted-foreground">Activity</dt>
-                        <dd className="inline-flex items-center gap-1.5 text-right font-semibold capitalize text-foreground">
-                          <Anchor className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                          {t.orientation}
-                        </dd>
-                      </div>
-                    </dl>
-                    <div className="mt-3">
+                    <p className="mt-3 font-display text-2xl leading-tight text-foreground">
+                      {t.typical_duration}
+                    </p>
+                    <p className="mt-1 inline-flex items-center gap-1.5 text-sm font-medium capitalize text-muted-foreground">
+                      <Anchor className="h-3.5 w-3.5 shrink-0" />
+                      {t.orientation}
+                    </p>
+                    <div className="mt-4 h-px w-10 bg-border" />
+                    <div className="mt-4">
                       <ReadMore text={t.note} limit={170} block />
                     </div>
                   </div>
@@ -516,26 +507,46 @@ function DestinationPage() {
           </Section>
 
           {/* SOURCES */}
-          <Section id="sources" eyebrow="Sources & verification" title="Everything above is traceable">
-            <div className="grid overflow-hidden rounded-3xl bg-card shadow-sm ring-1 ring-inset ring-border lg:grid-cols-2">
-              <div className="p-6 lg:p-7">
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  Every claim on this page traces back to a published source. Nothing here is
-                  generated or inferred.
+          <Section id="sources" eyebrow="Sources & verification" title="Check the evidence.">
+            <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+              <div>
+                <p className="text-sm font-semibold text-foreground">
+                  {d.sources.length} source{d.sources.length === 1 ? "" : "s"} · Last reviewed{" "}
+                  {d.last_verified}
+                </p>
+                <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+                  Every destination is independently researched and major claims link back to their
+                  sources.
                 </p>
                 <div className="mt-4">
-                  <Sources urls={d.sources} context="sources_section" destinationId={d.id} />
+                  <Sources
+                    urls={d.sources}
+                    context="sources_section"
+                    destinationId={d.id}
+                    variant="list"
+                  />
                 </div>
-                <p className="mt-4 text-xs text-muted-foreground">
-                  Last verified {d.last_verified} · {d.coordinates.lat.toFixed(3)},{" "}
-                  {d.coordinates.lng.toFixed(3)}
+                <p className="mt-4 text-[11px] text-muted-foreground/80">
+                  {d.coordinates.lat.toFixed(3)}, {d.coordinates.lng.toFixed(3)}
                 </p>
               </div>
-              <div className="border-t border-border bg-secondary/40 p-6 lg:border-l lg:border-t-0 lg:p-7">
-                <p className="eyebrow">Help improve this page</p>
-                <div className="mt-3">
-                  <SuggestEdit destinationId={d.id} destinationName={d.name} />
+              <div className="border-t border-border pt-8 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
+                <p className="eyebrow">Know this place?</p>
+                <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+                  Spot something outdated, have local knowledge, or think something is missing?
+                </p>
+                <div className="mt-4">
+                  <FeedbackDialog
+                    kind="edit"
+                    destinationId={d.id}
+                    destinationName={d.name}
+                    triggerClassName="inline-flex items-center gap-1.5 text-sm font-semibold text-primary underline decoration-dotted underline-offset-4 transition hover:brightness-110"
+                    trigger="Suggest an edit →"
+                  />
                 </div>
+                <p className="mt-3 max-w-xl text-xs leading-relaxed text-muted-foreground">
+                  Submissions are reviewed and verified before the dataset is updated.
+                </p>
               </div>
             </div>
           </Section>
