@@ -28,7 +28,7 @@ function SourceLinks({
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => logEvent("click_source", { url, context, destination: destinationId })}
-            className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-[11px] font-medium text-muted-foreground transition hover:text-foreground"
+            className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-[11.5px] font-medium text-foreground/75 transition hover:bg-primary/10 hover:text-primary"
           >
             {hostOf(url)}
             <ExternalLink className="h-3 w-3" />

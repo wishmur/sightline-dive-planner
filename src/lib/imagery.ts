@@ -19,6 +19,8 @@ import sceneSealion from "@/assets/scene-sealion.jpg";
 import sceneCurrent from "@/assets/scene-current.jpg";
 import sceneCoral from "@/assets/scene-coral.jpg";
 import sceneWhale from "@/assets/scene-whale.jpg";
+import sceneThresher from "@/assets/scene-thresher.jpg";
+import sceneMola from "@/assets/scene-mola.jpg";
 
 export const HERO_IMAGE = heroOcean;
 
@@ -41,6 +43,8 @@ export const SCENES = {
   current: sceneCurrent,
   coral: sceneCoral,
   whale: sceneWhale,
+  thresher: sceneThresher,
+  mola: sceneMola,
 } as const;
 
 export type SceneKey = keyof typeof SCENES;
@@ -183,4 +187,38 @@ const HIGHLIGHT_SCENES: Record<string, SceneKey> = {
 export function highlightImage(type: string, d: Destination) {
   const key = HIGHLIGHT_SCENES[type?.toLowerCase?.() ?? ""];
   return key ? SCENES[key] : destinationImage(d);
+}
+
+/**
+ * Subject-first matching: the highlight's own title decides the photograph,
+ * falling back to the broad type only when nothing specific is named.
+ */
+const SUBJECT_SCENES: [RegExp, SceneKey][] = [
+  [/thresher/i, "thresher"],
+  [/mola|sunfish/i, "mola"],
+  [/manta|mobula|devil ray/i, "manta"],
+  [/whale shark/i, "whaleshark"],
+  [/hammerhead/i, "hammerhead"],
+  [/humpback|minke|dolphin|orca|cetacean|pilot whale|sperm whale/i, "whale"],
+  [/sea lion|seal|pinniped|otter/i, "sealion"],
+  [/sardine|baitball|bait ball|jack|trevally|barracuda|schooling fish|potato cod|grouper/i, "baitball"],
+  [/shark/i, "bigAnimals"],
+  [/wreck|liberty|thistlegorm|corsair|navy pier|numidia|aida|salvatierra|fang ming|c-59/i, "wreck"],
+  [/cenote|cavern|cave|tunnel|swim-through|blue hole|fissure|rift|monument/i, "cavern"],
+  [/muck|black sand|volcanic sand|blackwater/i, "muck"],
+  [/frogfish|nudibranch|critter|octopus|seahorse|pipefish|cuttlefish|rhinopias|shrimp|macro|cryptic|toadfish/i, "macro"],
+  [/kelp/i, "kelp"],
+  [/glacial|meltwater|freshwater|halocline/i, "cavern"],
+  [/current|drift|pass\b|channel|kuroshio|corner/i, "current"],
+  [/wall|pinnacle|drop-off/i, "wall"],
+  [/coral|reef|biodiversity|atoll|lagoon|thila/i, "coral"],
+];
+
+export function highlightSubjectImage(
+  h: { label?: string; type: string },
+  d: Destination,
+) {
+  const label = h.label ?? "";
+  for (const [re, scene] of SUBJECT_SCENES) if (re.test(label)) return SCENES[scene];
+  return highlightImage(h.type, d);
 }
