@@ -233,36 +233,36 @@ function DestinationPage() {
 
           {/* WHY DIVE HERE */}
           <Section id="why" eyebrow="Why dive here" title="What this place is known for">
-            <ol className="grid gap-4 md:grid-cols-2">
+            <ol className="space-y-4">
               {shownHighlights.map((h) => (
                 <li
                   key={h.rank}
-                  className="flex flex-col rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border sm:flex-row sm:gap-5"
+                  className="flex flex-col overflow-hidden rounded-3xl bg-card shadow-sm ring-1 ring-inset ring-border sm:flex-row"
                 >
                   <img
                     src={highlightImage(h.type, d)}
                     alt={`${h.type.replace(/_/g, " ")} diving at ${d.name}`}
                     loading="lazy"
-                    className="mb-4 h-32 w-full shrink-0 rounded-2xl object-cover sm:mb-0 sm:h-auto sm:w-[38%] sm:self-stretch"
+                    className="h-40 w-full shrink-0 object-cover sm:h-auto sm:w-[30%] sm:self-stretch"
                   />
-                  <div className="flex min-w-0 flex-1 flex-col">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/12 text-xs font-bold text-primary">
+                  <div className="flex min-w-0 flex-1 flex-col p-6 lg:p-7">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/12 text-[11px] font-bold text-primary">
                       {String(h.rank).padStart(2, "0")}
                     </span>
-                    <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                    <span className="rounded-full bg-secondary px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                       {h.type.replace(/_/g, " ")}
                     </span>
                     <ConfidenceTag value={h.confidence} />
                   </div>
-                  <h3 className="mt-4 font-display text-xl text-foreground">{h.label}</h3>
-                  <div className="mt-2">
-                    <ReadMore text={h.note} limit={220} />
+                  <h3 className="mt-3 font-display text-xl text-foreground sm:text-2xl">{h.label}</h3>
+                  <div className="mt-2 max-w-3xl">
+                    <ReadMore text={h.note} limit={260} block />
                   </div>
                   {h.seasonality && (
                     <p className="mt-3 text-sm font-medium text-accent">Seasonality — {h.seasonality}</p>
                   )}
-                  <div className="mt-4 pt-1">
+                  <div className="mt-5 border-t border-border pt-3">
                     <Sources urls={h.sources} context="highlight" destinationId={d.id} />
                   </div>
                   </div>
