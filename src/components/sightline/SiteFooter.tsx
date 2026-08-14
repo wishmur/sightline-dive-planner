@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { feedbackUrl } from "@/lib/feedback";
+import { FeedbackDialog } from "@/components/sightline/FeedbackDialog";
 
 export function SiteFooter() {
   return (
@@ -24,23 +24,17 @@ export function SiteFooter() {
               Methodology
             </Link>
             <span aria-hidden>·</span>
-            <a
-              href={feedbackUrl("edit")}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="transition hover:text-primary"
-            >
-              Suggest an edit
-            </a>
+            <FeedbackDialog
+              kind="edit"
+              triggerClassName="transition hover:text-primary"
+              trigger="Suggest an edit"
+            />
             <span aria-hidden>·</span>
-            <a
-              href={feedbackUrl("request")}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="transition hover:text-primary"
-            >
-              Request a destination
-            </a>
+            <FeedbackDialog
+              kind="request"
+              triggerClassName="transition hover:text-primary"
+              trigger="Request a destination"
+            />
           </nav>
           <p className="mt-3 text-xs text-muted-foreground">
             <Link to="/about" className="transition hover:text-primary">
