@@ -32,7 +32,7 @@ import {
   type Destination,
 } from "@/lib/destinations";
 import { certLabel, destinationTags } from "@/lib/cards";
-import { destinationImage, destinationImageAlt, highlightImage } from "@/lib/imagery";
+import { destinationImage, destinationImageAlt, highlightSubjectImage } from "@/lib/imagery";
 
 export const Route = createFileRoute("/destinations/$slug")({
   head: ({ params }) => {
@@ -199,7 +199,7 @@ function DestinationPage() {
       <SectionNav sections={SECTIONS} />
 
       <div className="theme-light">
-        <div className="mx-auto max-w-6xl space-y-16 px-6 py-16 lg:px-10 lg:py-20">
+        <div className="mx-auto max-w-6xl space-y-16 px-6 pt-16 pb-11 lg:px-10 lg:pt-20 lg:pb-14">
           {/* SEASON */}
           <Section id="season" eyebrow="Season" title="When this place works">
             <div className="grid gap-4 lg:grid-cols-[1fr_19rem]">
@@ -240,8 +240,8 @@ function DestinationPage() {
                   className="flex flex-col overflow-hidden rounded-3xl bg-card shadow-sm ring-1 ring-inset ring-border sm:flex-row"
                 >
                   <img
-                    src={highlightImage(h.type, d)}
-                    alt={`${h.type.replace(/_/g, " ")} diving at ${d.name}`}
+                    src={highlightSubjectImage(h, d)}
+                    alt={`${h.label} — diving at ${d.name}`}
                     loading="lazy"
                     className="h-40 w-full shrink-0 object-cover sm:h-auto sm:w-[30%] sm:self-stretch"
                   />
@@ -510,15 +510,15 @@ function DestinationPage() {
           <Section id="sources" eyebrow="Sources & verification" title="Check the evidence.">
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
               <div>
-                <p className="text-sm font-semibold text-foreground">
+                <p className="text-sm font-semibold text-foreground/95">
                   {d.sources.length} source{d.sources.length === 1 ? "" : "s"} · Last reviewed{" "}
                   {d.last_verified}
                 </p>
-                <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+                <p className="mt-2.5 max-w-xl text-sm leading-relaxed text-muted-foreground">
                   Every destination is independently researched and major claims link back to their
                   sources.
                 </p>
-                <div className="mt-4">
+                <div className="mt-3.5">
                   <Sources
                     urls={d.sources}
                     context="sources_section"
@@ -526,11 +526,11 @@ function DestinationPage() {
                     variant="list"
                   />
                 </div>
-                <p className="mt-4 text-[11px] text-muted-foreground/80">
+                <p className="mt-3.5 text-[11px] text-muted-foreground/70">
                   {d.coordinates.lat.toFixed(3)}, {d.coordinates.lng.toFixed(3)}
                 </p>
               </div>
-              <div className="border-t border-border pt-8 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
+              <div className="border-t border-border pt-6 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
                 <p className="eyebrow">Know this place?</p>
                 <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
                   Spot something outdated, have local knowledge, or think something is missing?
