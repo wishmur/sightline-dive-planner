@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Anchor, ExternalLink, Plus } from "lucide-react";
+import { Anchor, ExternalLink, Home as HomeIcon, Plus, Ship } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -26,6 +26,16 @@ function hostOf(url: string) {
   } catch {
     return url;
   }
+}
+
+/** Infer the kind of operator from its blurb so cards aren't visually identical. */
+function OperatorIcon({ blurb }: { blurb: string | null }) {
+  const text = (blurb ?? "").toLowerCase();
+  if (/liveaboard|live-aboard|expedition vessel|boat-based/.test(text)) {
+    return <Ship className="h-4 w-4" />;
+  }
+  if (/resort/.test(text)) return <HomeIcon className="h-4 w-4" />;
+  return <Anchor className="h-4 w-4" />;
 }
 
 function SuggestOperatorDialog({
@@ -192,7 +202,7 @@ export function Operators({
               >
                 <div className="flex items-start gap-3">
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
-                    <Anchor className="h-4 w-4" />
+                    <OperatorIcon blurb={o.blurb} />
                   </span>
                   <div className="min-w-0">
                     <p className="text-base font-semibold leading-snug text-foreground">{o.name}</p>

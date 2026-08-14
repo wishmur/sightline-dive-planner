@@ -15,26 +15,29 @@ export function SiteFooter() {
         </div>
 
         <div className="text-sm sm:text-right">
-          <nav className="flex flex-wrap items-center gap-x-3 gap-y-1 text-muted-foreground sm:justify-end">
-            <Link to="/about" className="transition hover:text-primary">
-              About Sightline
-            </Link>
-            <span aria-hidden>·</span>
-            <Link to="/about" hash="methodology" className="transition hover:text-primary">
-              Methodology
-            </Link>
-            <span aria-hidden>·</span>
-            <FeedbackDialog
-              kind="edit"
-              triggerClassName="transition hover:text-primary"
-              trigger="Suggest an edit"
-            />
-            <span aria-hidden>·</span>
-            <FeedbackDialog
-              kind="request"
-              triggerClassName="transition hover:text-primary"
-              trigger="Request a destination"
-            />
+          <nav className="flex flex-col gap-1 text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 sm:justify-end">
+              <Link to="/about" className="transition hover:text-primary">
+                About Sightline
+              </Link>
+              <span aria-hidden>·</span>
+              <Link to="/about" hash="methodology" className="transition hover:text-primary">
+                Methodology
+              </Link>
+            </div>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 sm:justify-end">
+              <FeedbackDialog
+                kind="edit"
+                triggerClassName="transition hover:text-primary"
+                trigger="Suggest an edit"
+              />
+              <span aria-hidden>·</span>
+              <FeedbackDialog
+                kind="request"
+                triggerClassName="transition hover:text-primary"
+                trigger="Request a destination"
+              />
+            </div>
           </nav>
           <p className="mt-3 text-xs text-muted-foreground">
             <Link to="/about" className="transition hover:text-primary">
