@@ -493,7 +493,7 @@ function DestinationPage() {
                     </p>
                     <div className="mt-4 h-px w-10 bg-border" />
                     <div className="mt-4">
-                      <ReadMore text={t.note} limit={170} block />
+                      <ReadMore text={t.note} limit={140} block />
                     </div>
                   </div>
                 );
