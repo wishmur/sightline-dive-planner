@@ -373,7 +373,7 @@ function DestinationPage() {
 
           {/* CONDITIONS */}
           <Section id="conditions" eyebrow="Conditions" title="What the water is like">
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-2.5 grid-cols-2 lg:grid-cols-4">
               <Stat
                 icon={<ThermometerSun className="h-5 w-5" />}
                 label="Water temp"
@@ -416,33 +416,41 @@ function DestinationPage() {
               />
             </div>
 
-            <div className="mt-4 rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-8">
-              <div className="flex flex-wrap items-center gap-3">
-                <GraduationCap className="h-5 w-5 text-primary" />
-                <p className="text-sm font-semibold">
-                  Minimum certification — {certLabel(d.conditions.min_cert)}
-                </p>
-                <ConfidenceTag value={d.conditions.confidence} />
+            <div className="mt-3 rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-7">
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <GraduationCap className="h-4 w-4 shrink-0 text-primary" />
+                    <p className="text-sm font-semibold">
+                      Minimum certification — {certLabel(d.conditions.min_cert)}
+                    </p>
+                    <ConfidenceTag value={d.conditions.confidence} />
+                  </div>
+                  <div className="mt-3">
+                    <ReadMore text={d.conditions.experience_note} block />
+                  </div>
+                  <p className="mt-4 text-sm text-muted-foreground">
+                    <span className="font-semibold text-foreground">Entries</span> —{" "}
+                    {d.conditions.entry.join(", ")}
+                  </p>
+                </div>
+                {d.conditions.required_certs.length > 0 && (
+                  <div className="min-w-0 lg:border-l lg:border-border lg:pl-6">
+                    <p className="eyebrow">Recommended & required</p>
+                    <ul className="mt-3 space-y-2.5">
+                      {d.conditions.required_certs.map((c) => (
+                        <li key={`${c.cert}-${c.requirement}`} className="text-sm leading-relaxed">
+                          <span className="font-semibold">{c.cert}</span>{" "}
+                          <span className="text-muted-foreground">
+                            — {c.requirement}. {c.note}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
-              <div className="mt-4">
-                <ReadMore text={d.conditions.experience_note} />
-              </div>
-              <p className="mt-4 text-sm text-muted-foreground">
-                Entries — {d.conditions.entry.join(", ")}
-              </p>
-              {d.conditions.required_certs.length > 0 && (
-                <ul className="mt-6 space-y-3 border-t border-border pt-6">
-                  {d.conditions.required_certs.map((c) => (
-                    <li key={`${c.cert}-${c.requirement}`} className="text-sm">
-                      <span className="font-semibold">{c.cert}</span>{" "}
-                      <span className="text-muted-foreground">
-                        — {c.requirement}. {c.note}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              <div className="mt-6">
+              <div className="mt-5 border-t border-border pt-4">
                 <Sources urls={d.conditions.sources} context="conditions" destinationId={d.id} />
               </div>
             </div>
@@ -450,33 +458,51 @@ function DestinationPage() {
 
           {/* LOGISTICS */}
           <Section id="how-to-dive" eyebrow="Logistics" title="How people dive it">
-            <div className="grid gap-4 md:grid-cols-2">
-              {d.trip_formats.map((t) => {
+            <div
+              className={`grid gap-3 sm:grid-cols-2 ${
+                d.trip_formats.length > 2 ? "lg:grid-cols-3" : ""
+              }`}
+            >
+              {d.trip_formats.map((t, i) => {
                 const boat = t.format === "liveaboard" || t.format === "expedition";
+                const primary = i === 0;
                 return (
                   <div
                     key={t.format}
-                    className={`rounded-3xl p-6 shadow-sm ring-1 ring-inset ${
-                      boat
-                        ? "bg-primary/[0.07] ring-primary/25"
-                        : "bg-accent/[0.07] ring-accent/25"
+                    className={`flex flex-col rounded-3xl bg-card p-5 shadow-sm ring-1 ring-inset ${
+                      primary ? "ring-primary/35" : "ring-border"
                     }`}
                   >
                     <div
                       className={`flex items-center gap-2 ${boat ? "text-primary" : "text-accent"}`}
                     >
-                      {boat ? <Ship className="h-4 w-4" /> : <HomeIcon className="h-4 w-4" />}
+                      {boat ? <Ship className="h-4 w-4 shrink-0" /> : <HomeIcon className="h-4 w-4 shrink-0" />}
                       <span className="text-[0.65rem] font-bold uppercase tracking-[0.14em]">
                         {formatFormat(t.format)}
                       </span>
+                      {primary && (
+                        <span className="ml-auto rounded-full bg-primary/12 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-primary">
+                          Most common
+                        </span>
+                      )}
                     </div>
-                    <p className="mt-3 font-display text-2xl text-foreground">{t.typical_duration}</p>
-                    <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted-foreground">
-                      <Anchor className="h-3.5 w-3.5" />
-                      {t.orientation}
-                    </p>
+                    <dl className="mt-4 space-y-1.5 border-y border-border py-3 text-sm">
+                      <div className="flex items-baseline justify-between gap-3">
+                        <dt className="text-xs text-muted-foreground">Duration</dt>
+                        <dd className="text-right font-semibold text-foreground">
+                          {t.typical_duration}
+                        </dd>
+                      </div>
+                      <div className="flex items-baseline justify-between gap-3">
+                        <dt className="text-xs text-muted-foreground">Activity</dt>
+                        <dd className="inline-flex items-center gap-1.5 text-right font-semibold capitalize text-foreground">
+                          <Anchor className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                          {t.orientation}
+                        </dd>
+                      </div>
+                    </dl>
                     <div className="mt-3">
-                      <ReadMore text={t.note} limit={200} />
+                      <ReadMore text={t.note} limit={170} block />
                     </div>
                   </div>
                 );
@@ -491,20 +517,25 @@ function DestinationPage() {
 
           {/* SOURCES */}
           <Section id="sources" eyebrow="Sources & verification" title="Everything above is traceable">
-            <div className="rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-8">
-              <Sources
-                urls={d.sources}
-                context="sources_section"
-                destinationId={d.id}
-              />
-              <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-4 text-xs text-muted-foreground">
-                <span>Last verified {d.last_verified}</span>
-                <span aria-hidden>·</span>
-                <span>
-                  {d.coordinates.lat.toFixed(3)}, {d.coordinates.lng.toFixed(3)}
-                </span>
-                <span aria-hidden>·</span>
-                <SuggestEdit destinationId={d.id} destinationName={d.name} />
+            <div className="grid overflow-hidden rounded-3xl bg-card shadow-sm ring-1 ring-inset ring-border lg:grid-cols-2">
+              <div className="p-6 lg:p-7">
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  Every claim on this page traces back to a published source. Nothing here is
+                  generated or inferred.
+                </p>
+                <div className="mt-4">
+                  <Sources urls={d.sources} context="sources_section" destinationId={d.id} />
+                </div>
+                <p className="mt-4 text-xs text-muted-foreground">
+                  Last verified {d.last_verified} · {d.coordinates.lat.toFixed(3)},{" "}
+                  {d.coordinates.lng.toFixed(3)}
+                </p>
+              </div>
+              <div className="border-t border-border bg-secondary/40 p-6 lg:border-l lg:border-t-0 lg:p-7">
+                <p className="eyebrow">Help improve this page</p>
+                <div className="mt-3">
+                  <SuggestEdit destinationId={d.id} destinationName={d.name} />
+                </div>
               </div>
             </div>
           </Section>
