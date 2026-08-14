@@ -41,25 +41,28 @@ export type Database = {
       feedback: {
         Row: {
           created_at: string
-          destination_id: string
+          destination_id: string | null
           email: string | null
           id: string
+          kind: string
           message: string
           session_id: string
         }
         Insert: {
           created_at?: string
-          destination_id: string
+          destination_id?: string | null
           email?: string | null
           id?: string
+          kind?: string
           message: string
           session_id: string
         }
         Update: {
           created_at?: string
-          destination_id?: string
+          destination_id?: string | null
           email?: string | null
           id?: string
+          kind?: string
           message?: string
           session_id?: string
         }
