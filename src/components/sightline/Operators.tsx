@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ExternalLink, Plus } from "lucide-react";
+import { Anchor, ExternalLink, Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -164,11 +164,11 @@ export function Operators({
   const empty = rows !== null && rows.length === 0;
 
   return (
-    <div className="rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-8">
+    <div>
       {rows === null && <p className="text-sm text-muted-foreground">Loading operators…</p>}
 
       {empty && (
-        <div>
+        <div className="rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-8">
           <p className="text-sm text-muted-foreground">
             No crowd-suggested operators yet for {destinationName}.
           </p>
@@ -184,32 +184,40 @@ export function Operators({
 
       {rows !== null && rows.length > 0 && (
         <>
-          <ul className="divide-y divide-border">
+          <ul className="grid gap-4 md:grid-cols-2">
             {rows.map((o) => (
-              <li key={o.id} className="py-4 first:pt-0 last:pb-0">
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                  <span className="text-base font-semibold text-foreground">{o.name}</span>
-                  {o.website && (
-                    <a
-                      href={o.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-medium text-primary underline decoration-dotted underline-offset-4"
-                    >
-                      {hostOf(o.website)}
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
-                  )}
+              <li
+                key={o.id}
+                className="flex flex-col rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
+                    <Anchor className="h-4 w-4" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-base font-semibold leading-snug text-foreground">{o.name}</p>
+                    {o.website && (
+                      <a
+                        href={o.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1 inline-flex items-center gap-1.5 text-xs font-medium text-primary underline decoration-dotted underline-offset-4"
+                      >
+                        {hostOf(o.website)}
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    )}
+                  </div>
                 </div>
                 {o.blurb && (
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{o.blurb}</p>
+                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{o.blurb}</p>
                 )}
                 {o.source_url && (
                   <a
                     href={o.source_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-[11px] font-medium text-muted-foreground transition hover:text-foreground"
+                    className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-[11px] font-medium text-muted-foreground transition hover:text-foreground"
                   >
                     {hostOf(o.source_url)}
                     <ExternalLink className="h-3 w-3" />
@@ -218,7 +226,7 @@ export function Operators({
               </li>
             ))}
           </ul>
-          <div className="mt-6 border-t border-border pt-5">
+          <div className="mt-6">
             <SuggestOperatorDialog
               destinationId={destinationId}
               destinationName={destinationName}

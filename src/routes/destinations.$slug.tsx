@@ -20,6 +20,7 @@ import { SectionNav, type SectionLink } from "@/components/sightline/SectionNav"
 import { ReadMore } from "@/components/sightline/ReadMore";
 import { SuggestEdit } from "@/components/sightline/SuggestEdit";
 import { Operators } from "@/components/sightline/Operators";
+import { LocatorMap } from "@/components/sightline/LocatorMap";
 import { SiteFooter } from "@/components/sightline/SiteFooter";
 import { logEvent } from "@/lib/analytics";
 import {
@@ -201,6 +202,7 @@ function DestinationPage() {
         <div className="mx-auto max-w-6xl space-y-16 px-6 py-16 lg:px-10 lg:py-20">
           {/* SEASON */}
           <Section id="season" eyebrow="Season" title="When this place works">
+            <div className="grid gap-4 lg:grid-cols-[1fr_19rem]">
             <div className="rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-8">
               <MonthStrip months={d.best_months_overall} operating={d.operating_months} height={36} />
               <div className="mt-6 max-w-3xl">
@@ -213,6 +215,14 @@ function DestinationPage() {
               <div className="mt-7 border-t border-border pt-6">
                 <MonthStripLegend />
               </div>
+            </div>
+              <aside className="rounded-3xl bg-card p-4 shadow-sm ring-1 ring-inset ring-border">
+                <LocatorMap lat={d.coordinates.lat} lng={d.coordinates.lng} label={d.name} />
+                <p className="eyebrow mt-4">Where this is</p>
+                <p className="mt-1.5 text-sm text-muted-foreground">
+                  {d.region}, {d.country}
+                </p>
+              </aside>
             </div>
           </Section>
 
@@ -261,7 +271,7 @@ function DestinationPage() {
             eyebrow="Marine life"
             title="Twelve-month species timelines"
             aside={
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap items-center gap-0.5">
                 <button
                   onClick={() => {
                     setMonth(null);
@@ -470,8 +480,10 @@ function DestinationPage() {
 }
 
 function chip(on: boolean) {
-  return `rounded-full px-3 py-1.5 text-xs font-medium transition ${
-    on ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
+  return `rounded-full px-2 py-0.5 text-[11px] font-medium leading-5 transition ${
+    on
+      ? "bg-primary/12 text-primary ring-1 ring-inset ring-primary/30"
+      : "text-muted-foreground/80 hover:bg-secondary/70 hover:text-foreground"
   }`;
 }
 
