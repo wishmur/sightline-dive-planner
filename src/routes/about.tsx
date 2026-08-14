@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, BadgeCheck, Layers, RefreshCw, Search, ShieldCheck } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
 import { SiteFooter } from "@/components/sightline/SiteFooter";
-import { feedbackUrl } from "@/lib/feedback";
+import { FeedbackDialog } from "@/components/sightline/FeedbackDialog";
 import { DESTINATIONS, SPECIES_GROUPS } from "@/lib/destinations";
 
 export const Route = createFileRoute("/about")({
@@ -218,15 +218,16 @@ function AboutPage() {
                 { label: "Request a destination", kind: "request" as const },
                 { label: "Suggest a feature", kind: "feature" as const },
               ].map((a) => (
-                <a
+                <FeedbackDialog
                   key={a.kind}
-                  href={feedbackUrl(a.kind)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-4 py-2.5 text-sm font-semibold text-primary ring-1 ring-inset ring-primary/25 transition hover:bg-primary/15"
-                >
-                  {a.label} <ArrowRight className="h-3.5 w-3.5" />
-                </a>
+                  kind={a.kind}
+                  triggerClassName="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-4 py-2.5 text-sm font-semibold text-primary ring-1 ring-inset ring-primary/25 transition hover:bg-primary/15"
+                  trigger={
+                    <>
+                      {a.label} <ArrowRight className="h-3.5 w-3.5" />
+                    </>
+                  }
+                />
               ))}
             </div>
             <Link
