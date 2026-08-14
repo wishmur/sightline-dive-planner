@@ -416,8 +416,8 @@ function DestinationPage() {
               />
             </div>
 
-            <div className="mt-3 rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-7">
-              <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+            <div className="mt-6 border-t border-border pt-6">
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-10">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2.5">
                     <GraduationCap className="h-4 w-4 shrink-0 text-primary" />
@@ -435,7 +435,7 @@ function DestinationPage() {
                   </p>
                 </div>
                 {d.conditions.required_certs.length > 0 && (
-                  <div className="min-w-0 lg:border-l lg:border-border lg:pl-6">
+                  <div className="min-w-0 lg:border-l lg:border-border lg:pl-10">
                     <p className="eyebrow">Recommended & required</p>
                     <ul className="mt-3 space-y-2.5">
                       {d.conditions.required_certs.map((c) => (
@@ -450,7 +450,7 @@ function DestinationPage() {
                   </div>
                 )}
               </div>
-              <div className="mt-5 border-t border-border pt-4">
+              <div className="mt-6">
                 <Sources urls={d.conditions.sources} context="conditions" destinationId={d.id} />
               </div>
             </div>
