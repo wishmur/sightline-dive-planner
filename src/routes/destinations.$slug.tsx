@@ -480,8 +480,10 @@ function DestinationPage() {
 }
 
 function chip(on: boolean) {
-  return `rounded-full px-3 py-1.5 text-xs font-medium transition ${
-    on ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
+  return `rounded-full px-2 py-0.5 text-[11px] font-medium leading-5 transition ${
+    on
+      ? "bg-primary/12 text-primary ring-1 ring-inset ring-primary/30"
+      : "text-muted-foreground/80 hover:bg-secondary/70 hover:text-foreground"
   }`;
 }
 
