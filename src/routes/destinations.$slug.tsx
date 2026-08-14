@@ -19,6 +19,7 @@ import { Sources } from "@/components/sightline/Sources";
 import { SectionNav, type SectionLink } from "@/components/sightline/SectionNav";
 import { ReadMore } from "@/components/sightline/ReadMore";
 import { SuggestEdit } from "@/components/sightline/SuggestEdit";
+import { Operators } from "@/components/sightline/Operators";
 import { SiteFooter } from "@/components/sightline/SiteFooter";
 import { logEvent } from "@/lib/analytics";
 import {
@@ -108,6 +109,7 @@ const SECTIONS: SectionLink[] = [
   { id: "marine-life", label: "Marine life" },
   { id: "conditions", label: "Conditions" },
   { id: "how-to-dive", label: "How to dive" },
+  { id: "operators", label: "Operators" },
   { id: "sources", label: "Sources" },
 ];
 
@@ -432,6 +434,11 @@ function DestinationPage() {
                 );
               })}
             </div>
+          </Section>
+
+          {/* OPERATORS */}
+          <Section id="operators" eyebrow="Operators" title="Who to book with">
+            <Operators destinationId={d.id} destinationName={d.name} />
           </Section>
 
           {/* SOURCES */}
