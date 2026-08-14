@@ -194,24 +194,26 @@ export function Operators({
 
       {rows !== null && rows.length > 0 && (
         <>
-          <ul className="grid gap-4 md:grid-cols-2">
+          <ul className="grid items-stretch gap-3 md:grid-cols-2">
             {rows.map((o) => (
               <li
                 key={o.id}
-                className="flex flex-col rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border"
+                className="flex h-full flex-col rounded-3xl bg-card p-5 shadow-sm ring-1 ring-inset ring-border"
               >
                 <div className="flex items-start gap-3">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
                     <OperatorIcon blurb={o.blurb} />
                   </span>
                   <div className="min-w-0">
-                    <p className="text-base font-semibold leading-snug text-foreground">{o.name}</p>
+                    <p className="text-sm font-semibold leading-snug text-foreground sm:text-base">
+                      {o.name}
+                    </p>
                     {o.website && (
                       <a
                         href={o.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-1 inline-flex items-center gap-1.5 text-xs font-medium text-primary underline decoration-dotted underline-offset-4"
+                        className="mt-0.5 inline-flex items-center gap-1.5 text-xs font-medium text-primary underline decoration-dotted underline-offset-4"
                       >
                         {hostOf(o.website)}
                         <ExternalLink className="h-3 w-3" />
@@ -220,14 +222,14 @@ export function Operators({
                   </div>
                 </div>
                 {o.blurb && (
-                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{o.blurb}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{o.blurb}</p>
                 )}
                 {o.source_url && (
                   <a
                     href={o.source_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-[11px] font-medium text-muted-foreground transition hover:text-foreground"
+                    className="mt-auto inline-flex w-fit items-center gap-1.5 pt-3 text-[11px] font-medium text-muted-foreground underline decoration-dotted underline-offset-4 transition hover:text-foreground"
                   >
                     {hostOf(o.source_url)}
                     <ExternalLink className="h-3 w-3" />
@@ -236,7 +238,7 @@ export function Operators({
               </li>
             ))}
           </ul>
-          <div className="mt-6">
+          <div className="mt-5">
             <SuggestOperatorDialog
               destinationId={destinationId}
               destinationName={destinationName}
