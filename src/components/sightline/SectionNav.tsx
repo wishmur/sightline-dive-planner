@@ -31,7 +31,7 @@ export function SectionNav({ sections }: { sections: SectionLink[] }) {
       className="theme-light sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur-md"
     >
       <div className="mx-auto max-w-6xl px-6 lg:px-10">
-        <ul className="-mx-1 flex gap-1 overflow-x-auto py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <ul className="-mx-1 flex gap-1 overflow-x-auto py-2 [mask-image:linear-gradient(to_right,transparent,black_12px,black_calc(100%-28px),transparent)] [scrollbar-width:none] sm:[mask-image:none] [&::-webkit-scrollbar]:hidden">
           {sections.map((s) => (
             <li key={s.id} className="shrink-0">
               <a

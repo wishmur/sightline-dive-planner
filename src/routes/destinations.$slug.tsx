@@ -543,10 +543,10 @@ function DestinationPage() {
                   ·
                 </span>
                 <span>Last reviewed {d.last_verified}</span>
-                <span className="text-muted-foreground/60" aria-hidden>
+                <span className="hidden text-muted-foreground/60 sm:inline" aria-hidden>
                   ·
                 </span>
-                <span className="text-muted-foreground/80">
+                <span className="basis-full whitespace-nowrap text-muted-foreground/80 sm:basis-auto">
                   {d.coordinates.lat.toFixed(3)}, {d.coordinates.lng.toFixed(3)}
                 </span>
               </div>
