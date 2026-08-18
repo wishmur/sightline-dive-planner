@@ -510,11 +510,7 @@ function DestinationPage() {
           <Section id="sources" eyebrow="Sources & verification" title="Check the evidence.">
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
               <div>
-                <p className="text-sm font-semibold text-foreground/95">
-                  {d.sources.length} source{d.sources.length === 1 ? "" : "s"} · Last reviewed{" "}
-                  {d.last_verified}
-                </p>
-                <p className="mt-2.5 max-w-xl text-sm leading-relaxed text-muted-foreground">
+                <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
                   Every destination is independently researched and major claims link back to their
                   sources.
                 </p>
@@ -526,28 +522,41 @@ function DestinationPage() {
                     variant="list"
                   />
                 </div>
-                <p className="mt-3.5 text-[11px] text-muted-foreground/70">
-                  {d.coordinates.lat.toFixed(3)}, {d.coordinates.lng.toFixed(3)}
-                </p>
               </div>
               <div className="border-t border-border pt-6 lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
                 <p className="eyebrow">Know this place?</p>
                 <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
                   Spot something outdated, have local knowledge, or think something is missing?
                 </p>
-                <div className="mt-4">
-                  <FeedbackDialog
-                    kind="edit"
-                    destinationId={d.id}
-                    destinationName={d.name}
-                    triggerClassName="inline-flex items-center gap-1.5 text-sm font-semibold text-primary underline decoration-dotted underline-offset-4 transition hover:brightness-110"
-                    trigger="Suggest an edit →"
-                  />
-                </div>
                 <p className="mt-3 max-w-xl text-xs leading-relaxed text-muted-foreground">
                   Submissions are reviewed and verified before the dataset is updated.
                 </p>
               </div>
+            </div>
+
+            <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+                <span className="font-medium text-foreground/90">
+                  {d.sources.length} source{d.sources.length === 1 ? "" : "s"}
+                </span>
+                <span className="text-muted-foreground/60" aria-hidden>
+                  ·
+                </span>
+                <span>Last reviewed {d.last_verified}</span>
+                <span className="text-muted-foreground/60" aria-hidden>
+                  ·
+                </span>
+                <span className="text-muted-foreground/80">
+                  {d.coordinates.lat.toFixed(3)}, {d.coordinates.lng.toFixed(3)}
+                </span>
+              </div>
+              <FeedbackDialog
+                kind="edit"
+                destinationId={d.id}
+                destinationName={d.name}
+                triggerClassName="inline-flex items-center gap-1.5 text-sm font-semibold text-primary underline decoration-dotted underline-offset-4 transition hover:brightness-110"
+                trigger="Suggest an edit →"
+              />
             </div>
           </Section>
         </div>
