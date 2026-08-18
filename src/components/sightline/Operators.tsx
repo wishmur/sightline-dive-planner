@@ -221,7 +221,7 @@ export function Operators({
                 {o.blurb && (
                   <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">{o.blurb}</p>
                 )}
-                {o.source_url && (
+                {o.source_url && hostOf(o.source_url) !== hostOf(o.website ?? "") && (
                   <a
                     href={o.source_url}
                     target="_blank"
