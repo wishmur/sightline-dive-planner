@@ -534,7 +534,7 @@ function DestinationPage() {
               </div>
             </div>
 
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
                 <span className="font-medium text-foreground/90">
                   {d.sources.length} source{d.sources.length === 1 ? "" : "s"}
