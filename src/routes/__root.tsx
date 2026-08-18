@@ -80,16 +80,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Sightline — Independent dive destination reference" },
       { name: "description", content: "Compare dive destinations and species by season, conditions, and experience level. Independently researched, with sources behind every claim." },
-      { name: "author", content: "Lovable" },
+      { name: "author", content: "Shailvi" },
       { property: "og:title", content: "Sightline — Independent dive destination reference" },
       { property: "og:description", content: "Compare dive destinations and species by season, conditions, and experience level. Independently researched, with sources behind every claim." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Sightline — Independent dive destination reference" },
       { name: "twitter:description", content: "Compare dive destinations and species by season, conditions, and experience level. Independently researched, with sources behind every claim." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/5c2986aa-608a-42ca-9889-c3047d7c2496" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/5c2986aa-608a-42ca-9889-c3047d7c2496" },
+      {
+        property: "og:image",
+        content:
+          "https://sightline-dive-planner.lovable.app/__l5e/assets-v1/778a0d0f-50a5-4095-b543-b3f4607f58e7/sightline-og.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://sightline-dive-planner.lovable.app/__l5e/assets-v1/778a0d0f-50a5-4095-b543-b3f4607f58e7/sightline-og.png",
+      },
     ],
     links: [
       {
