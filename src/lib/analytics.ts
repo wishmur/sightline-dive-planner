@@ -6,7 +6,13 @@ export type EventType =
   | "view_destination"
   | "click_map_pin"
   | "filter_month"
-  | "click_source";
+  | "click_source"
+  // Trip fit: what was asked, what was shown, and whether the panel helped.
+  | "fit_results"
+  | "fit_panel_view"
+  | "fit_feedback"
+  // Provenance: did anyone open the evidence behind a claim?
+  | "verification_open";
 
 const KEY = "sightline_session_id";
 

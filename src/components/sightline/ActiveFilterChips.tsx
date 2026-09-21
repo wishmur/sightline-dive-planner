@@ -7,6 +7,7 @@ import {
   ENTRY_OPTIONS,
   FORMAT_OPTIONS,
   TEMP_OPTIONS,
+  targetLabel,
   type Filters,
 } from "@/lib/filters";
 
@@ -35,15 +36,15 @@ export function activeChips(f: Filters): Chip[] {
   if (f.month !== "any") {
     chips.push({ key: "month", label: MONTHS[Number(f.month)]!, clear: { month: "any" } });
   }
-  for (const name of f.species) {
+  for (const id of f.species) {
     chips.push({
-      key: `species:${name}`,
-      label: name,
-      clear: { species: f.species.filter((s) => s !== name) },
+      key: `species:${id}`,
+      label: targetLabel(id),
+      clear: { species: f.species.filter((s) => s !== id) },
     });
   }
   if (f.cert !== "any") {
-    chips.push({ key: "cert", label: certLabel(f.cert), clear: { cert: "any" } });
+    chips.push({ key: "cert", label: `My cert: ${certLabel(f.cert)}`, clear: { cert: "any" } });
   }
   if (f.diveType !== "any") {
     chips.push({ key: "diveType", label: diveTypeLabel(f.diveType), clear: { diveType: "any" } });
@@ -51,7 +52,7 @@ export function activeChips(f: Filters): Chip[] {
   if (f.current !== "any") {
     chips.push({
       key: "current",
-      label: `${optionLabel(CURRENT_OPTIONS, f.current)} current`,
+      label: `Max ${optionLabel(CURRENT_OPTIONS, f.current).toLowerCase()} current`,
       clear: { current: "any" },
     });
   }

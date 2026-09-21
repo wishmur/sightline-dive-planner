@@ -1,0 +1,1149 @@
+{
+  "reviewedAt": "2026-09-21",
+  "reviewer": "claude-assisted curator review",
+  "method": "Claim-scoped BM25 surfaced the top passages from each cited source; the reviewer judged support and searched the full page when the top passages did not settle it. Quotes are verbatim and at most 25 words.",
+  "reviews": {
+    "aliwal-shoal/operating": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://aliwalshoal.co.za/aliwal-shoal-seasonal-sightings/",
+          "text": "Raggies ( Ragged-Tooth Sharks) can be spotted from June through to November"
+        },
+        {
+          "url": "https://aliwalshoal.co.za/aliwal-shoal-seasonal-sightings/",
+          "text": "Tiger Shark season, during our summer season, from November to March"
+        }
+      ],
+      "note": "Both season windows are sourced. The surf-launch claim (days lost to sea state) is not in the cited source.",
+      "sourceHashes": {
+        "https://aliwalshoal.co.za/aliwal-shoal-seasonal-sightings/": "5dc9c057ca275420"
+      }
+    },
+    "alor/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/destination/indonesia/nusa-tenggara/alor",
+          "text": "during the rainy season between December and March, sea conditions can make some of the sites more difficult to dive"
+        },
+        {
+          "url": "https://alorunderwaterexplorers.com/guide-to-diving-in-alor/",
+          "text": "April to August offers the best visibility (30–40m+) and calm conditions"
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.zubludiving.com/destination/indonesia/nusa-tenggara/alor": "dfc74b86725f324f",
+        "https://alorunderwaterexplorers.com/guide-to-diving-in-alor/": "a8784bbec5ee4925"
+      }
+    },
+    "alor/species/scalloped-hammerhead": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://alorunderwaterexplorers.com/guide-to-diving-in-alor/",
+          "text": "A lunar window during the cold upwelling months (September–December) is the highest-probability hammerhead encounter Alor offers"
+        },
+        {
+          "url": "https://www.zubludiving.com/destination/indonesia/nusa-tenggara/alor",
+          "text": "Hammerhead sharks / From March to November"
+        }
+      ],
+      "note": "Both windows as described. Alor Underwater Explorers adds that hammerheads 'can appear in any month'.",
+      "sourceHashes": {
+        "https://alorunderwaterexplorers.com/guide-to-diving-in-alor/": "a8784bbec5ee4925",
+        "https://www.zubludiving.com/destination/indonesia/nusa-tenggara/alor": "dfc74b86725f324f"
+      }
+    },
+    "anilao/operating": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.bluewaterdivetravel.com/destination/anilao-diving",
+          "text": "Monsoon occurs in July through August, but the dive sites remain accessible."
+        }
+      ],
+      "note": "Sources put the monsoon in Jul–Aug; the record encodes a broader, more conservative Jun–Sep 'limited' window.",
+      "sourceHashes": {
+        "https://www.bluewaterdivetravel.com/destination/anilao-diving": "ee1c9cc0f98fa76a"
+      }
+    },
+    "ari-atoll/operating": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/destination/maldives/central-atolls/south-ari-atoll",
+          "text": "Whale shark sightings are common year-round, with larger congregations occurring from December through March"
+        }
+      ],
+      "note": "Year-round access and whale sharks are sourced. The source's southwest monsoon is May–November, broader than the record's Jun–Sep; 'western sites blow out' is not in the source.",
+      "sourceHashes": {
+        "https://www.zubludiving.com/destination/maldives/central-atolls/south-ari-atoll": "9faaca3a56ccf0e9"
+      }
+    },
+    "azores/highlight/1": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://shark-diving.com/dive-center/cw-azores/",
+          "text": "Minimal chumming is used, and touching or feeding the sharks is prohibited."
+        },
+        {
+          "url": "https://shark-diving.com/dive-center/cw-azores/",
+          "text": "Over 90% chance of spotting sharks, with up to 20 blue sharks per dive."
+        }
+      ],
+      "note": "The 'surprising regularity' framing the note mentions is also on the cited ZuBlu page.",
+      "sourceHashes": {
+        "https://shark-diving.com/dive-center/cw-azores/": "119f39825640c8f0"
+      }
+    },
+    "azores/operating": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://shark-diving.com/dive-center/cw-azores/",
+          "text": "From July to mid-October, CW Azores offers diving excursions where you have the chance to observe blue and mako sharks"
+        },
+        {
+          "url": "https://www.zubludiving.com/articles/zublu-insights/sharks-whales-and-rays-marine-highlights-of-the-azores",
+          "text": "Rays – June through October"
+        }
+      ],
+      "note": "Offshore windows are sourced. 'Effectively stops in midwinter' and the Dec–Feb 'closed' encoding are Sightline's inference, not stated by either source.",
+      "sourceHashes": {
+        "https://shark-diving.com/dive-center/cw-azores/": "119f39825640c8f0",
+        "https://www.zubludiving.com/articles/zublu-insights/sharks-whales-and-rays-marine-highlights-of-the-azores": "e356a0abc8493903"
+      }
+    },
+    "azores/species/blue-shark": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://shark-diving.com/dive-center/cw-azores/",
+          "text": "Over 90% chance of spotting sharks, with up to 20 blue sharks per dive."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://shark-diving.com/dive-center/cw-azores/": "119f39825640c8f0"
+      }
+    },
+    "baa-atoll/format/0": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/articles/zublu-insights/hanifaru-bay",
+          "text": "While diving is no longer permitted in the bay, snorkelling certainly is."
+        },
+        {
+          "url": "https://www.zubludiving.com/articles/zublu-insights/hanifaru-bay",
+          "text": "Each of these tokens allows 45-minutes of in-water interaction with the manta rays and whale sharks."
+        }
+      ],
+      "note": "The scuba ban is on the page but outside the retriever's top passages for the whole-note query.",
+      "sourceHashes": {
+        "https://www.zubludiving.com/articles/zublu-insights/hanifaru-bay": "ffedfd85469ae6b0"
+      }
+    },
+    "baa-atoll/highlight/1": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/articles/zublu-insights/hanifaru-bay",
+          "text": "Regulations put in place included a limit on the number of visitors, time restrictions within the bay, and bans on scuba diving and fishing."
+        }
+      ],
+      "note": "The scuba ban is on the page but outside the retriever's top passages.",
+      "sourceHashes": {
+        "https://www.zubludiving.com/articles/zublu-insights/hanifaru-bay": "ffedfd85469ae6b0"
+      }
+    },
+    "baa-atoll/highlight/2": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/articles/zublu-insights/hanifaru-bay",
+          "text": "At this time, lucky visitors can be graced with hundreds of mantas and several whale sharks."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.zubludiving.com/articles/zublu-insights/hanifaru-bay": "ffedfd85469ae6b0"
+      }
+    },
+    "baa-atoll/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/articles/zublu-insights/hanifaru-bay",
+          "text": "Hanifaru’s feeding aggregations can occur from May to December"
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.zubludiving.com/articles/zublu-insights/hanifaru-bay": "ffedfd85469ae6b0"
+      }
+    },
+    "baa-atoll/species/reef-manta-ray": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/articles/zublu-insights/hanifaru-bay",
+          "text": "Hanifaru Bay’s feeding aggregations can occur from May to December, but the best times are usually from late July to early October"
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.zubludiving.com/articles/zublu-insights/hanifaru-bay": "ffedfd85469ae6b0"
+      }
+    },
+    "cabo-pulmo/experience": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/destination/mexico/baja-california/cabo-pulmo",
+          "text": "Other park regulations include a maximum 45 minutes of bottom time per dive and a rigid no-touch no-take policy"
+        },
+        {
+          "url": "https://www.zubludiving.com/destination/mexico/baja-california/cabo-pulmo",
+          "text": "Water temperatures within the park fluctuate between a balmy 29°C from June to November and a frigid 18°C in March."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.zubludiving.com/destination/mexico/baja-california/cabo-pulmo": "2110dbda9a3ca98c"
+      }
+    },
+    "cabo-pulmo/highlight/3": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://divearoo.com/destinations/mexico/sea-of-cortez/cabo-pulmo",
+          "text": "Bull sharks (Carcharhinus leucas): year-round (peak August to December), especially around El Vencedor."
+        },
+        {
+          "url": "https://www.zubludiving.com/destination/mexico/baja-california/cabo-pulmo",
+          "text": "Bull sharks / From February to June"
+        }
+      ],
+      "note": "The contradiction is real but partly reconciled by Divearoo itself: 'Larger aggregations show up from April through June at lower visibility, and the smaller but more reliable peak season runs August through December.' The sources measure different things (numbers vs reliability).",
+      "sourceHashes": {
+        "https://divearoo.com/destinations/mexico/sea-of-cortez/cabo-pulmo": "d3c5d20196c9c59f",
+        "https://www.zubludiving.com/destination/mexico/baja-california/cabo-pulmo": "2110dbda9a3ca98c"
+      }
+    },
+    "cabo-pulmo/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://divearoo.com/destinations/mexico/sea-of-cortez/cabo-pulmo",
+          "text": "Access to El Vencedor runs by weekly lottery, typically opening one day per week"
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://divearoo.com/destinations/mexico/sea-of-cortez/cabo-pulmo": "d3c5d20196c9c59f"
+      }
+    },
+    "cabo-pulmo/species/bull-shark": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/destination/mexico/baja-california/cabo-pulmo",
+          "text": "Bull sharks / From February to June"
+        },
+        {
+          "url": "https://divearoo.com/destinations/mexico/sea-of-cortez/cabo-pulmo",
+          "text": "Bull sharks (Carcharhinus leucas): year-round (peak August to December), especially around El Vencedor."
+        }
+      ],
+      "note": "See cabo-pulmo/highlight/3: Divearoo reconciles the windows (bigger groups Apr–Jun, more reliable Aug–Dec).",
+      "sourceHashes": {
+        "https://www.zubludiving.com/destination/mexico/baja-california/cabo-pulmo": "2110dbda9a3ca98c",
+        "https://divearoo.com/destinations/mexico/sea-of-cortez/cabo-pulmo": "d3c5d20196c9c59f"
+      }
+    },
+    "cabo-pulmo/species/whale-shark": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://divearoo.com/destinations/mexico/sea-of-cortez/cabo-pulmo",
+          "text": "Whale sharks pass through occasionally from October through April."
+        }
+      ],
+      "note": "'Occasional in winter' is sourced. The La Paz comparison is not in the cited sources.",
+      "sourceHashes": {
+        "https://divearoo.com/destinations/mexico/sea-of-cortez/cabo-pulmo": "d3c5d20196c9c59f"
+      }
+    },
+    "cocos/experience": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://dan.org/alert-diver/article/cocos-island/",
+          "text": "knowing how to deploy a surface marker buoy (SMB) is a necessary skill"
+        }
+      ],
+      "note": "The 'two days from the nearest chamber' figure is not in the top passages.",
+      "sourceHashes": {
+        "https://dan.org/alert-diver/article/cocos-island/": "f76a93d617c16fd2"
+      }
+    },
+    "cocos/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://dan.org/alert-diver/article/cocos-island/",
+          "text": "one of the main highlights is the schooling scalloped hammerhead sharks in the rainy season from June through October"
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://dan.org/alert-diver/article/cocos-island/": "f76a93d617c16fd2"
+      }
+    },
+    "cocos/species/scalloped-hammerhead": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://dan.org/alert-diver/article/cocos-island/",
+          "text": "schooling scalloped hammerhead sharks in the rainy season from June through October"
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://dan.org/alert-diver/article/cocos-island/": "f76a93d617c16fd2"
+      }
+    },
+    "coral-sea/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://cairnsdiveadventures.com.au/liveaboard-diving-cairns/osprey-reef-coral-sea-liveaboard-diving/",
+          "text": "liveaboard boats have to cruise a combined total of around 20 hours to get there"
+        }
+      ],
+      "note": "The record says '20 hours of open ocean each way'; the source says about 20 hours combined. The Dec–Feb cyclone window is not in the source.",
+      "sourceHashes": {
+        "https://cairnsdiveadventures.com.au/liveaboard-diving-cairns/osprey-reef-coral-sea-liveaboard-diving/": "a853c65acc6d2dd3"
+      },
+      "correction": {
+        "correctedAt": "2026-09-21",
+        "previousVerdict": "contradicted",
+        "reason": "The source gives about 20 hours combined, not 20 hours each way.",
+        "addedQuotes": []
+      }
+    },
+    "cozumel/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.divein.com/diving/diving-in-cozumel/",
+          "text": "You can dive here all year, but if you want the best mix of weather and marine life, come November through May."
+        },
+        {
+          "url": "https://www.bluewaterdivetravel.com/destination/cozumel-diving",
+          "text": "we consider May - July the best time to dive Cozumel, with fewer crowds, good weather, warm water, and it is outside of hurricane season"
+        }
+      ],
+      "conflict": {
+        "url": "https://www.bluewaterdivetravel.com/destination/cozumel-diving",
+        "text": "we consider May - July the best time to dive Cozumel, with fewer crowds, good weather, warm water, and it is outside of hurricane season"
+      },
+      "note": "The record says both sources put the best window at Nov–May. Bluewater names May–July instead: an undeclared disagreement.",
+      "sourceHashes": {
+        "https://www.divein.com/diving/diving-in-cozumel/": "b666783eb482a3e0",
+        "https://www.bluewaterdivetravel.com/destination/cozumel-diving": "59394ea2d2a11d95"
+      },
+      "correction": {
+        "correctedAt": "2026-09-21",
+        "previousVerdict": "contradicted",
+        "reason": "The record said both sources agree on Nov–May. Bluewater names May–July instead, an undeclared disagreement that is now stated.",
+        "addedQuotes": [
+          "we consider May - July the best time to dive Cozumel, with fewer crowds, good weather, warm water, and it is outside of hurricane season"
+        ]
+      }
+    },
+    "fakarava/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/destination/french-polynesia/tuamotu-islands/fakarava",
+          "text": "During the rainy season, which lasts from November to April, temperatures rise to around 28-30°C on land and in the water."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.zubludiving.com/destination/french-polynesia/tuamotu-islands/fakarava": "a7a5e67da3d609cd"
+      }
+    },
+    "galapagos/experience": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-galapagos",
+          "text": "Water temperatures can drop as low as 16°C (60°F), especially at deeper sites or thermoclines."
+        }
+      ],
+      "note": "Cold and current are sourced. The 7mm minimum and 10–15m visibility are not; the source gives 10–25m.",
+      "sourceHashes": {
+        "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-galapagos": "9fd4009f53446985"
+      }
+    },
+    "galapagos/format/1": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-galapagos",
+          "text": "Liveaboards are essential for accessing iconic northern sites, such as Darwin and Wolf."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-galapagos": "9fd4009f53446985"
+      }
+    },
+    "galapagos/highlight/1": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://galapagosconservation.org.uk/sharks-of-galapagos/",
+          "text": "schools of these iconic sharks, sometimes over 100-strong, can be seen swimming in vast circles"
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://galapagosconservation.org.uk/sharks-of-galapagos/": "47472cd517f6824c"
+      }
+    },
+    "galapagos/operating": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-galapagos",
+          "text": "Best time to dive: June to November (whale sharks) or December to May (warmer waters, better visibility)"
+        }
+      ],
+      "note": "Seasons are sourced; 'permits are capped' is not in the top passages.",
+      "sourceHashes": {
+        "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-galapagos": "9fd4009f53446985"
+      }
+    },
+    "galapagos/species/scalloped-hammerhead": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://galapagosconservation.org.uk/sharks-of-galapagos/",
+          "text": "The best chance for hammerhead sightings in Galapagos is around the northern-most islands of Wolf and Darwin during the warm season (Dec-May)"
+        }
+      ],
+      "conflict": {
+        "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-galapagos",
+        "text": "Divers come in search of whale sharks, most reliably seen between July and October, and schools of scalloped hammerheads that circle like a slow-motion tornado."
+      },
+      "note": "Undeclared conflict: the other cited source places hammerhead schools in the cool season (Jun–Nov).",
+      "sourceHashes": {
+        "https://galapagosconservation.org.uk/sharks-of-galapagos/": "47472cd517f6824c",
+        "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-galapagos": "9fd4009f53446985"
+      }
+    },
+    "galapagos/species/whale-shark": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://galapagosconservation.org.uk/sharks-of-galapagos/",
+          "text": "whale sharks are regularly sighted around Darwin and Wolf between the months of June and September"
+        },
+        {
+          "url": "https://galapagosconservation.org.uk/sharks-of-galapagos/",
+          "text": "the majority of whale sharks sighted in Galapagos were large mature females"
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://galapagosconservation.org.uk/sharks-of-galapagos/": "47472cd517f6824c"
+      }
+    },
+    "gbr-ribbon-reefs/operating": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.spiritoffreedom.com.au/dive-liveaboards/swimming-with-minke-whales/",
+          "text": "Dwarf minke whales travel through the Great Barrier Reef each winter during June and July"
+        }
+      ],
+      "note": "The minke window and the permit are sourced. The Dec–Feb cyclone 'limited' window and 'sell out a year ahead' are not.",
+      "sourceHashes": {
+        "https://www.spiritoffreedom.com.au/dive-liveaboards/swimming-with-minke-whales/": "49b31f7bc8f98190"
+      }
+    },
+    "komodo/experience": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/destination/indonesia/nusa-tenggara/komodo",
+          "text": "North Komodo enjoys water temperatures of 27-28C, while the south is considerably colder with averages of around 23-24C."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.zubludiving.com/destination/indonesia/nusa-tenggara/komodo": "ac8ffd32b9b620fc"
+      }
+    },
+    "komodo/format/0": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-komodo-indonesia",
+          "text": "Liveaboards offer access to all regions, including South Komodo, Rinca, and remote Gili Banta."
+        }
+      ],
+      "note": "Sources say liveaboards reach the south and land-based trips focus on north/central. 'Day boats cannot get there and back' is stronger than the sources state.",
+      "sourceHashes": {
+        "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-komodo-indonesia": "6367d00222b90636"
+      }
+    },
+    "komodo/format/1": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-komodo-indonesia",
+          "text": "Land-based diving from Labuan Bajo is ideal for short trips focused on the north and central park."
+        }
+      ],
+      "note": "North/central focus is sourced. '1.5 to 3 hours each way' and 'simply not on the menu' are not.",
+      "sourceHashes": {
+        "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-komodo-indonesia": "6367d00222b90636"
+      }
+    },
+    "komodo/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/destination/indonesia/nusa-tenggara/komodo",
+          "text": "monsoon winds blowing in June, July and into August. During this period the southern areas of the park can have rough seas"
+        },
+        {
+          "url": "https://www.bluewaterdivetravel.com/destination/komodo-diving",
+          "text": "From around mid-November through January, northern sites may be more exposed, while South Komodo can be at its best"
+        },
+        {
+          "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-komodo-indonesia",
+          "text": "If your focus is on manta rays, visit Manta Alley between January and March, when they arrive in large numbers in the cooler southern waters."
+        }
+      ],
+      "note": "All three cited sources place the difficult southern window in mid-May to early September, and the south at its best around Nov–Jan (liveaboard.com: Manta Alley Jan–Mar). The record's Dec–Feb 'limited' encoding, and its claim that the best manta window overlaps the worst access window, are contradicted.",
+      "sourceHashes": {
+        "https://www.zubludiving.com/destination/indonesia/nusa-tenggara/komodo": "ac8ffd32b9b620fc",
+        "https://www.bluewaterdivetravel.com/destination/komodo-diving": "a38f7bb6ec11783c",
+        "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-komodo-indonesia": "6367d00222b90636"
+      },
+      "correction": {
+        "correctedAt": "2026-09-21",
+        "previousVerdict": "contradicted",
+        "reason": "All three cited sources place the difficult southern window around mid-May to early September, and the south at its best around mid-November to March. The record had the southern access window backwards.",
+        "addedQuotes": [
+          "If your focus is on manta rays, visit Manta Alley between January and March, when they arrive in large numbers in the cooler southern waters."
+        ]
+      }
+    },
+    "komodo/species/reef-manta-ray": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-komodo-indonesia",
+          "text": "If your focus is on manta rays, visit Manta Alley between January and March, when they arrive in large numbers in the cooler southern waters."
+        },
+        {
+          "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-komodo-indonesia",
+          "text": "Manta sightings are possible year-round, but Manta Point and Karang Makassar are at their most active from August to October."
+        }
+      ],
+      "note": "The Dec–Mar southern manta peak is sourced. The claim that this is also 'the roughest time to reach the southern sites' is contradicted: ZuBlu places rough southern seas in Jun–Aug.",
+      "sourceHashes": {
+        "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-komodo-indonesia": "6367d00222b90636"
+      },
+      "correction": {
+        "correctedAt": "2026-09-21",
+        "previousVerdict": "contradicted",
+        "reason": "Sources give two site-dependent peaks: Manta Alley in the south around Dec–Mar, and the central sites (Karang Makassar, Manta Point) Aug–Oct. The record only had the southern peak, and ended it in February.",
+        "addedQuotes": [
+          "Manta sightings are possible year-round, but Manta Point and Karang Makassar are at their most active from August to October."
+        ]
+      }
+    },
+    "kona/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.bluewaterdivetravel.com/destination/kona-diving",
+          "text": "are good for diving nearly every day of the year"
+        },
+        {
+          "url": "https://dan.org/alert-diver/article/kona-hawaii/",
+          "text": "Shore diving is best enjoyed when there is no ocean swell, which is a more common condition during the summer months."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.bluewaterdivetravel.com/destination/kona-diving": "d78a7a970155e145",
+        "https://dan.org/alert-diver/article/kona-hawaii/": "dc015995f3b5c52d"
+      }
+    },
+    "la-paz/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.bluewaterdivetravel.com/destination/la-paz-diving",
+          "text": "The sea lion colonies are active year-round, however, they are closed for breeding from June 1st to August 31st each year."
+        }
+      ],
+      "note": "The hurricane-season overlap is not in the top passages.",
+      "sourceHashes": {
+        "https://www.bluewaterdivetravel.com/destination/la-paz-diving": "197df66fc06a2e25"
+      }
+    },
+    "lembeh/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/destination/indonesia/sulawesi/lembeh-strait",
+          "text": "this pulse of cool water is great for critters and so while the visibility can be poor, the diving can be amazing"
+        }
+      ],
+      "note": "Sources put the cool water in Jul–Sep; the record says Jul–Aug.",
+      "sourceHashes": {
+        "https://www.zubludiving.com/destination/indonesia/sulawesi/lembeh-strait": "509c1012fd7fc1b0"
+      }
+    },
+    "malapascua/experience": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/articles/zublu-insights/thresher-sharks-of-malapascua",
+          "text": "At Monad Shoal, the sharks are rarely seen any shallower than 30-metres, so you’ll need an advanced open water certification to join these dives."
+        },
+        {
+          "url": "https://dan.org/alert-diver/article/malapascua/",
+          "text": "the sharks are at only 33 to 50 feet (12 to 15 m), so you can do longer and safer dives"
+        }
+      ],
+      "note": "The four-way depth disagreement is accurately summarised. It is a real, declared conflict.",
+      "sourceHashes": {
+        "https://www.zubludiving.com/articles/zublu-insights/thresher-sharks-of-malapascua": "dd53098d34651907",
+        "https://dan.org/alert-diver/article/malapascua/": "8c0b7f5dd568c076"
+      }
+    },
+    "malapascua/highlight/1": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://dan.org/alert-diver/article/malapascua/",
+          "text": "Seeing multiple threshers there is a predictable daily occurrence in the morning when they approach known cleaning stations."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://dan.org/alert-diver/article/malapascua/": "8c0b7f5dd568c076"
+      }
+    },
+    "malapascua/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://dan.org/alert-diver/article/malapascua/",
+          "text": "Typhoons are possible between May and October."
+        },
+        {
+          "url": "https://divernet.com/world-dives/asia/malapascua-diving-guide-philippines/",
+          "text": "March to September offers the most stable conditions."
+        }
+      ],
+      "note": "The disagreement is real, but DAN is misquoted: it recommends Nov–Apr and notes typhoon risk; it does not say 'avoid Jun–Sep'.",
+      "sourceHashes": {
+        "https://dan.org/alert-diver/article/malapascua/": "8c0b7f5dd568c076",
+        "https://divernet.com/world-dives/asia/malapascua-diving-guide-philippines/": "ed1e016221e3f60d"
+      },
+      "correction": {
+        "correctedAt": "2026-09-21",
+        "previousVerdict": "partial",
+        "reason": "DAN was misquoted: it recommends Nov–Apr and notes typhoon risk May–Oct, but does not say to avoid Jun–Sep.",
+        "addedQuotes": []
+      }
+    },
+    "malapascua/species/pelagic-thresher-shark": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/articles/zublu-insights/thresher-sharks-of-malapascua",
+          "text": "thresher sharks can be spotted here 365 days a year"
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.zubludiving.com/articles/zublu-insights/thresher-sharks-of-malapascua": "dd53098d34651907"
+      }
+    },
+    "malta/cert/trimix": {
+      "verdict": "not_found",
+      "quotes": [],
+      "note": "The only destination source mentions 'advanced technical divers' in general but never says the deeper wartime wrecks require trimix. The engine currently raises this as a required-cert caveat on an unsourced claim.",
+      "sourceHashes": {}
+    },
+    "malta/experience": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.bluewaterdivetravel.com/destination/malta-diving",
+          "text": "Malta can be dived year-round by hardened drysuit divers; however, water temperatures can drop as low as 57F (14C) in the winter months."
+        }
+      ],
+      "note": "Winter temperature and drysuit are sourced. 'A long list of deep wreck fatalities' and 'minimal current' are not.",
+      "sourceHashes": {
+        "https://www.bluewaterdivetravel.com/destination/malta-diving": "c2d8aafd37e6e30d"
+      }
+    },
+    "malta/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.bluewaterdivetravel.com/destination/malta-diving",
+          "text": "The best time to dive in Malta is during the summer months of April through October."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.bluewaterdivetravel.com/destination/malta-diving": "c2d8aafd37e6e30d"
+      }
+    },
+    "moalboal/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.halemanna.com/blog/sardine-run-diving-moalboal",
+          "text": "The sardine run is visible year-round, regardless of season."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.halemanna.com/blog/sardine-run-diving-moalboal": "3c98150fe9199870"
+      }
+    },
+    "moorea/operating": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.bluewaterdivetravel.com/destination/moorea-diving",
+          "text": "If you want to see the humpback whales, then the season starts in August and lasts until November 1st."
+        }
+      ],
+      "note": "The source puts the rainy season in Dec–Jan, not Nov–Apr, and gives no cyclone risk.",
+      "sourceHashes": {
+        "https://www.bluewaterdivetravel.com/destination/moorea-diving": "95e4981bc52c728f"
+      }
+    },
+    "ningaloo/format/0": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://divernet.com/world-dives/australia-oceania/ningaloo-reef-dive-guide/",
+          "text": "There’s no scuba involved; just snorkelling and freediving."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://divernet.com/world-dives/australia-oceania/ningaloo-reef-dive-guide/": "7e9810f477d0b535"
+      }
+    },
+    "ningaloo/highlight/1": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.australiascoralcoast.com/see-do/swim-ningaloo-whale-sharks",
+          "text": "In 2025 41,390 people swam with Whale Sharks in Ningaloo."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.australiascoralcoast.com/see-do/swim-ningaloo-whale-sharks": "0f2330e0d3c68a49"
+      }
+    },
+    "ningaloo/operating": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.australiascoralcoast.com/see-do/swim-ningaloo-whale-sharks",
+          "text": "Tours typically operate from March through to the end of June in Coral Bay and to August in Exmouth."
+        }
+      ],
+      "note": "The tour windows are sourced. The Nov–Feb 'limited' encoding (cyclone season, industry largely closed) is not.",
+      "sourceHashes": {
+        "https://www.australiascoralcoast.com/see-do/swim-ningaloo-whale-sharks": "0f2330e0d3c68a49"
+      }
+    },
+    "nusa-penida/experience": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://worldadventuredivers.com/diving-nusa-penida-2/",
+          "text": "If you have fewer than 50 dives, I highly recommend gaining more experience before attempting these sites."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://worldadventuredivers.com/diving-nusa-penida-2/": "14d7c6fe74318a02"
+      }
+    },
+    "nusa-penida/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://worldadventuredivers.com/diving-nusa-penida-2/",
+          "text": "The site has a resident manta population, but conditions at the surface can be challenging from December to March."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://worldadventuredivers.com/diving-nusa-penida-2/": "14d7c6fe74318a02"
+      }
+    },
+    "nusa-penida/species/ocean-sunfish": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://nusapenida.org/bali-nusa-penida-diving-guide/mola-mola-ocean-sunfish/",
+          "text": "Realistically, the odds are about one dive in ten."
+        }
+      ],
+      "note": "The record says about one sighting in three dives. The source says about one in ten dives, rising to about one in three over a full day of three dives when conditions line up. The rest of the note is sourced.",
+      "sourceHashes": {
+        "https://nusapenida.org/bali-nusa-penida-diving-guide/mola-mola-ocean-sunfish/": "0f917c1f35033691"
+      },
+      "correction": {
+        "correctedAt": "2026-09-21",
+        "previousVerdict": "contradicted",
+        "reason": "The record overstated the odds about threefold: the source gives about one in ten dives, and about one in three per day only in good conditions.",
+        "addedQuotes": []
+      }
+    },
+    "nusa-penida/species/reef-manta-ray": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.frontiersin.org/journals/marine-science/articles/10.3389/fmars.2019.00215/full",
+          "text": "Courtship behavior was observed year-round at MP but peaked in April–May"
+        }
+      ],
+      "note": "'Sightings roughly double in May' is not in the top passages.",
+      "sourceHashes": {
+        "https://www.frontiersin.org/journals/marine-science/articles/10.3389/fmars.2019.00215/full": "a2d3befd7cc7b485"
+      }
+    },
+    "oahu/operating": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.scubadiving.com/travel/ultimate-guide-scuba-diving-oahu",
+          "text": "Oahu can be dived comfortably year-round"
+        }
+      ],
+      "note": "The north-shore winter-swell claim relies on a source that could not be fetched (JavaScript-rendered).",
+      "sourceHashes": {
+        "https://www.scubadiving.com/travel/ultimate-guide-scuba-diving-oahu": "6c9d176d6384d0a8"
+      }
+    },
+    "palau/operating": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/destination/pacific/micronesia/palau",
+          "text": "Visibility is normally fantastic with wet season lows of 15-20m and dry season highs of 40m+!"
+        }
+      ],
+      "note": "Sources give no Jun–Sep wet-season window and say 'the vast majority of sites can still be dived'. The record's 'limited' encoding is stronger than they state.",
+      "sourceHashes": {
+        "https://www.zubludiving.com/destination/pacific/micronesia/palau": "a92398295db7cd4b"
+      }
+    },
+    "raja-ampat/experience": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-raja-ampat-indonesia",
+          "text": "It's the best time for underwater photographers and first-time visitors. Currents tend to be manageable"
+        }
+      ],
+      "note": "Neither cited source mentions reef hooks or negative entries, and both describe dry-season currents as manageable or moderate. I first labelled this 'contradicted', then downgraded it: their 'best for first-time visitors' means people new to Raja Ampat, not newly certified divers, so it does not refute 'not a first tropical destination'.",
+      "sourceHashes": {
+        "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-raja-ampat-indonesia": "ebe2d2856eb08de9"
+      }
+    },
+    "raja-ampat/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.bluewaterdivetravel.com/article/raja-ampat-dive-season-explained",
+          "text": "Many liveaboards suspend operations in July–August, and even resorts may cancel dives on very windy days."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.bluewaterdivetravel.com/article/raja-ampat-dive-season-explained": "276392e9da37fa29"
+      }
+    },
+    "raja-ampat/species/whale-shark": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://luxuryrajaampat.com/blog/raja-ampat-marine-life-guide-2026/",
+          "text": "Whale sharks are NOT in the central Raja Ampat archipelago year-round."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://luxuryrajaampat.com/blog/raja-ampat-marine-life-guide-2026/": "6ef8e4c4060ff5cb"
+      }
+    },
+    "rangiroa/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.seacrush.com/en/diving/french-polynesia/rangiroa",
+          "text": "Season: Diving all year long. High tourist season is from June to September. July to September: manta rays. December to March: great hammerheads."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.seacrush.com/en/diving/french-polynesia/rangiroa": "33e7b8c2183058b6"
+      }
+    },
+    "red-sea-brothers/operating": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-red-sea",
+          "text": "Windy conditions can sometimes limit access to offshore sites, particularly around Ras Mohammed and the Straits of Tiran."
+        }
+      ],
+      "note": "Winter wind is sourced (though for northern offshore sites). The historical marine-park restriction on the Brothers is not in the fetched sources.",
+      "sourceHashes": {
+        "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-red-sea": "a086d134d0d22a20"
+      }
+    },
+    "red-sea-north/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-red-sea",
+          "text": "Year-round diving, with peak conditions in spring and autumn"
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-red-sea": "a086d134d0d22a20"
+      }
+    },
+    "silfra/cert/drysuit": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.dive.is/dive-sites/silfra",
+          "text": "all divers in Silfra must be certified in dry suit diving by an internationally recognized diving organization."
+        }
+      ],
+      "note": "Also stated by the national park authority (thingvellir.is).",
+      "sourceHashes": {
+        "https://www.dive.is/dive-sites/silfra": "79630c4a87d6e52b"
+      }
+    },
+    "silfra/experience": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.dive.is/dive-sites/silfra",
+          "text": "SCUBA diving in a wetsuit is not allowed."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.dive.is/dive-sites/silfra": "79630c4a87d6e52b"
+      }
+    },
+    "silfra/operating": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.dive.is/dive-sites/silfra",
+          "text": "the water never freezes and remains 2°C – 4°C year round"
+        }
+      ],
+      "note": "Winter access depending on the road and daylight is not in the sources.",
+      "sourceHashes": {
+        "https://www.dive.is/dive-sites/silfra": "79630c4a87d6e52b"
+      }
+    },
+    "socorro/experience": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-socorro-islands-mexico",
+          "text": "Most liveaboards require a minimum of 50 logged dives and Advanced Open Water certification."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-socorro-islands-mexico": "7ec0407ea104dab4"
+      }
+    },
+    "socorro/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://descubreanp.conanp.gob.mx/en/conanp/ANP?suri=143",
+          "text": "The tourist season for scuba diving is from November to June, from 7:00 a.m. to 6:00 p.m."
+        }
+      ],
+      "note": "The park authority (CONANP) is the tier-1 source here.",
+      "sourceHashes": {
+        "https://descubreanp.conanp.gob.mx/en/conanp/ANP?suri=143": "aed7e4c2c4875591"
+      }
+    },
+    "socorro/species/whale-shark": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/destination/mexico/baja-california/socorro-and-revillagigedo-islands",
+          "text": "Whale sharks are most commonly seen from April through June"
+        },
+        {
+          "url": "https://www.bluewaterdivetravel.com/destination/socorro-island-diving",
+          "text": "whale sharks most common in Nov–Dec"
+        }
+      ],
+      "note": "The differing windows are real. The CONANP species list in the snapshot is truncated, so 'CONANP does not list whale shark' cannot be confirmed.",
+      "sourceHashes": {
+        "https://www.zubludiving.com/destination/mexico/baja-california/socorro-and-revillagigedo-islands": "7670d0e6833f9b9d",
+        "https://www.bluewaterdivetravel.com/destination/socorro-island-diving": "7e0ba7ce83968d39"
+      }
+    },
+    "tiger-beach/highlight/1": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.bluewaterdivetravel.com/destination/tiger-beach-diving",
+          "text": "The tigers are often fed to encourage them into the waiting divers who will position themselves in a V formation facing into the current"
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.bluewaterdivetravel.com/destination/tiger-beach-diving": "b1827ac2a1f55ffb"
+      }
+    },
+    "tiger-beach/operating": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.bluewaterdivetravel.com/destination/tiger-beach-diving",
+          "text": "great hammerhead sightings are most likely between December and March"
+        }
+      ],
+      "note": "Both peaks are sourced. The Jun–Sep hurricane 'limited' encoding is not; the source only says Jun–Oct is 'warmer but wetter'.",
+      "sourceHashes": {
+        "https://www.bluewaterdivetravel.com/destination/tiger-beach-diving": "b1827ac2a1f55ffb"
+      }
+    },
+    "tiger-beach/species/tiger-shark": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.bluewaterdivetravel.com/destination/tiger-beach-diving",
+          "text": "the period from October to January generally brings better encounters with more sharks"
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.bluewaterdivetravel.com/destination/tiger-beach-diving": "b1827ac2a1f55ffb"
+      }
+    },
+    "tubbataha/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://dan.org/alert-diver/article/tubbataha/",
+          "text": "Park authorities have designated a dive season during which the weather is most likely to be calm, mid-March to mid-June"
+        }
+      ],
+      "note": "Bluewater says boats sell out 12–18 months ahead, not 9–12.",
+      "sourceHashes": {
+        "https://dan.org/alert-diver/article/tubbataha/": "02d280b3a8978ddf"
+      }
+    },
+    "tulamben/format/2": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://www.zubludiving.com/destination/indonesia/bali/tulamben",
+          "text": "Depending on traffic, Tulamben is a 3 - 3.5-hour drive from south Bali."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://www.zubludiving.com/destination/indonesia/bali/tulamben": "3cd932d3e9698754"
+      }
+    },
+    "tulamben/operating": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://balidivingcenterscuba.com/tulamben-diving-conditions-month-by-month/",
+          "text": "Even during the wet season, Tulamben’s protected location keeps diving accessible and enjoyable."
+        }
+      ],
+      "note": "",
+      "sourceHashes": {
+        "https://balidivingcenterscuba.com/tulamben-diving-conditions-month-by-month/": "5cdebda3472bf588"
+      }
+    },
+    "tulamben/species/bumphead-parrotfish": {
+      "verdict": "supported",
+      "quotes": [
+        {
+          "url": "https://worldadventuredivers.com/usat-liberty-shipwreck-bali/",
+          "text": "They apparently went missing during the COVID pandemic"
+        }
+      ],
+      "note": "The disagreement is real: ZuBlu still lists 'schooling bumphead parrotfish'.",
+      "sourceHashes": {
+        "https://worldadventuredivers.com/usat-liberty-shipwreck-bali/": "33a2ceedc66fc3c4"
+      }
+    },
+    "yonaguni/operating": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://worldadventuredivers.com/yonaguni-monument-diving/",
+          "text": "Winter is not the best season to scuba dive the Yonaguni Monument because of the winds making it difficult to reach the site."
+        }
+      ],
+      "note": "The Jul–Sep typhoon window is not in the source.",
+      "sourceHashes": {
+        "https://worldadventuredivers.com/yonaguni-monument-diving/": "0882cd8b8c6ab9b8"
+      }
+    },
+    "yucatan-cenotes/operating": {
+      "verdict": "partial",
+      "quotes": [
+        {
+          "url": "https://www.divinginmexico.com/blog/cenote-diving-mexico-complete-guide/",
+          "text": "Cenote freshwater sits at 24 to 25 C year round"
+        }
+      ],
+      "note": "Wet-season tannin runoff is not in the sources.",
+      "sourceHashes": {
+        "https://www.divinginmexico.com/blog/cenote-diving-mexico-complete-guide/": "2bda8d526804eca2"
+      }
+    }
+  }
+}

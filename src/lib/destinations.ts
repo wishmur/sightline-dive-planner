@@ -1,4 +1,5 @@
 import raw from "@/data/destinations.json";
+import { canonicalName, canonicalSpeciesId, legacySlug, slugify } from "@/lib/taxonomy";
 
 export type MonthState = "peak" | "shoulder" | "off" | "absent";
 export type OperatingState = "open" | "limited" | "closed";
@@ -78,71 +79,44 @@ export function getDestination(id: string) {
   return DESTINATIONS.find((d) => d.id === id);
 }
 
+/** Slug of a listing's own name (used for claim IDs). */
 export function speciesSlug(name: string) {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return slugify(name);
 }
 
 export type SpeciesGroup = {
+  /** Canonical species ID — also the /species/$slug URL. */
   slug: string;
   name: string;
   scientific: string;
   matches: { destination: Destination; species: SpeciesEntry }[];
 };
 
+const SLUG_ALIASES = new Map<string, string>();
+
+/** One entry per canonical species: "Green turtle" and "Green sea turtle" are one animal. */
 export const SPECIES_GROUPS: SpeciesGroup[] = (() => {
   const map = new Map<string, SpeciesGroup>();
   for (const destination of DESTINATIONS) {
     for (const species of destination.species) {
-      const slug = speciesSlug(species.name);
+      const slug = canonicalSpeciesId(species);
       let group = map.get(slug);
       if (!group) {
-        group = { slug, name: species.name, scientific: species.scientific, matches: [] };
+        group = { slug, name: canonicalName(species), scientific: species.scientific, matches: [] };
         map.set(slug, group);
       }
       group.matches.push({ destination, species });
+      for (const alias of [slugify(species.name), legacySlug(species.name)]) {
+        if (alias !== slug) SLUG_ALIASES.set(alias, slug);
+      }
     }
   }
   return [...map.values()].sort((a, b) => a.name.localeCompare(b.name));
 })();
 
 export function getSpeciesGroup(slug: string) {
-  return SPECIES_GROUPS.find((g) => g.slug === slug);
-}
-
-export type SearchResult =
-  | { kind: "species"; slug: string; label: string; sub: string }
-  | { kind: "destination"; slug: string; label: string; sub: string };
-
-export function search(query: string, limit = 8): SearchResult[] {
-  const q = query.trim().toLowerCase();
-  if (!q) return [];
-  const results: SearchResult[] = [];
-
-  for (const g of SPECIES_GROUPS) {
-    if (g.name.toLowerCase().includes(q) || g.scientific.toLowerCase().includes(q)) {
-      results.push({
-        kind: "species",
-        slug: g.slug,
-        label: g.name,
-        sub: `${g.matches.length} destination${g.matches.length === 1 ? "" : "s"}`,
-      });
-    }
-  }
-  for (const d of DESTINATIONS) {
-    if (
-      d.name.toLowerCase().includes(q) ||
-      d.region.toLowerCase().includes(q) ||
-      d.country.toLowerCase().includes(q)
-    ) {
-      results.push({
-        kind: "destination",
-        slug: d.id,
-        label: d.name,
-        sub: `${d.region}, ${d.country}`,
-      });
-    }
-  }
-  return results.slice(0, limit);
+  const id = SLUG_ALIASES.get(slug) ?? slug;
+  return SPECIES_GROUPS.find((g) => g.slug === id);
 }
 
 export function formatFormat(value: string) {
@@ -174,26 +148,4 @@ export function bestMonthsLabel(months: MonthState[]): string | null {
 export function yearRoundSpecies(destination: Destination): string | null {
   const s = destination.species.find((sp) => sp.months.every((m) => m === "peak"));
   return s ? `${s.name} year-round` : null;
-}
-
-export type FinderMatch = {
-  destination: Destination;
-  status: Extract<MonthState, "peak" | "shoulder">;
-};
-
-/** Destinations where the species is peak/shoulder in the given month and diving is not closed. */
-export function findDestinations(slug: string, monthIndex: number): FinderMatch[] {
-  const group = getSpeciesGroup(slug);
-  if (!group) return [];
-  const matches: FinderMatch[] = [];
-  for (const { destination, species } of group.matches) {
-    const status = species.months[monthIndex];
-    if (status !== "peak" && status !== "shoulder") continue;
-    if (destination.operating_months[monthIndex] === "closed") continue;
-    matches.push({ destination, status });
-  }
-  return matches.sort((a, b) => {
-    if (a.status !== b.status) return a.status === "peak" ? -1 : 1;
-    return a.destination.name.localeCompare(b.destination.name);
-  });
 }

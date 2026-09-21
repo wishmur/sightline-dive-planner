@@ -1,10 +1,7 @@
-import {
-  DESTINATIONS,
-  SPECIES_GROUPS,
-  type Destination,
-} from "@/lib/destinations";
-import { getCollection } from "@/lib/collections";
+import { DESTINATIONS, SPECIES_GROUPS, type Destination } from "@/lib/destinations";
+import { COLLECTIONS, getCollection } from "@/lib/collections";
 import { diveTypeLabel } from "@/lib/cards";
+import { GROUP_DEFS, getGroupDef } from "@/lib/taxonomy";
 
 /** Country -> continent grouping for the "Where" filter. */
 export const CONTINENTS: { name: string; countries: string[] }[] = (() => {
@@ -49,20 +46,38 @@ export function continentOf(country: string): string | null {
   return CONTINENTS.find((c) => c.countries.includes(country))?.name ?? null;
 }
 
-export const SPECIES_NAMES = SPECIES_GROUPS.map((g) => g.name);
+/** Marine-life targets: diver-facing groups first, then canonical species. */
+export type TargetOption = { id: string; label: string; kind: "group" | "species" };
 
+export const TARGET_GROUPS: TargetOption[] = GROUP_DEFS.filter(
+  (g) => g.members.filter((m) => SPECIES_GROUPS.some((s) => s.slug === m)).length >= 2,
+).map((g) => ({ id: g.id, label: g.label, kind: "group" as const }));
+
+export const TARGET_SPECIES: TargetOption[] = SPECIES_GROUPS.map((g) => ({
+  id: g.slug,
+  label: g.name,
+  kind: "species" as const,
+}));
+
+export function isKnownTarget(id: string) {
+  return TARGET_GROUPS.some((t) => t.id === id) || TARGET_SPECIES.some((t) => t.id === id);
+}
+
+export function targetLabel(id: string) {
+  return getGroupDef(id)?.label ?? SPECIES_GROUPS.find((g) => g.slug === id)?.name ?? id;
+}
+
+/** The diver's own certification. Matches every destination at or below it. */
 export const CERT_OPTIONS = [
   { value: "open_water", label: "Open Water" },
   { value: "advanced", label: "Advanced" },
   { value: "advanced_plus_experience", label: "Advanced + experience" },
 ];
 
+/** The most current the diver is comfortable with. */
 export const CURRENT_OPTIONS = [
-  { value: "none", label: "None" },
   { value: "mild", label: "Mild" },
   { value: "moderate", label: "Moderate" },
-  { value: "strong", label: "Strong" },
-  { value: "variable", label: "Variable" },
 ];
 
 export const TEMP_OPTIONS = [
@@ -97,18 +112,14 @@ export const FORMAT_OPTIONS = [
   { value: "expedition", label: "Expedition" },
 ];
 
-export function humanLabel(value: string) {
-  return value.replace(/_/g, " ").replace(/^\w/, (c) => c.toUpperCase());
-}
-
 export type Filters = {
   query: string;
   where: string; // "all" | "continent:Asia" | "country:Indonesia"
   month: string; // "any" | "0".."11"
-  species: string[]; // species names
+  species: string[]; // target IDs: taxonomy group IDs or canonical species IDs
   diveType: string; // "any" | highlight type
-  cert: string; // "any" | min_cert value
-  current: string; // "any" | value
+  cert: string; // "any" | the diver's certification (a ladder, not an exact match)
+  current: string; // "any" | the most current the diver is comfortable with
   temp: string; // "any" | warm|temperate|cold
   format: string; // "any" | format value
   entry: string; // "any" | shore|boat
@@ -148,16 +159,6 @@ export function countActive(f: Filters) {
   return n;
 }
 
-export function countSecondaryActive(f: Filters) {
-  let n = 0;
-  if (f.current !== "any") n++;
-  if (f.temp !== "any") n++;
-  if (f.format !== "any") n++;
-  if (f.entry !== "any") n++;
-  if (f.operatingOnly) n++;
-  return n;
-}
-
 function tempBand(range: number[]): string[] {
   const [lo = 0, hi = 0] = range;
   const bands: string[] = [];
@@ -167,51 +168,137 @@ function tempBand(range: number[]): string[] {
   return bands;
 }
 
-export function applyFilters(f: Filters, list: Destination[] = DESTINATIONS) {
-  const q = f.query.trim().toLowerCase();
-  const month = f.month === "any" ? null : Number(f.month);
+/** Case- and accent-insensitive: "galapagos" finds "Galápagos". */
+function fold(text: string) {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
 
-  return list.filter((d) => {
-    if (q && !`${d.name} ${d.region} ${d.country}`.toLowerCase().includes(q)) return false;
+/**
+ * Scope filters narrow where to look; they don't judge fit. Month, marine life,
+ * certification and current are the diver's brief and are judged in lib/fit.ts.
+ */
+export function passesScope(d: Destination, f: Filters) {
+  const q = fold(f.query.trim());
+  if (q && !fold(`${d.name} ${d.region} ${d.country}`).includes(q)) return false;
 
-    if (f.collection !== "all") {
-      const collection = getCollection(f.collection);
-      if (collection && !collection.match(d)) return false;
+  if (f.collection !== "all") {
+    const collection = getCollection(f.collection);
+    if (collection && !collection.match(d)) return false;
+  }
+
+  if (f.where !== "all") {
+    const [kind, value] = f.where.split(":");
+    if (kind === "country" && d.country !== value) return false;
+    if (kind === "continent" && continentOf(d.country) !== value) return false;
+  }
+
+  if (f.diveType !== "any" && !d.highlights.some((h) => h.type === f.diveType)) return false;
+  if (f.temp !== "any" && !tempBand(d.conditions.water_temp_c).includes(f.temp)) return false;
+  if (f.entry !== "any" && !d.conditions.entry.includes(f.entry)) return false;
+  if (f.format !== "any" && !d.trip_formats.some((t) => t.format === f.format)) return false;
+  return true;
+}
+
+// ---------------------------------------------------------------------------
+// URL search params. Compact, human-readable, defaults omitted.
+
+export type FilterSearch = {
+  q?: string;
+  where?: string;
+  m?: number; // 1–12 (a number, so the router doesn't JSON-quote it in the URL)
+  sp?: string; // comma-separated target IDs
+  type?: string;
+  cert?: string;
+  cur?: string;
+  temp?: string;
+  fmt?: string;
+  entry?: string;
+  open?: boolean;
+  col?: string;
+};
+
+const SEARCH_KEYS: (keyof FilterSearch)[] = [
+  "q",
+  "where",
+  "m",
+  "sp",
+  "type",
+  "cert",
+  "cur",
+  "temp",
+  "fmt",
+  "entry",
+  "open",
+  "col",
+];
+
+export function validateFilterSearch(search: Record<string, unknown>): FilterSearch {
+  const out: Record<string, unknown> = {};
+  for (const key of SEARCH_KEYS) {
+    const value = search[key];
+    if (key === "m") {
+      const m = Number(value);
+      if (Number.isInteger(m) && m >= 1 && m <= 12) out.m = m;
+    } else if (key === "open") {
+      if (value === true || value === "1" || value === "true") out.open = true;
+    } else if (typeof value === "string" && value) {
+      out[key] = value;
     }
+  }
+  return out as FilterSearch;
+}
 
-    if (f.where !== "all") {
-      const [kind, value] = f.where.split(":");
-      if (kind === "country" && d.country !== value) return false;
-      if (kind === "continent" && continentOf(d.country) !== value) return false;
-    }
+const oneOf = (value: string | undefined, options: { value: string }[], fallback: string) =>
+  value && options.some((o) => o.value === value) ? value : fallback;
 
-    if (f.cert !== "any" && d.conditions.min_cert !== f.cert) return false;
-    if (f.diveType !== "any" && !d.highlights.some((h) => h.type === f.diveType)) return false;
-    if (f.current !== "any" && d.conditions.current !== f.current) return false;
-    if (f.temp !== "any" && !tempBand(d.conditions.water_temp_c).includes(f.temp)) return false;
-    if (f.entry !== "any" && !d.conditions.entry.includes(f.entry)) return false;
-    if (f.format !== "any" && !d.trip_formats.some((t) => t.format === f.format)) return false;
+export function filtersFromSearch(s: FilterSearch): Filters {
+  const m = Number(s.m);
+  const where = s.where ?? "all";
+  const whereOk =
+    where === "all" ||
+    CONTINENTS.some(
+      (c) => where === `continent:${c.name}` || c.countries.some((x) => where === `country:${x}`),
+    );
+  return {
+    query: s.q ?? "",
+    where: whereOk ? where : "all",
+    month: Number.isInteger(m) && m >= 1 && m <= 12 ? String(m - 1) : "any",
+    species: (s.sp ?? "").split(",").filter(isKnownTarget),
+    diveType: oneOf(s.type, DIVE_TYPE_OPTIONS, "any"),
+    cert: oneOf(s.cert, CERT_OPTIONS, "any"),
+    current: oneOf(s.cur, CURRENT_OPTIONS, "any"),
+    temp: oneOf(s.temp, TEMP_OPTIONS, "any"),
+    format: oneOf(s.fmt, FORMAT_OPTIONS, "any"),
+    entry: oneOf(s.entry, ENTRY_OPTIONS, "any"),
+    operatingOnly: s.open === true,
+    collection: s.col && COLLECTIONS.some((c) => c.id === s.col) ? s.col : "all",
+  };
+}
 
-    if (f.species.length) {
-      for (const name of f.species) {
-        const sp = d.species.find((s) => s.name === name);
-        if (!sp) return false;
-        if (month !== null) {
-          const status = sp.months[month];
-          if (status !== "peak" && status !== "shoulder") return false;
-        }
-      }
-    }
+export function searchFromFilters(f: Filters): FilterSearch {
+  const s: FilterSearch = {};
+  if (f.query.trim()) s.q = f.query;
+  if (f.where !== "all") s.where = f.where;
+  if (f.month !== "any") s.m = Number(f.month) + 1;
+  if (f.species.length) s.sp = f.species.join(",");
+  if (f.diveType !== "any") s.type = f.diveType;
+  if (f.cert !== "any") s.cert = f.cert;
+  if (f.current !== "any") s.cur = f.current;
+  if (f.temp !== "any") s.temp = f.temp;
+  if (f.format !== "any") s.fmt = f.format;
+  if (f.entry !== "any") s.entry = f.entry;
+  if (f.operatingOnly) s.open = true;
+  if (f.collection !== "all") s.col = f.collection;
+  return s;
+}
 
-    if (month !== null) {
-      if (d.operating_months[month] === "closed") return false;
-      if (f.operatingOnly && d.operating_months[month] !== "open") return false;
-      if (!f.species.length) {
-        const s = d.best_months_overall[month];
-        if (s !== "peak" && s !== "shoulder") return false;
-      }
-    }
+/** The part of a brief a destination page needs: when, what, and the diver's limits. */
+export type BriefSearch = Pick<FilterSearch, "m" | "sp" | "cert" | "cur">;
 
-    return true;
-  });
+export function briefSearch(f: Filters): BriefSearch {
+  const { m, sp, cert, cur } = searchFromFilters(f);
+  return { m, sp, cert, cur };
 }

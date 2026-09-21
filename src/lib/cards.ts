@@ -1,5 +1,6 @@
 import type { Destination } from "@/lib/destinations";
 import type { Filters } from "@/lib/filters";
+import { canonicalSpeciesId } from "@/lib/taxonomy";
 
 /** Highlight type -> human label. Drives both card tags and the Dive type filter. */
 export const TYPE_TAG: Record<string, string> = {
@@ -47,7 +48,7 @@ export function destinationTagChips(d: Destination): DestinationTag[] {
   for (const s of d.species) {
     if (tags.length >= 2) break;
     const reliable = s.reliability === "resident" || s.reliability === "seasonal";
-    if (reliable && HEADLINE_SPECIES.test(s.name)) tags.push({ label: s.name, patch: { species: [s.name] } });
+    if (reliable && HEADLINE_SPECIES.test(s.name)) tags.push({ label: s.name, patch: { species: [canonicalSpeciesId(s)] } });
   }
 
   for (const h of [...d.highlights].sort((a, b) => a.rank - b.rank)) {

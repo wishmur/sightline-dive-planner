@@ -30,3 +30,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Source snapshots for verification: private (copyrighted page text), never committed
+data/.source-cache/
+
+# Regenerated eval output
+evals/reports/

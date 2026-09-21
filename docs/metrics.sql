@@ -1,0 +1,71 @@
+-- Sightline product metrics. Run in the Supabase SQL editor (service role):
+-- the public anon key can insert events but cannot read them.
+--
+-- Each query answers one product question. None of them is a correctness label:
+-- a thumbs-up measures satisfaction, and divers rate optimistic answers higher
+-- (a correct "mantas are unlikely in July" can get a thumbs-down). Correctness
+-- comes from source verification and the eval suite, not from these numbers.
+
+-- 1. Do people use the brief at all? Share of sessions that set month, animals,
+--    certification or current (the fit engine only engages then).
+select
+  count(distinct session_id) filter (where event_type = 'fit_results')::float
+    / nullif(count(distinct session_id), 0) as share_of_sessions_with_a_brief
+from events
+where created_at > now() - interval '30 days';
+
+-- 2. How often does a brief come back empty, and does "Close, but…" rescue it?
+select
+  count(*) filter (where jsonb_array_length(payload->'results') = 0) as empty_results,
+  count(*) filter (where jsonb_array_length(payload->'results') = 0
+                     and jsonb_array_length(payload->'near_misses') > 0) as empty_but_near_misses_shown,
+  count(*) as briefs
+from events
+where event_type = 'fit_results' and created_at > now() - interval '30 days';
+
+-- 3. Do near misses get clicked? (They exist to replace the dead end.)
+select
+  count(*) filter (where payload->>'from' = 'near_miss') as near_miss_clicks,
+  count(*) as destination_views
+from events
+where event_type = 'view_destination' and created_at > now() - interval '30 days';
+
+-- 4. Is the "For your trip" panel useful? By fit tier, so a drop in one tier
+--    (e.g. near misses) is visible rather than averaged away.
+select
+  payload->>'tier' as tier,
+  count(*) filter (where (payload->>'helpful')::boolean) as helpful,
+  count(*) filter (where not (payload->>'helpful')::boolean) as something_off,
+  count(*) as answers
+from events
+where event_type = 'fit_feedback' and created_at > now() - interval '90 days'
+group by 1 order by answers desc;
+
+-- 5. Does anyone look at the evidence? Opens of a source check, by what it said.
+select payload->>'status' as status, count(*) as opens
+from events
+where event_type = 'verification_open' and created_at > now() - interval '90 days'
+group by 1 order by opens desc;
+
+-- 6. Qualified shortlist rate (primary success metric): sessions with a brief that
+--    opened at least one "For your trip" panel AND followed the evidence
+--    (a source link, a source check, or an operator).
+with s as (
+  select session_id,
+         bool_or(event_type = 'fit_results') as briefed,
+         bool_or(event_type = 'fit_panel_view') as panel,
+         bool_or(event_type in ('click_source', 'verification_open')) as evidence
+  from events
+  where created_at > now() - interval '30 days'
+  group by session_id
+)
+select count(*) filter (where briefed and panel and evidence)::float
+         / nullif(count(*) filter (where briefed), 0) as qualified_shortlist_rate
+from s;
+
+-- 7. Where "Something's off" lands: the correction queue. Each row starts a
+--    triage (retrieve the claim's sources → review → corrections.json → evals).
+select created_at, destination_id, kind, message
+from feedback
+where created_at > now() - interval '30 days'
+order by created_at desc;

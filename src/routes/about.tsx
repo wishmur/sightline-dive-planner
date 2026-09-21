@@ -30,7 +30,10 @@ const STEPS = [
   { label: "Cross-check", note: "Claims are compared across independent sources before use." },
   { label: "Structure", note: "Findings are encoded into a consistent, comparable schema." },
   { label: "Source", note: "Every claim keeps the links it came from." },
-  { label: "Verify", note: "Records carry a last-verified date and confidence value." },
+  {
+    label: "Verify",
+    note: "Key claims are checked against the exact passage in their source. The quote and check date sit next to the claim; claims the sources contradict are corrected and marked as corrected.",
+  },
   { label: "Update", note: "Diver corrections and new evidence are reviewed, then merged." },
 ];
 
@@ -53,7 +56,7 @@ const PRINCIPLES = [
   {
     icon: <RefreshCw className="h-5 w-5" />,
     title: "Rechecked periodically",
-    body: "The dataset is revisited on a rolling basis, and diver submissions are verified before they change anything.",
+    body: "Sources are re-fetched and compared. When a source changes, the claims that rest on it are flagged for recheck, and diver submissions are verified before they change anything.",
   },
 ];
 

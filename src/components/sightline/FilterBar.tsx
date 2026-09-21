@@ -17,8 +17,10 @@ import {
   DIVE_TYPE_OPTIONS,
   ENTRY_OPTIONS,
   FORMAT_OPTIONS,
-  SPECIES_NAMES,
+  TARGET_GROUPS,
+  TARGET_SPECIES,
   TEMP_OPTIONS,
+  targetLabel,
   type Filters,
 } from "@/lib/filters";
 
@@ -59,21 +61,23 @@ export function FilterBar({
     filters.species.length === 0
       ? "Any marine life"
       : filters.species.length === 1
-        ? filters.species[0]!
-        : `${filters.species.length} species`;
+        ? targetLabel(filters.species[0]!)
+        : `${filters.species.length} selected`;
   const styleBits = [
     filters.format !== "any" ? FORMAT_OPTIONS.find((o) => o.value === filters.format)?.label : null,
-    filters.current !== "any" ? `${CURRENT_OPTIONS.find((o) => o.value === filters.current)?.label} current` : null,
+    filters.current !== "any"
+      ? `Max ${CURRENT_OPTIONS.find((o) => o.value === filters.current)?.label.toLowerCase()} current`
+      : null,
     filters.entry !== "any" ? `${ENTRY_OPTIONS.find((o) => o.value === filters.entry)?.label} entry` : null,
   ].filter(Boolean) as string[];
   const advanced =
     (filters.cert !== "any" ? 1 : 0) + (filters.temp !== "any" ? 1 : 0) + (filters.operatingOnly ? 1 : 0);
 
-  function toggleSpecies(name: string) {
+  function toggleSpecies(id: string) {
     onChange({
-      species: filters.species.includes(name)
-        ? filters.species.filter((s) => s !== name)
-        : [...filters.species, name],
+      species: filters.species.includes(id)
+        ? filters.species.filter((s) => s !== id)
+        : [...filters.species, id],
     });
   }
 
@@ -192,13 +196,24 @@ export function FilterBar({
               <CommandInput placeholder="Search marine life…" />
               <CommandList className="max-h-80">
                 <CommandEmpty>No species found.</CommandEmpty>
-                <CommandGroup>
-                  {SPECIES_NAMES.map((name) => (
-                    <CommandItem key={name} value={name} onSelect={() => toggleSpecies(name)}>
+                <CommandGroup heading="Groups">
+                  {TARGET_GROUPS.map((t) => (
+                    <CommandItem key={t.id} value={`${t.label} group`} onSelect={() => toggleSpecies(t.id)}>
                       <Check
-                        className={`mr-2 h-3.5 w-3.5 ${filters.species.includes(name) ? "opacity-100" : "opacity-0"}`}
+                        className={`mr-2 h-3.5 w-3.5 ${filters.species.includes(t.id) ? "opacity-100" : "opacity-0"}`}
                       />
-                      <span className="truncate">{name}</span>
+                      <span className="truncate">{t.label}</span>
+                      <span className="ml-auto pl-2 text-[10px] uppercase tracking-wide text-muted-foreground">all</span>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+                <CommandGroup heading="Species">
+                  {TARGET_SPECIES.map((t) => (
+                    <CommandItem key={t.id} value={t.label} onSelect={() => toggleSpecies(t.id)}>
+                      <Check
+                        className={`mr-2 h-3.5 w-3.5 ${filters.species.includes(t.id) ? "opacity-100" : "opacity-0"}`}
+                      />
+                      <span className="truncate">{t.label}</span>
                     </CommandItem>
                   ))}
                 </CommandGroup>
@@ -290,7 +305,7 @@ export function FilterBar({
               onChange={(v) => onChange({ format: v })}
             />
             <ChipGroup
-              label="Current"
+              label="Max current I'm comfortable with"
               value={filters.current}
               options={CURRENT_OPTIONS}
               onChange={(v) => onChange({ current: v })}
@@ -326,7 +341,7 @@ export function FilterBar({
           </PopoverTrigger>
           <PopoverContent align="end" className="theme-light w-[min(24rem,94vw)] space-y-4 p-4">
             <ChipGroup
-              label="Certification level"
+              label="My certification"
               value={filters.cert}
               options={CERT_OPTIONS.map((o) => ({ value: o.value, label: certLabel(o.value) }))}
               onChange={(v) => onChange({ cert: v })}
@@ -344,7 +359,7 @@ export function FilterBar({
               onChange={(v) => onChange({ format: v })}
             />
             <ChipGroup
-              label="Current"
+              label="Max current I'm comfortable with"
               value={filters.current}
               options={CURRENT_OPTIONS}
               onChange={(v) => onChange({ current: v })}

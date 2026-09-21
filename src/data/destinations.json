@@ -389,7 +389,7 @@
           "off"
         ],
         "reliability": "seasonal",
-        "note": "Best odds are roughly one sighting in three dives with an experienced guide during peak season, so budget multiple days. Crystal Bay is the most reliable site, typically at 20-30m. The Bali Ocean Sunfish Research Project cautions that the apparent seasonal peak partly tracks diver numbers rather than fish abundance, and that molas are also recorded outside the cold window.",
+        "note": "Realistic odds are about one sighting in ten dives, improving to roughly one in three over a full day of three dives when tide and moon line up, so budget several days. Crystal Bay is the most reliable site, typically at 20-30m. The Bali Ocean Sunfish Research Project cautions that the apparent seasonal peak partly tracks diver numbers rather than fish abundance, and that molas are also recorded outside the cold window.",
         "confidence": "medium",
         "sources": [
           "https://www.zubludiving.com/conservation/the-bali-ocean-sunfish-research-project",
@@ -601,20 +601,20 @@
         "months": [
           "peak",
           "peak",
+          "peak",
           "shoulder",
           "shoulder",
           "shoulder",
           "shoulder",
-          "shoulder",
-          "shoulder",
-          "shoulder",
-          "shoulder",
+          "peak",
+          "peak",
+          "peak",
           "shoulder",
           "peak"
         ],
         "reliability": "resident",
         "encounter_type": "natural",
-        "note": "Present year-round in the park; concentrations reported strongest Dec-Feb in the south when plankton density peaks. That is also the roughest time to reach the southern sites, which is the trade nobody mentions.",
+        "note": "Present year-round. The southern aggregation at Manta Alley peaks roughly December to March in cold, plankton-rich water, which is also when the south is easiest to reach. The central sites (Karang Makassar, Manta Point) are most active August to October and are within day-boat range of Labuan Bajo.",
         "confidence": "medium",
         "sources": [
           "https://www.zubludiving.com/destination/indonesia/nusa-tenggara/komodo",
@@ -788,21 +788,21 @@
       "shoulder"
     ],
     "operating_months": [
+      "open",
+      "open",
+      "open",
+      "open",
+      "open",
       "limited",
       "limited",
+      "limited",
       "open",
       "open",
       "open",
-      "open",
-      "open",
-      "open",
-      "open",
-      "open",
-      "open",
-      "limited"
+      "open"
     ],
-    "operating_note": "The park stays open and the northern sites are diveable year-round from Labuan Bajo. The 'limited' months reflect the south: Dec-Feb monsoon swell makes the southern sites and the crossing to them unreliable, and liveaboard itineraries shift or shorten. Confusingly, Dec-Feb is also when the southern manta aggregation is strongest, so the best manta window and the worst access window overlap.",
-    "operating_confidence": "medium",
+    "operating_note": "The park is open year-round, but its two halves trade places. From roughly mid-May to early September, south-east winds make the southern sites and the crossing to them rough and hard to reach, while the sheltered north is at its best. From about mid-November to March the south is at its best, which is also the Manta Alley season, and some northern sites are more exposed. Day boats from Labuan Bajo work the north and central park year-round.",
+    "operating_confidence": "high",
     "operating_sources": [
       "https://www.zubludiving.com/destination/indonesia/nusa-tenggara/komodo",
       "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-komodo-indonesia"
@@ -1508,7 +1508,7 @@
         ],
         "reliability": "seasonal",
         "encounter_type": "natural",
-        "note": "CORROBORATION IMPROVED. Two independent sources now support a cold-upwelling hammerhead season, though they disagree on extent: ZuBlu gives March-November with Sep-Nov strongest, Alor Underwater Explorers gives a Sep-Dec pelagic season. Encoded to the overlap plus the stronger claim. Still no research literature located, so this remains a commercial-consensus claim rather than a verified one. Do not book Alor solely for this.",
+        "note": "Two independent sources now support a cold-upwelling hammerhead season, though they disagree on extent: ZuBlu gives March-November with Sep-Nov strongest, Alor Underwater Explorers gives a Sep-Dec pelagic season. Encoded to the overlap plus the stronger claim. Still no research literature located, so this remains a commercial-consensus claim rather than a verified one. Do not book Alor solely for this.",
         "confidence": "medium",
         "sources": [
           "https://www.zubludiving.com/destination/indonesia/nusa-tenggara/alor",
@@ -2242,7 +2242,7 @@
           "note": "Consecutive deep dawn dives on the shoal stack up nitrogen fast."
         }
       ],
-      "experience_note": "SHIPPING CONTESTED. Inshore sites are calm and beginner-friendly; the seamounts carry moderate to strong current. Four sources give four different answers on where the thresher dive actually happens and how deep, which is what drives the certification gate: the PLOS ONE study puts the cleaning stations on the Monad Shoal plateau at 15-25m; DAN says the sharks relocated to Kimud Shoal at 12-15m; ZuBlu says Monad is 30m+ with Kimud only slightly shallower, and that Open Water divers may be admissible alongside an instructor; Divernet describes divers holding 12-14m at Kimud for up to 80 minutes. Encoded as Advanced because under-gating is the dangerous direction of error. Confirm the shoal and depth with your operator at booking. Repeated deep dawn dives on consecutive days make nitrox worthwhile. No lights or strobes on the shark dive.",
+      "experience_note": "Inshore sites are calm and beginner-friendly; the seamounts carry moderate to strong current. Four sources give four different answers on where the thresher dive actually happens and how deep, which is what drives the certification gate: the PLOS ONE study puts the cleaning stations on the Monad Shoal plateau at 15-25m; DAN says the sharks relocated to Kimud Shoal at 12-15m; ZuBlu says Monad is 30m+ with Kimud only slightly shallower, and that Open Water divers may be admissible alongside an instructor; Divernet describes divers holding 12-14m at Kimud for up to 80 minutes. Encoded as Advanced because under-gating is the dangerous direction of error. Confirm the shoal and depth with your operator at booking. Repeated deep dawn dives on consecutive days make nitrox worthwhile. No lights or strobes on the shark dive.",
       "confidence": "low",
       "sources": [
         "https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0014755",
@@ -2288,7 +2288,7 @@
       "open",
       "open"
     ],
-    "operating_note": "No formal closure. Typhoon risk runs roughly May-Oct and sources disagree on how badly it bites: DAN says avoid Jun-Sep, Divernet calls Mar-Sep the most stable window, and one field account calls the Jul-Dec rainy season mild. Encoded 'limited' across the contested span rather than picking a side. See OQ-07.",
+    "operating_note": "No formal closure. Typhoon risk runs roughly May-Oct and sources disagree on how badly it bites: DAN recommends November to April and notes typhoons are possible May to October, Divernet calls Mar-Sep the most stable window, and one field account calls the Jul-Dec rainy season mild. Encoded 'limited' across the contested span rather than picking a side.",
     "operating_confidence": "low",
     "operating_sources": [
       "https://dan.org/alert-diver/article/malapascua/",
@@ -3071,7 +3071,7 @@
           "shoulder"
         ],
         "reliability": "occasional",
-        "note": "Sources contradict each other on the window: Nov-Dec, Apr-May, or both. CONANP does not list whale shark among the park's representative species at all, which is itself a signal. Encoded as the conservative union of all claimed windows. Do not book around this. See OQ-05.",
+        "note": "Sources contradict each other on the window: Nov-Dec, Apr-May, or both. CONANP does not list whale shark among the park's representative species at all, which is itself a signal. Encoded as the conservative union of all claimed windows. Do not book around this.",
         "confidence": "low",
         "sources": [
           "https://www.bluewaterdivetravel.com/destination/socorro-island-diving",
@@ -3156,7 +3156,7 @@
       "open",
       "open"
     ],
-    "operating_note": "RESOLVED BY TIER 1. CONANP, the Mexican protected-areas authority, states the tourist diving season as November to June, 07:00-18:00, with a park fee of $3,760 MXN per person per day. That corrects the commercial sources, which variously gave Nov-May and Nov-Jun/Jul. Encoded Nov-Jun open, Jul-Oct closed. The closure is operational and regulatory, not biological: mantas, silvertips and dolphins are resident through it.",
+    "operating_note": "CONANP, the Mexican protected-areas authority, states the tourist diving season as November to June, 07:00-18:00, with a park fee of $3,760 MXN per person per day. That corrects the commercial sources, which variously gave Nov-May and Nov-Jun/Jul. Encoded Nov-Jun open, Jul-Oct closed. The closure is operational and regulatory, not biological: mantas, silvertips and dolphins are resident through it.",
     "operating_confidence": "high",
     "operating_sources": [
       "https://descubreanp.conanp.gob.mx/en/conanp/ANP?suri=143",
@@ -3204,7 +3204,7 @@
         "rank": 3,
         "type": "shark",
         "label": "Bull sharks at El Vencedor",
-        "note": "CONTRADICTION. Reliable at the El Vencedor wreck, but the two sources disagree sharply on when: ZuBlu gives a Feb-Jun peak, Divearoo gives bull sharks year-round with peak reliability Aug-Dec. Encoded as present year-round with no confident peak. Unbaited either way, which distinguishes this from the Playa del Carmen bull shark season on the other side of Mexico. See OQ-30.",
+        "note": "CONTRADICTION. Reliable at the El Vencedor wreck, but the two sources disagree sharply on when: ZuBlu gives a Feb-Jun peak, Divearoo gives bull sharks year-round with peak reliability Aug-Dec. Encoded as present year-round with no confident peak. Unbaited either way, which distinguishes this from the Playa del Carmen bull shark season on the other side of Mexico.",
         "seasonality": [
           "shoulder",
           "shoulder",
@@ -3258,7 +3258,7 @@
         ],
         "reliability": "resident",
         "encounter_type": "natural",
-        "note": "Sources contradict: ZuBlu gives Feb-Jun peak, Divearoo gives year-round with Aug-Dec most reliable. Encoded flat rather than picking a side. Unbaited. See OQ-30.",
+        "note": "Sources contradict: ZuBlu gives Feb-Jun peak, Divearoo gives year-round with Aug-Dec most reliable. Encoded flat rather than picking a side. Unbaited.",
         "confidence": "low",
         "sources": [
           "https://divearoo.com/destinations/mexico/sea-of-cortez/cabo-pulmo",
@@ -3748,7 +3748,7 @@
       "open",
       "open"
     ],
-    "operating_note": "Year-round diving. Both sources put the best window at roughly November to May, with February singled out for 82F water and 30m+ visibility. Aug-Oct is the peak of Caribbean hurricane season and individual days or whole weeks get cancelled, which is why those read 'limited'.",
+    "operating_note": "Year-round diving. The sources disagree on the best window: DiveIn recommends November to May and reports 82F water and 30m+ visibility in February; Bluewater prefers May to July for fewer crowds, warm water and staying ahead of hurricane season. Aug-Oct is the peak of Caribbean hurricane season and individual days or whole weeks get cancelled, which is why those read 'limited'.",
     "operating_confidence": "medium",
     "operating_sources": [
       "https://www.bluewaterdivetravel.com/destination/cozumel-diving",
@@ -7482,7 +7482,7 @@
       "open",
       "limited"
     ],
-    "operating_note": "Sources disagree on whether this is a closure or just bad weather. Some operators list the itinerary as running year-round; others describe winter wind limiting access to the offshore sites, and the Egyptian marine park has historically restricted Brothers and Daedalus in the winter months. Encoded 'limited' for Dec-Feb rather than 'closed' because the evidence does not support a hard closure. See OQ-29. Note the tension in the two arrays: the best shark months (Jun-Nov) are not the best condition months (Mar-May, Sep-Nov).",
+    "operating_note": "Sources disagree on whether this is a closure or just bad weather. Some operators list the itinerary as running year-round; others describe winter wind limiting access to the offshore sites, and the Egyptian marine park has historically restricted Brothers and Daedalus in the winter months. Encoded 'limited' for Dec-Feb rather than 'closed' because the evidence does not support a hard closure. Note the tension in the two arrays: the best shark months (Jun-Nov) are not the best condition months (Mar-May, Sep-Nov).",
     "operating_confidence": "low",
     "operating_sources": [
       "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-the-red-sea",
@@ -8303,7 +8303,7 @@
       "open",
       "limited"
     ],
-    "operating_note": "Trips run year-round but the crossing is the constraint: 20 hours of open ocean each way means the Coral Sea leg is dropped or rerouted in weather far more often than the sheltered Ribbon Reefs are. Dec-Feb is cyclone season in the region, hence 'limited'.",
+    "operating_note": "Trips run year-round but the crossing is the constraint: Osprey Reef is about 350km from Cairns and around 20 hours of cruising in total, there and back, so the Coral Sea leg is dropped or rerouted in weather far more often than the sheltered Ribbon Reefs are. Dec-Feb is cyclone season in the region, hence 'limited'.",
     "operating_confidence": "low",
     "operating_sources": [
       "https://cairnsdiveadventures.com.au/liveaboard-diving-cairns/osprey-reef-coral-sea-liveaboard-diving/"
@@ -8320,7 +8320,7 @@
     "country": "Japan",
     "coordinates": {
       "lat": 24.4667,
-      "lng": 123.0
+      "lng": 123
     },
     "summary": "Japan's westernmost island, 111km from Taiwan, sitting in the Kuroshio current, with a winter hammerhead aggregation and a large stepped rock formation whose origin is disputed.",
     "highlights": [

@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDown, ArrowLeft, ArrowRight, MapPin } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
 import { DiscoveryCards } from "@/components/sightline/DiscoveryCards";
@@ -8,15 +8,26 @@ import { WorldMap } from "@/components/sightline/WorldMap";
 import { DestinationCard } from "@/components/sightline/DestinationCard";
 import { FilterBar, ClearFiltersButton } from "@/components/sightline/FilterBar";
 import { ActiveFilterChips } from "@/components/sightline/ActiveFilterChips";
+import { NearMisses } from "@/components/sightline/NearMisses";
 import { SiteFooter } from "@/components/sightline/SiteFooter";
 import { logEvent } from "@/lib/analytics";
 import { DESTINATIONS, MONTHS, SPECIES_GROUPS, type Destination } from "@/lib/destinations";
-import { EMPTY_FILTERS, applyFilters, countActive, type Filters } from "@/lib/filters";
+import {
+  EMPTY_FILTERS,
+  briefSearch,
+  countActive,
+  filtersFromSearch,
+  searchFromFilters,
+  validateFilterSearch,
+  type Filters,
+} from "@/lib/filters";
+import { runFit } from "@/lib/fit";
 import { HERO_IMAGE } from "@/lib/imagery";
 
 const PAGE_SIZE = 6;
 
 export const Route = createFileRoute("/")({
+  validateSearch: validateFilterSearch,
   head: () => {
     const title = "Sightline — Independent dive destination reference";
     const description =
@@ -36,14 +47,42 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const navigate = useNavigate();
-  const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
+  const navigate = useNavigate({ from: "/" });
+  // The brief lives in the URL: it survives back-navigation, can be shared, and
+  // reaches the destination page.
+  const search = Route.useSearch();
+  const filters = useMemo(() => filtersFromSearch(search), [search]);
   const [hovered, setHovered] = useState<string | null>(null);
   const [hoveredPin, setHoveredPin] = useState<string | null>(null);
   const [page, setPage] = useState(0);
 
-  const shown = useMemo(() => applyFilters(filters), [filters]);
+  const run = useMemo(() => runFit(filters), [filters]);
+  const shown = useMemo(() => run.results.map((r) => r.destination), [run]);
+  const fitById = useMemo(() => new Map(run.results.map((r) => [r.destination.id, r])), [run]);
+  const brief = briefSearch(filters);
   const active = countActive(filters);
+
+  function setFilters(next: Filters | ((f: Filters) => Filters)) {
+    const value = typeof next === "function" ? next(filters) : next;
+    navigate({ search: searchFromFilters(value), replace: true, resetScroll: false });
+  }
+
+  // What was asked and what was shown, once the brief settles.
+  const lastLogged = useRef("");
+  useEffect(() => {
+    if (!run.brief) return;
+    const key = JSON.stringify(searchFromFilters(filters));
+    const timer = window.setTimeout(() => {
+      if (key === lastLogged.current) return;
+      lastLogged.current = key;
+      logEvent("fit_results", {
+        brief: searchFromFilters(filters),
+        results: run.results.map((r) => ({ id: r.destination.id, tier: r.tier })),
+        near_misses: run.nearMisses.map((r) => ({ id: r.destination.id, reason: r.violation?.reason })),
+      });
+    }, 1500);
+    return () => window.clearTimeout(timer);
+  }, [run, filters]);
 
   const pageCount = Math.max(1, Math.ceil(shown.length / PAGE_SIZE));
   const current = Math.min(page, pageCount - 1);
@@ -73,7 +112,7 @@ function Home() {
 
   function openDestination(d: Destination) {
     logEvent("click_map_pin", { destination: d.id });
-    navigate({ to: "/destinations/$slug", params: { slug: d.id } });
+    navigate({ to: "/destinations/$slug", params: { slug: d.id }, search: brief });
   }
 
   function applyTag(next: Partial<Filters>) {
@@ -163,9 +202,18 @@ function Home() {
               <h2 className="font-display text-3xl text-foreground sm:text-4xl">
                 Explore destinations
               </h2>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {shown.length} of {DESTINATIONS.length} destinations match
-                {active > 0 ? " your filters" : ""}.
+              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                {run.brief ? (
+                  <>
+                    {shown.length} of {DESTINATIONS.length} destinations fit your trip. Best fits first,
+                    then fewest caveats — thin or conflicting evidence counts as a caveat.
+                  </>
+                ) : (
+                  <>
+                    {shown.length} of {DESTINATIONS.length} destinations match
+                    {active > 0 ? " your filters" : ""}.
+                  </>
+                )}
               </p>
             </div>
             {active > 0 && <ClearFiltersButton onClick={() => setFilters(EMPTY_FILTERS)} />}
@@ -200,7 +248,7 @@ function Home() {
           </div>
 
           {/* RESULT GRID */}
-          {shown.length === 0 ? (
+          {shown.length === 0 && run.nearMisses.length > 0 ? null : shown.length === 0 ? (
             <div className="mt-10 rounded-2xl bg-card p-10 text-center ring-1 ring-inset ring-border">
               <MapPin className="mx-auto h-5 w-5 text-muted-foreground" />
               <p className="mt-3 text-sm font-medium">No destination matches every filter.</p>
@@ -218,6 +266,8 @@ function Home() {
                       onHover={setHovered}
                       onTag={applyTag}
                       highlighted={hoveredPin === d.id}
+                      fit={run.brief ? fitById.get(d.id) : undefined}
+                      brief={brief}
                     />
                   </li>
                 ))}
@@ -264,6 +314,8 @@ function Home() {
               )}
             </>
           )}
+
+          <NearMisses misses={run.nearMisses} brief={brief} emptyResults={shown.length === 0} />
         </div>
       </section>
 
