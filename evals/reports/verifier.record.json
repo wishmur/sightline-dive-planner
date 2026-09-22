@@ -1,0 +1,734 @@
+{
+  "eval": "verifier",
+  "mode": "record",
+  "generated_at": "2026-09-22T17:36:54.801Z",
+  "harness": {
+    "requests": 78,
+    "cacheHits": 4,
+    "recorded": 74,
+    "misses": 0,
+    "spentUsd": 5.320765,
+    "representedUsd": 5.594429999999999,
+    "usage": {
+      "input_tokens": 744221,
+      "output_tokens": 74933,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0
+    },
+    "latencyMs": [
+      8858,
+      17514,
+      8372,
+      8872,
+      11842,
+      11852,
+      6161,
+      7156,
+      12554,
+      10423,
+      10175,
+      9016,
+      20928,
+      8155,
+      7281,
+      12309,
+      13870,
+      9682,
+      15976,
+      12342,
+      8087,
+      11474,
+      11753,
+      7985,
+      14569,
+      13167,
+      8163,
+      15257,
+      6313,
+      14246,
+      16070,
+      9852,
+      16529,
+      6448,
+      14487,
+      9115,
+      13941,
+      7638,
+      14758,
+      14598,
+      11972,
+      6459,
+      6998,
+      9977,
+      10763,
+      6207,
+      15786,
+      8590,
+      21234,
+      6932,
+      5400,
+      19455,
+      10426,
+      14207,
+      15440,
+      19235,
+      11711,
+      7098,
+      7736,
+      8787,
+      15743,
+      9642,
+      8589,
+      27885,
+      7378,
+      8263,
+      21022,
+      23528,
+      15636,
+      5358,
+      6274,
+      12134,
+      5314,
+      15937,
+      9089,
+      11094,
+      12119,
+      8853
+    ]
+  },
+  "model": "claude-opus-5",
+  "prompt_version": "v1-2026-09-21",
+  "split": "all",
+  "sets": [
+    {
+      "set": "dev",
+      "outcomes": {
+        "ok": 39
+      },
+      "noVerdict": 0,
+      "n": 39,
+      "accuracy": 0.6153846153846154,
+      "falseSupportRate": 0,
+      "falseSupportDenominator": 2,
+      "contradictionRecall": 1,
+      "contradictions": 2,
+      "hallucinatedQuoteRate": 0.18716577540106952,
+      "confusion": {
+        "supported": {
+          "supported": 12,
+          "partial": 12,
+          "contradicted": 2,
+          "not_found": 0
+        },
+        "partial": {
+          "supported": 0,
+          "partial": 10,
+          "contradicted": 1,
+          "not_found": 0
+        },
+        "contradicted": {
+          "supported": 0,
+          "partial": 0,
+          "contradicted": 2,
+          "not_found": 0
+        },
+        "not_found": {
+          "supported": 0,
+          "partial": 0,
+          "contradicted": 0,
+          "not_found": 0
+        }
+      },
+      "rows": [
+        {
+          "claimId": "aliwal-shoal/operating",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "The page supports year-round shark diving and both season windows (raggies Jun–Nov, tigers Nov–Mar, overlapping in November). It says nothing about a surf launch or days lost to sea state, and only notes raggies water temperature indirectly ('warmer waters' for tigers)."
+        },
+        {
+          "claimId": "alor/species/scalloped-hammerhead",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 2,
+          "note": "Both pages support a cold-upwelling hammerhead peak, and ZuBlu's March–November window with a September–November best period is stated verbatim. Alor Underwater Explorers, however, labels its \"Pelagic Season\" as September–November (Sept–December is the cold-upwelling/lunar window), and says hammerheads are not strictly seasonal but possible year-round, so the claim's \"Sep–Dec pelagic season\" attribution is only partly borne out; neither page speaks to research literature."
+        },
+        {
+          "claimId": "ari-atoll/operating",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "Year-round diving, year-round whale sharks, and a wetter/windier southwest monsoon (given as May–November, not Jun–Sep specifically) are supported. The page does not mention reduced visibility in that season, nor that western sites 'blow out' or become limited — it only says whale sharks shift east during the southwest monsoon."
+        },
+        {
+          "claimId": "azores/operating",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 2,
+          "note": "The July–mid-October blue shark window is directly supported, and ZuBlu supports rays June–October (though CW Azores gives early July–mid-October for Princess Alice mobulas, a narrower window). Spring poor visibility (~10m) and stormy, cool winters are stated, but neither page says operators close or that diving effectively stops in December–February, nor is 10m autumn visibility mentioned."
+        },
+        {
+          "claimId": "baa-atoll/format/0",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 1,
+          "note": "The page confirms snorkel-only (scuba banned), $20-30 token, 45 minutes in-water, 45-visitor cap, five-vessel limit, and ten snorkellers per licensed guide. 'Ranger-supervised' is only implied by the mention of an excluded ranger vessel."
+        },
+        {
+          "claimId": "baa-atoll/highlight/2",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 0,
+          "note": "The page confirms whale sharks occur in the same plankton-driven aggregation, that the bay is snorkel-only (scuba banned), and that the same $20-30 token covers in-water time with both mantas and whale sharks. The lower reliability of whale sharks is only implied (\"Reliably huge manta ray congregations\" versus \"if you're lucky... even whale sharks\", \"several whale sharks\"), not stated as a direct comparison."
+        },
+        {
+          "claimId": "baa-atoll/species/reef-manta-ray",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "The page supports the May–December aggregation window, the late July–early October peak, the full/new moon timing and the tidal-current plankton mechanism. It says nothing about reef mantas being present in the Maldives year-round, and it in fact frames the season months as decisive alongside the moon."
+        },
+        {
+          "claimId": "cabo-pulmo/highlight/3",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 2,
+          "note": "Both pages confirm El Vencedor as the reliable bull shark site, and the timing disagreement is real: ZuBlu lists February–June while Divearoo gives year-round presence with an August–December peak (plus larger April–June aggregations). The no-bait/no-cage detail comes only from Divearoo; ZuBlu is silent on baiting but does not contradict it."
+        },
+        {
+          "claimId": "cabo-pulmo/species/bull-shark",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 0,
+          "note": "Both cited seasonal windows are stated verbatim on their respective pages, confirming the described source disagreement, and Divearoo explicitly states the encounters are unbaited (no bait, cage or chum). ZuBlu does not address baiting, but that does not contradict."
+        },
+        {
+          "claimId": "cocos/experience",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 2,
+          "note": "Supported: SMB skill and buoyancy expectation, routine open-water/blue drift ascents with only two moored sites, 30m+ depths, seasonal thermoclines, and ~36-40 hours (roughly two days) to Puntarenas with the chamber in San José. Not supported: the framing that strong current/surge is 'the norm, not the exception' (DAN says much of the diving can be easy and rough conditions occur 'on some days'), and the assertion that hammerheads are typically in the cold water."
+        },
+        {
+          "claimId": "cocos/species/scalloped-hammerhead",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 2,
+          "note": "Both pages support year-round hammerhead presence, peak schooling in the rainy season, and better visibility in the dry season (Jan–May), so the visibility/aggregation trade-off holds. The two pages differ slightly on the rainy season's end (DAN: June–October; Bluewater: June–November); the claim's operator-disclosure framing is editorial and not checked."
+        },
+        {
+          "claimId": "cozumel/operating",
+          "gold": "contradicted",
+          "predicted": "contradicted",
+          "rejectedQuotes": 0,
+          "note": "Year-round diving and the February 82F/30m+ visibility detail are supported by DiveIn. However, only DiveIn gives a November–May best window; Bluewater explicitly names May–July as best and advises against July–December, so \"both sources\" is contradicted. Neither page states that August–October is the hurricane peak or that days/weeks of diving get cancelled."
+        },
+        {
+          "claimId": "galapagos/experience",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "Supported: cool season Jun–Nov with temperatures down to 16°C, thermoclines, stronger currents and rougher seas, and an advanced/experienced-diver profile. Not addressed: the 7mm-plus-hood-and-gloves minimum, negative-entry drift dives with reef hooks at Darwin and Wolf, specific logged-dive requirements, and the 10–15m season-specific visibility figure (the page gives only a general 10–25m range)."
+        },
+        {
+          "claimId": "galapagos/highlight/1",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 1,
+          "note": "Both decisive facts are stated: schools \"sometimes over 100-strong\" circling at the northernmost islands of Darwin and Wolf, and liveaboard-only access to those remote northern sites (land-based diving from Santa Cruz covers other sites). The pages describe Darwin and Wolf as islands rather than \"seamounts,\" a wording difference only."
+        },
+        {
+          "claimId": "galapagos/species/scalloped-hammerhead",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 1,
+          "note": "The Galapagos Conservation Trust page explicitly supports the warm-season (Dec-May) peak for hammerhead schooling at Wolf and Darwin and that the reason for aggregation is debated. Year-round presence at Darwin/Wolf is not stated on either page, and the Liveaboard page frames the cool season (June-November) as prime for hammerhead schooling, disagreeing on the seasonal peak."
+        },
+        {
+          "claimId": "gbr-ribbon-reefs/operating",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 1,
+          "note": "The page confirms the strict June–July minke window and that swimming with minke whales requires a GBRMPA permit held by endorsed operators. It says nothing about year-round liveaboard operation, Dec–Feb wet/cyclone cancellations, how many operators hold the permit, or trips selling out a year ahead."
+        },
+        {
+          "claimId": "komodo/format/0",
+          "gold": "partial",
+          "predicted": "contradicted",
+          "rejectedQuotes": 1,
+          "note": "The pages support that liveaboards give the best access to South Komodo (Manta Alley, Horseshoe Bay, Cannibal Rock) and that day boats have longer transits and less flexibility, but they contradict the absolute claim that day boats cannot reach the south: Bluewater says a liveaboard is not required and only \"usually the best choice,\" and liveaboard.com notes resort-based and short-range boats work the protected southern bays in the wet season."
+        },
+        {
+          "claimId": "komodo/operating",
+          "gold": "contradicted",
+          "predicted": "contradicted",
+          "rejectedQuotes": 2,
+          "note": "Year-round northern diving from Labuan Bajo and the strong Jan–Mar southern manta aggregation are supported, but the core claim is contradicted: both pages place the difficult southern access in the June–August monsoon (Zublu) and describe Dec–Mar as good for the sheltered southern bays, so there is no overlap of 'best manta' and 'worst access'. Neither page mentions park closures or shortened liveaboard itineraries in Dec–Feb."
+        },
+        {
+          "claimId": "kona/operating",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 1,
+          "note": "The leeward/sheltered setting and near-daily year-round diveability are directly stated, and swell-dependent shore diving being better in summer is supported by implication. Neither page states that winter swell leaves boat operations unaffected; Bluewater only notes a choppier winter surface."
+        },
+        {
+          "claimId": "lembeh/operating",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 2,
+          "note": "Year-round diving, the sheltered/calm strait, cool nutrient-rich water in July-August and the visibility-versus-critter-activity trade-off are all stated on the pages. Minor nuance: ZuBlu places the lowest visibility in August-September rather than exactly July-August, while naming July-August the coldest months."
+        },
+        {
+          "claimId": "malapascua/highlight/1",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 1,
+          "note": "The study figures (97 events, 1,230 hours, 232 days), the morning-to-evening decline, the seamount-plateau cleaning stations, and the predictable daily uniqueness of Malapascua are all supported. Neither page mentions a ~04:00 departure time or any prohibition on strobes/lights; DAN also notes the threshers have largely shifted from Monad to the shallower Kimud Shoal."
+        },
+        {
+          "claimId": "malapascua/species/pelagic-thresher-shark",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 2,
+          "note": "Year-round presence and the morning-to-evening decline in cleaning-station activity are directly stated by the cited pages, as is the daily-but-not-certain nature of dawn sightings. No page addresses dive cancellations from surface conditions in a Jun–Oct window; the DAN page only notes rain Jun–Sept and typhoons possible May–October."
+        },
+        {
+          "claimId": "malta/experience",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "The winter water temperature (14C/15C) and the drysuit requirement for year-round diving are stated, as is good visibility and rocky shore access. The page says nothing about currents, absence of marine hazards, swell-affected entries, or any record of deep wreck fatalities in Malta."
+        },
+        {
+          "claimId": "moalboal/operating",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 0,
+          "note": "Both pages support a roughly November/December–May optimum, no closure, and year-round sardines (explicit on Hale Manna); Hale Manna alone supports the Jun–Aug fewer-crowds and Sep–Nov visibility/typhoon details. ZuBlu downplays typhoon exposure, a mild disagreement with Hale Manna's \"possible typhoons\"."
+        },
+        {
+          "claimId": "ningaloo/format/0",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 2,
+          "note": "The pages support licensed-operator-only tours, spotter planes, groups of 10 in the water from ~20-guest boats, regulated distances, and snorkel-only (no scuba). Neither page states a count of licensed operators, so 'twelve or so' is unverified."
+        },
+        {
+          "claimId": "ningaloo/operating",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "The whale shark tour windows (March–June Coral Bay, to August Exmouth) and year-round reef/manta diving are supported. The humpback figure is mixed: the operator page gives a swim season of August–October while Divernet says humpbacks visit July–October. Neither page states that Nov–Feb is a wet/cyclone season with megafauna absent or that the tour industry shuts down then; cyclones are mentioned only generically."
+        },
+        {
+          "claimId": "nusa-penida/operating",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 1,
+          "note": "The World Adventure Divers page supports the December–March rough-surface window, frequent cancellations/redirects at Manta Point and Crystal Bay, and that operators keep running (moving to the sheltered north coast) rather than closing. Note the same page elsewhere gives the rainy season as December to April, so the end of the window is slightly looser than the claim; the mola page does not address closures at all."
+        },
+        {
+          "claimId": "nusa-penida/species/reef-manta-ray",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 1,
+          "note": "Year-round presence, the ~twofold May sighting increase at Manta Point, and the April–May courtship peak are stated in the Frontiers paper; the dive guide confirms Dec–Mar cancellations stem from rough surface conditions while mantas remain present year-round."
+        },
+        {
+          "claimId": "palau/operating",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 2,
+          "note": "Year-round diving with no closure, the Jun–Sep wet season, 15-20m wet-season versus 40m+ dry-season visibility, the Dec–Apr best-weather window and the Nov–Apr manta season are all stated. The claim that exposed sites such as Peleliu are frequently cancelled is not on either page; ZuBlu instead says rough wet-season seas 'won't affect the diving too much and the vast majority of sites can still be dived.'"
+        },
+        {
+          "claimId": "raja-ampat/operating",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 2,
+          "note": "The pages support the rough May/June–September window, strong southern winds and high waves, July–August as the worst stretch with many liveaboards suspending operations, 10–15m visibility then, resorts still open but cancelling dives on windy days, and lower prices. Not supported: boats 'repositioning elsewhere in Indonesia', and the 10–15m figure applied across the whole May–September span (Bluewater gives 15–25m for May–June); the two pages also differ on whether the low season starts in May or June."
+        },
+        {
+          "claimId": "rangiroa/operating",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "The page confirms year-round diving with no closure, a June–September high tourist season, and a December–March great hammerhead window. It says nothing about rainfall or air/water temperature patterns, so the \"drier half\" versus \"warmer, wetter\" characterization is unverified here."
+        },
+        {
+          "claimId": "red-sea-north/operating",
+          "gold": "supported",
+          "predicted": "contradicted",
+          "rejectedQuotes": 0,
+          "note": "Year-round diving with no closure, cooler/windier winter (21–23°C) and hot, crowded summer are supported. The page contradicts the 'sheltered north' premise: it says winter wind limits the northern sites (Ras Mohammed, Tiran) and that winter diving is viable especially in the south, and it never says southern itineraries lack year-round operation."
+        },
+        {
+          "claimId": "silfra/experience",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 1,
+          "note": "Every decisive fact — dual certification requirement or 10 logged drysuit dives signed off by an instructor, mandatory drysuit/no wetsuit scuba, hood-gloves-boots, 18m limit, buddy rule, no overhead environments, age 17 minimum, medical screening — appears on the two cited pages."
+        },
+        {
+          "claimId": "socorro/experience",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "Supported: strong currents/surge, blue-water safety stops, AOW plus 50 logged dives, cool 21–23°C water in the whale months (Bluewater; ZuBlu's overall range 23–28°C and liveaboard.com's 22–24°C for Feb–Mar are warmer), and that it suits experienced divers. Not addressed by any page: negative entries, the two-day distance from a hyperbaric chamber, nitrox being expected, the $3,760 MXN per-diver-per-day park fee, and a 07:00–18:00 diving-hours restriction (ZuBlu only notes night diving is banned)."
+        },
+        {
+          "claimId": "socorro/species/whale-shark",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 1,
+          "note": "The disagreement across sources is supported: Bluewater says Nov–Dec, liveaboard.com says Apr–May, ZuBlu says both windows. The CONANP claim is unverifiable here because the representative-species list on that page is truncated ('Show all species'), so whale shark's absence cannot be confirmed."
+        },
+        {
+          "claimId": "tiger-beach/operating",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "The page supports year-round operation, the Oct-Jan tiger peak and the Dec-Mar hammerhead window (so the Dec-Jan overlap follows). It says nothing about hurricane season or trips being cancelled/rerouted in Jun-Sep; it only notes June-October is warmer and wetter."
+        },
+        {
+          "claimId": "tubbataha/operating",
+          "gold": "supported",
+          "predicted": "contradicted",
+          "rejectedQuotes": 0,
+          "note": "The mid-March to mid-June window, liveaboard-only access, and the NE (Nov–Mar) / SW (Jul–Oct) monsoon exposure are supported by the Alert Diver page. However, the booking lead time is contradicted: Bluewater states boats can sell out 12–18 months ahead, not 9–12. Bluewater also frames the season as March–June rather than mid-March to mid-June."
+        },
+        {
+          "claimId": "tulamben/operating",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 1,
+          "note": "Year-round access with no closure, sheltered shore diving, resident dive centres, and reduced wet-season visibility (10–20m Dec–Feb vs 20–30m Apr–Oct) are all stated. Minor nuance: ZuBlu dates the wet season November–March rather than Dec–Feb, and neither page discusses liveaboard fleets repositioning."
+        },
+        {
+          "claimId": "yonaguni/operating",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 1,
+          "note": "The page supports the Jan–Mar hammerhead window coinciding with winter winds that make the site hard to reach (the author got only one monument dive on the third day), but it never mentions a north-east monsoon by name, gives no figure for cancelled days, and says nothing about a Jul–Sep typhoon season or the absence of a formal closure."
+        }
+      ]
+    },
+    {
+      "set": "test",
+      "outcomes": {
+        "ok": 39
+      },
+      "noVerdict": 0,
+      "n": 39,
+      "accuracy": 0.5641025641025641,
+      "falseSupportRate": 0,
+      "falseSupportDenominator": 4,
+      "contradictionRecall": 0.6666666666666666,
+      "contradictions": 3,
+      "hallucinatedQuoteRate": 0.1746031746031746,
+      "confusion": {
+        "supported": {
+          "supported": 10,
+          "partial": 13,
+          "contradicted": 1,
+          "not_found": 0
+        },
+        "partial": {
+          "supported": 0,
+          "partial": 9,
+          "contradicted": 2,
+          "not_found": 0
+        },
+        "contradicted": {
+          "supported": 0,
+          "partial": 1,
+          "contradicted": 2,
+          "not_found": 0
+        },
+        "not_found": {
+          "supported": 0,
+          "partial": 0,
+          "contradicted": 0,
+          "not_found": 1
+        }
+      },
+      "rows": [
+        {
+          "claimId": "alor/operating",
+          "gold": "supported",
+          "predicted": "contradicted",
+          "rejectedQuotes": 4,
+          "note": "The rainy-season visibility drop, resort shutdowns, April–August 30–40m calm high season, and the Sept-onward cold/strong-current pelagic season are all supported. But \"no formal closure\" is contradicted by Alor Underwater Explorers, which states the season runs only mid-March to mid-December, sites shut down completely outside it, and the resort is closed January–February; ZuBlu's \"can be dived year round\" is the conflicting side. No page supports April–August being suited to first-timers."
+        },
+        {
+          "claimId": "anilao/operating",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 1,
+          "note": "The Oct–May season and continued access during the monsoon are supported, and Zublu does name November and May as best months; Bluewater instead gives October–early June with best months November/December and April/May, so \"both sources single out November and May\" is only loosely true. Both pages limit monsoon/typhoon conditions to July–August, not June–September, and neither mentions dive cancellations from sea state or photography groups avoiding the period."
+        },
+        {
+          "claimId": "azores/highlight/1",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "The pages confirm baiting via \"minimal chumming\", the >90% success rate, up to 20 blue sharks per dive, the no-touch/no-feed rule, and the Pico location and season. Neither page states that the dives are done without a cage or explicitly describes them as open blue-water dives, so that detail is unverified."
+        },
+        {
+          "claimId": "azores/species/blue-shark",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 0,
+          "note": "The CW Azores page states the July to mid-October season off Pico, over 90% success with up to 20 blue sharks per dive, and minimal chumming; ZuBlu independently confirms the July–October window at Pico seamounts."
+        },
+        {
+          "claimId": "baa-atoll/highlight/1",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 0,
+          "note": "The page states the scuba ban, keyhole-funnel plankton concentration, cyclone/manta-train feeding, 45-minute tokens, 45-visitor cap, five-vessel limit and ten-snorkeller guide ratio. Only the incidental framing of tokens as \"ranger-controlled\" is unstated (tokens are sold online or at the visitor centre; a ranger vessel is mentioned)."
+        },
+        {
+          "claimId": "baa-atoll/operating",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "The page supports the May–December aggregation window and its link to the southwest monsoon. It says nothing about whether Baa Atoll's resorts and dive sites operate normally in January–April or that the bay is accessible-but-empty then, so that part of the claim is unverified here."
+        },
+        {
+          "claimId": "cabo-pulmo/experience",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 3,
+          "note": "Park rules (45-minute limit, no-touch, 2m standoff, no collecting), 15m shallow reefs for all levels, drift/intermediate profile, 18°C in March, the weekly El Vencedor lottery with no VIP override, the San José del Cabo chamber 1.5 hours away and the off-grid village are all stated on the cited pages. The one unsupported element is the framing of El Bajo as a seamount suited to intermediate-plus divers: ZuBlu calls El Bajo and Meros seamounts, while Divearoo explicitly says Cabo Pulmo's El Bajo is a shallow reef bar rated Open Water."
+        },
+        {
+          "claimId": "cabo-pulmo/operating",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 1,
+          "note": "Year-round season, the two-groups-per-site permit cap, and the weekly El Vencedor lottery are all stated on the pages, as is the Feb–Jun bull shark window falling in the cold/low-viz part of the year. However, \"both sources agree\" on Aug–Dec is overstated: only Divearoo gives Aug–Dec with 27–30 °C and 24–27 m viz, while ZuBlu puts warm water Jun–Nov and peak season Oct–Jan with 10–30 m viz; the \"book 3–6 months ahead\" figure appears nowhere (Divearoo only says \"months ahead\"/\"well in advance\")."
+        },
+        {
+          "claimId": "cabo-pulmo/species/whale-shark",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "Both pages support occasional winter-season whale sharks at Cabo Pulmo (Divearoo: October–April; ZuBlu: coldest months). Neither page addresses La Paz bay as the reliable whale shark destination or that it is a snorkel-only activity."
+        },
+        {
+          "claimId": "cocos/operating",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "Year-round diving (no closure mentioned), the June–October hammerhead peak, dry-season visibility up to ~30m and better Jan–May visibility are supported; neither page states an explicit closed season or assigns a 9–20m visibility range specifically to the rainy season (Bluewater in fact reports 50–70ft in June/July). The two pages also differ on when the rainy season ends (DAN: June–October; Bluewater: June–November)."
+        },
+        {
+          "claimId": "coral-sea/operating",
+          "gold": "contradicted",
+          "predicted": "contradicted",
+          "rejectedQuotes": 0,
+          "note": "The page gives ~20 hours as the combined total transit, not 20 hours each way, contradicting the claim's crossing figure. It does mention weather-dependent site substitution and a conditions-dependent shark feed, but says nothing about year-round operation, a Dec–Feb cyclone season, or the Coral Sea leg being dropped more often than Ribbon Reefs diving."
+        },
+        {
+          "claimId": "fakarava/operating",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 0,
+          "note": "The page confirms year-round diving, year-round shark presence, a Nov-Apr rainy/warmer season with rare cyclones, and a May-Oct dry season, with no mention of any closure. One nuance: the page notes less rain falls here than elsewhere in French Polynesia, and that June-August maramu winds can make diving slightly harder, but nothing contradicts the claim."
+        },
+        {
+          "claimId": "galapagos/format/1",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 0,
+          "note": "The liveaboard.com page confirms land-based day diving from Santa Cruz covers central sites (Gordon Rocks, Floreana, Cousin's Rock) while Darwin and Wolf are only accessible by liveaboard. Seymour and the marine life mix (sharks, rays, sea lions at central sites) are only loosely addressed, but the decisive access facts are stated."
+        },
+        {
+          "claimId": "galapagos/operating",
+          "gold": "partial",
+          "predicted": "contradicted",
+          "rejectedQuotes": 1,
+          "note": "Year-round access, the cool-season profile (whale sharks, cold water, rougher seas) and the warm-season profile (calmer, better visibility) are supported. But the page places the big hammerhead schooling in the cool season (\"hundreds of hammerhead sharks\") while warm season megafauna \"thins out somewhat\" with sightings merely \"remain common,\" contradicting the claim that warm season means more hammerhead schooling; a cap on liveaboard permits is not stated, only that high-season trips book out 12 months ahead."
+        },
+        {
+          "claimId": "galapagos/species/whale-shark",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 1,
+          "note": "Both month windows (Jun–Sep from GCT, Jul–Oct peak from Liveaboard) and the mature-pregnant-female character of the aggregation are stated on the pages. The claim that sightings are \"almost exclusively at Darwin\" is not supported: both pages pair Darwin with Wolf without singling out Darwin. GCT also says \"unlike aggregations in many other locations,\" slightly weaker than \"every other known aggregation.\""
+        },
+        {
+          "claimId": "komodo/experience",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 1,
+          "note": "Temperatures (north 27-28C; south ~23-24C, claim says 22-24), green plankton-rich southern water, 5m minimum southern visibility, reef hooks/negative entries/SMB, and the advanced-with-easier-site-exceptions level are all stated on the pages. No cited page mentions downcurrents or 'washing-machine' pinnacle conditions as the principal risk, and Bluewater's headline dive level is 'All Levels' against ZuBlu's 'advanced divers upwards'."
+        },
+        {
+          "claimId": "komodo/format/1",
+          "gold": "partial",
+          "predicted": "contradicted",
+          "rejectedQuotes": 2,
+          "note": "The pages do support that land-based day diving is oriented to the north/central park and that day boats have longer transit times, but the decisive claim that southern macro and Manta Alley are \"simply not on the menu\" from a land base is contradicted: liveaboard.com states resort-based and short-range boats focus on the protected southern bays in the wet season, when Manta Alley is a highlight. No page gives 1.5–3 hour transit times or attributes the named site list specifically to day boats."
+        },
+        {
+          "claimId": "komodo/species/reef-manta-ray",
+          "gold": "contradicted",
+          "predicted": "contradicted",
+          "rejectedQuotes": 2,
+          "note": "Year-round manta presence and strong southern (Manta Alley) aggregations in the Jan–March/wet-season window are supported, though the pages give Jan–Mar rather than Dec–Feb and never mention peak plankton density. The claim that this is the roughest time to reach southern sites is contradicted: Zublu attributes rough, hard-to-access southern seas to the June–August monsoon, and Liveaboard.com describes the southern bays as protected with improved visibility during the wet season."
+        },
+        {
+          "claimId": "la-paz/operating",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "The page confirms year-round diving and the 1 June-31 August sea lion colony breeding closure (Los Islotes being the area's main sea lion site). It says nothing about hurricane season overlapping that window, only heat, humidity and some rain later in the season."
+        },
+        {
+          "claimId": "malapascua/experience",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 5,
+          "note": "Each attributed depth/site figure checks out verbatim against its page (PLOS 15–25 m plateau; DAN Kimud 12–15 m; ZuBlu Monad 30 m+ with AOW gate and OW-with-instructor at Kimud; Divernet 12–14 m for up to 80 min at Kimud), as do the current profile and the no-lights/strobes rule; the pages genuinely disagree on which shoal the dive now happens at, which the claim itself flags. The nitrox recommendation is the author's advice, not stated by the pages (Divernet only notes nitrox availability)."
+        },
+        {
+          "claimId": "malapascua/operating",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "Supported: no closure (year-round diving), typhoons possible May–October, Divernet's March–September stable window, and the field account's mild July–December rainy season. Not supported as stated: DAN does not say to avoid June–September — it calls those months hot and sunny with rainy afternoons and jellyfish while naming November–April as best; Divernet meanwhile flags November–December as the weaker visibility months, disagreeing with DAN."
+        },
+        {
+          "claimId": "malta/cert/trimix",
+          "gold": "not_found",
+          "predicted": "not_found",
+          "rejectedQuotes": 1,
+          "note": "The page mentions historical wrecks and that Malta suits divers up to advanced technical level, but says nothing about deeper wartime wrecks lying beyond air/recreational depth limits or requiring trimix; the only depth-specific technical reference is the chimney at Reqqa Point."
+        },
+        {
+          "claimId": "malta/operating",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "The page supports the Apr-Oct window, warmest water, year-round drysuit diving, and the 14-15C winter floor. It does not state that operator availability thins in winter or that technical teams keep diving then; and the 'calmest sea' framing is qualified by the page's note that it 'can still be quite windy during these months'."
+        },
+        {
+          "claimId": "moorea/operating",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "Year-round diving with no closure is supported, and the whale season (August–November 1) falls largely within the claimed May–Oct window. The page identifies the rainy season as December–January only, not a broad Nov–Apr wet half, and says nothing about cyclone risk or relative dryness of May–Oct."
+        },
+        {
+          "claimId": "ningaloo/highlight/1",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 1,
+          "note": "All decisive facts are on the pages: snorkel/freedive only (no scuba), spotter planes and boat holding off, groups of ten with a guide, licensed operators, 41,390 swimmers in 2025, and the aggregation following the coral spawn in March or April."
+        },
+        {
+          "claimId": "nusa-penida/experience",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 1,
+          "note": "Supported: manageable sustained drift on the north coast, Crystal Bay's unpredictable up/down-currents, Open Water feasible at Manta Point in calm seas, the 50-dive bar for Crystal Bay, Advanced for ~30m mola dives, and cold thermoclines with a 5mm recommended (implying 3mm is insufficient, though one author reports diving 3/4mm plus a hooded 2mm top). Not supported: that Manta Point produces unpredictable down- and up-currents (pages cite rough surface swells Dec–Mar instead) or that these two sites are 'where incidents happen'; ZuBlu also reports colder south-coast figures (16-17C, dips to 13-14C) than the claim's 16-19C band."
+        },
+        {
+          "claimId": "nusa-penida/species/ocean-sunfish",
+          "gold": "contradicted",
+          "predicted": "partial",
+          "rejectedQuotes": 2,
+          "note": "Crystal Bay as the most reliable site, the ~20–30 m depth band, multiple-day planning, and the research project's caveats (diver-effort bias, year-round/warm-water sightings) are all stated. The \"one in three\" figure is supported only as a conditional best case (a full day of three dives around new/full moon; baseline is about one in ten), and the source ties it to lunar/upwelling conditions rather than guide experience; one cited page puts Crystal Bay mola depths at 30–40 m."
+        },
+        {
+          "claimId": "oahu/operating",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "The page supports year-round diveability on Oahu (and all featured wrecks are south/southeast shore sites), but it never states that the south shore is sheltered, nor does it mention north shore seasonality, a Nov-Mar winter swell window, or Haleiwa tour cancellations."
+        },
+        {
+          "claimId": "raja-ampat/experience",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 1,
+          "note": "Warm year-round water (28–30°C) is supported, and currents are acknowledged as a feature of Dampier Strait sites. Nothing on either page mentions thermoclines, reef hooks, negative entries, or buoyancy over fragile coral; and both pages lean the other way on skill level, saying high-season currents are manageable and suited to first-time visitors."
+        },
+        {
+          "claimId": "raja-ampat/species/whale-shark",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "The page supports the absence of whale sharks from central Raja Ampat, the Cenderawasih Bay location roughly three days east of Sorong, and the aggregation around bagans/fishing platforms. It does not state that the sharks are hand-fed or provisioned by fishermen — it describes them as 'feeding on bait fish' — so the provisioning claim is unverified here."
+        },
+        {
+          "claimId": "red-sea-brothers/operating",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "The liveaboard.com page supports year-round diving with winter wind limiting offshore access (though it names Ras Mohammed and Tiran, not Brothers/Daedalus), the Mar-May/Sep-Nov condition window, and Jun-Nov shark sightings. Neither page mentions any Egyptian marine park winter restriction on Brothers and Daedalus; the Master Liveaboards page provided contains only extras/pricing and says nothing about operating season."
+        },
+        {
+          "claimId": "silfra/cert/drysuit",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 1,
+          "note": "Both pages state the drysuit certification requirement, the 10-logged-dives-within-two-years alternative verified by an instructor, and that scuba in a wetsuit is prohibited (divers must have a drysuit). The operator-enforcement wording is framing, consistent with the park rules the dive operator page reproduces."
+        },
+        {
+          "claimId": "silfra/operating",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "The constant 2–4°C water temperature year-round is directly stated by both pages, implying no thermal season. Neither page addresses winter access, the road to Thingvellir, daylight hours, or any seasonal closure, so that part of the claim is unverified."
+        },
+        {
+          "claimId": "socorro/operating",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "CONANP's stated Nov–June diving season, 07:00–18:00 hours and $3,760 MXN per person per day fee are supported verbatim, as is the spread among commercial sources (Nov–May vs Nov–Jun/Jul). The Jul–Oct closure is only partly supported — ZuBlu gives a diving season of November to July with a break August–October — and no page states the closure's rationale is operational/regulatory rather than biological, nor that silvertips and dolphins are resident through July–October (Bluewater notes mantas and sharks year-round; ZuBlu lists mantas and dolphins Nov–June)."
+        },
+        {
+          "claimId": "tiger-beach/highlight/1",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 1,
+          "note": "The page explicitly states the baited V-formation setup with a professional feeder at the point, and the typical 4-5 sharks with up to 15 maximum. Only the unverifiable framing (\"buried in the small print\") and the detail of \"kneel\" go beyond the page, which says divers \"position themselves.\""
+        },
+        {
+          "claimId": "tiger-beach/species/tiger-shark",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 1,
+          "note": "The page supports the resident year-round population, the October-January peak, the typical 4-5 and maximum 15 counts, and the reliance on chum/feeding to bring tigers to divers. The closing assertion that the species would not otherwise approach kneeling divers is an inference not explicitly stated, but it does not conflict with the page."
+        },
+        {
+          "claimId": "tulamben/format/2",
+          "gold": "supported",
+          "predicted": "partial",
+          "rejectedQuotes": 1,
+          "note": "The 3–3.5 hour drive from south Bali, the existence of day-trip diving, and the advantage of an overnight stay/early dive over day-trip crowds (groups arriving ~9am) are all stated. The pages never name Sanur, Seminyak or Ubud as departure points, so that specific detail is unverified."
+        },
+        {
+          "claimId": "tulamben/species/bumphead-parrotfish",
+          "gold": "supported",
+          "predicted": "supported",
+          "rejectedQuotes": 2,
+          "note": "Both decisive facts check out: ZuBlu presents bumpheads as a year-round Liberty highlight and a reason to stay overnight for the dawn dive, while the first-person account reports they went missing during COVID and were still absent in December 2023. The genuine source disagreement the claim describes is exactly what the pages show; the 'two real reasons to day-trip' framing is editorial."
+        },
+        {
+          "claimId": "yucatan-cenotes/operating",
+          "gold": "partial",
+          "predicted": "partial",
+          "rejectedQuotes": 0,
+          "note": "The 24-25 °C year-round water temperature is explicitly supported, and the pages imply no seasonal closure. Neither page addresses a Jun-Oct wet-season visibility drop from rain-driven tannins/particulate (only a summer algal bloom at Carwash), hurricanes closing roads rather than sites, or cenotes as a fallback when Caribbean boat dives are cancelled."
+        }
+      ]
+    }
+  ]
+}

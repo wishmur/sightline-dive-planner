@@ -1,0 +1,52 @@
+{
+  "key": "d2e4f73cdbd66df7970e31b4",
+  "eval": "understand",
+  "recorded_at": "2026-09-22T17:24:08.652Z",
+  "request_id": "req_011CfJsDhSBkvMsnM5W3iUYo",
+  "latency_ms": 3999,
+  "response": {
+    "model": "claude-opus-5",
+    "id": "msg_011CfJsDhnGuy2vMMDjzcQA5",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"month\":null,\"also_months\":[],\"targets\":[\"dolphins\"],\"cert\":null,\"current_limit\":null,\"format\":null,\"dive_type\":null,\"where\":null,\"concerns\":[],\"unsupported\":[],\"destinations\":[\"rangiroa\"]}"
+      }
+    ],
+    "container": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+      "input_tokens": 28,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 4876,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "iterations": [
+        {
+          "input_tokens": 28,
+          "output_tokens": 87,
+          "cache_read_input_tokens": 4876,
+          "cache_creation_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "type": "message",
+          "model": null
+        }
+      ],
+      "output_tokens": 87,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "service_tier": "standard",
+      "inference_geo": "global"
+    }
+  }
+}

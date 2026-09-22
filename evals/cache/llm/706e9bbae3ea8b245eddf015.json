@@ -1,0 +1,52 @@
+{
+  "key": "706e9bbae3ea8b245eddf015",
+  "eval": "understand",
+  "recorded_at": "2026-09-22T17:21:12.993Z",
+  "request_id": "req_011CfJrzpBPMTScqfLj1Khvm",
+  "latency_ms": 3097,
+  "response": {
+    "model": "claude-opus-5",
+    "id": "msg_011CfJrzpPnrgM2RZi3qhxEn",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"month\":\"June\",\"also_months\":[],\"targets\":[\"sea-turtles\"],\"cert\":\"open_water\",\"current_limit\":null,\"format\":null,\"dive_type\":\"reef\",\"where\":null,\"concerns\":[\"experience\"],\"unsupported\":[],\"destinations\":[]}"
+      }
+    ],
+    "container": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+      "input_tokens": 56,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 4876,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "iterations": [
+        {
+          "input_tokens": 56,
+          "output_tokens": 89,
+          "cache_read_input_tokens": 4876,
+          "cache_creation_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "type": "message",
+          "model": null
+        }
+      ],
+      "output_tokens": 89,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "service_tier": "standard",
+      "inference_geo": "global"
+    }
+  }
+}

@@ -53,6 +53,26 @@ export function validateOutput(output: VerifierOutput, input: VerifierInput): Va
   return { output: { ...output, verdict, quotes, conflict }, rejectedQuotes };
 }
 
+/**
+ * Why the gate rejected a quote. Only "not_in_page" and "url_not_cited" are
+ * fabrication; "over_25_words" and "spliced" are real text that breaks the
+ * short-quote rule (verbatim, contiguous, at most 25 words).
+ */
+export type RejectionReason = "not_in_page" | "url_not_cited" | "over_25_words" | "spliced";
+
+export function rejectionReason(q: Quote, input: VerifierInput): RejectionReason | null {
+  const page = input.pages.find((p) => p.url === q.url)?.text;
+  if (!page) return "url_not_cited";
+  const verbatim = containsQuote(page, q.text);
+  if (verbatim) return q.text.split(/\s+/).length <= 25 ? null : "over_25_words";
+  const parts = q.text
+    .split(/\.{3}|\u2026/)
+    .map((x) => x.trim())
+    .filter(Boolean);
+  if (parts.length > 1 && parts.every((x) => containsQuote(page, x))) return "spliced";
+  return "not_in_page";
+}
+
 // ---------------------------------------------------------------------------
 // Baseline: lexical overlap (thresholds fixed a priori, not tuned on gold)
 

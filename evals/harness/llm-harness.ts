@@ -25,6 +25,13 @@ export type HarnessMode = "record" | "replay" | "dry-run";
 export type Split = "dev" | "test" | "all";
 
 export const CACHE_DIR = "evals/cache/llm";
+/**
+ * Responses that may quote publishers' pages at length (the verifier's) stay
+ * out of git, next to the private source snapshots. They still count toward
+ * the total budget.
+ */
+export const PRIVATE_CACHE_DIR = "data/.llm-cache";
+export const ALL_CACHE_DIRS = [CACHE_DIR, PRIVATE_CACHE_DIR];
 export const REPORT_DIR = "evals/reports";
 /** Characters per token for estimates only. Real counts come from `usage` in the report. */
 export const CHARS_PER_TOKEN = 3.5;
@@ -71,13 +78,15 @@ export function requestKey(path: string, body: unknown): string {
     .slice(0, 24);
 }
 
-/** Everything already paid for: the cost of every cached response. */
-export function spentInCache(dir = CACHE_DIR): number {
-  if (!existsSync(dir)) return 0;
+/** Everything already paid for: the cost of every cached response, across cache folders. */
+export function spentInCache(dirs: string | string[] = ALL_CACHE_DIRS): number {
   let usd = 0;
-  for (const f of readdirSync(dir).filter((x) => x.endsWith(".json"))) {
-    const rec = JSON.parse(readFileSync(join(dir, f), "utf8"));
-    if (rec.response?.usage) usd += costUsd(rec.response.usage, rec.response.model);
+  for (const dir of typeof dirs === "string" ? [dirs] : dirs) {
+    if (!existsSync(dir)) continue;
+    for (const f of readdirSync(dir).filter((x) => x.endsWith(".json"))) {
+      const rec = JSON.parse(readFileSync(join(dir, f), "utf8"));
+      if (rec.response?.usage) usd += costUsd(rec.response.usage, rec.response.model);
+    }
   }
   return usd;
 }
@@ -153,9 +162,12 @@ export class LlmHarness {
       cacheDir?: string;
       maxUsd?: number;
       totalUsd?: number;
+      /** Folders whose spend counts toward totalUsd. Default: this cache, or all standard ones. */
+      ledger?: string[];
     },
   ) {
-    this.priorUsd = opts.totalUsd === undefined ? 0 : spentInCache(opts.cacheDir ?? CACHE_DIR);
+    const ledger = opts.ledger ?? (opts.cacheDir ? [opts.cacheDir] : ALL_CACHE_DIRS);
+    this.priorUsd = opts.totalUsd === undefined ? 0 : spentInCache(ledger);
   }
 
   static isDryRun = (err: unknown) => isHarnessError(err, "dry_run");
