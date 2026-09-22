@@ -19,6 +19,7 @@ import {
   estimateRun,
   parseHarnessArgs,
   requestKey,
+  spentInCache,
 } from "./harness/llm-harness";
 
 let server: ReturnType<typeof Bun.serve>;
@@ -181,8 +182,9 @@ describe("dry run", () => {
 });
 
 describe("budget", () => {
-  test("no new paid call once the budget is spent", async () => {
-    const h = new LlmHarness({ name: "t", mode: "record", cacheDir: tmp(), maxUsd: 0.001 });
+  test("no new paid call once the run budget can't cover its worst case", async () => {
+    // Worst case per call ≈ $0.1225: the first fits in $0.13, the second (after $0.0115 spent) doesn't.
+    const h = new LlmHarness({ name: "t", mode: "record", cacheDir: tmp(), maxUsd: 0.13 });
     await parseWith(h);
     expect(hits).toBe(1);
     const { understandWithClaude } = await import("@/lib/llm.server");
@@ -192,6 +194,51 @@ describe("budget", () => {
     expect(LlmHarness.isBudgetExceeded(err)).toBe(true);
     expect(new BudgetExceeded(1)).toBeInstanceOf(Error);
     expect(hits).toBe(1);
+  });
+
+  test("the total budget counts everything already spent, across runs", async () => {
+    const dir = tmp();
+    await parseWith(new LlmHarness({ name: "t", mode: "record", cacheDir: dir }));
+    const spent = spentInCache(dir);
+    expect(spent).toBeCloseTo((1000 * 5 + 200 * 25 + 3000 * 0.5) / 1e6);
+    hits = 0;
+    // A new run whose total cap is already used up sends nothing new.
+    const h = new LlmHarness({ name: "t", mode: "record", cacheDir: dir, totalUsd: spent });
+    const { understandWithClaude } = await import("@/lib/llm.server");
+    const err = await understandWithClaude("a new trip", { fetch: h.fetch, apiKey: "x" }).catch(
+      (e) => e,
+    );
+    expect(LlmHarness.isBudgetExceeded(err)).toBe(true);
+    expect(hits).toBe(0);
+    // Cached responses are still free under an exhausted cap.
+    expect((await parseWith(h)).trip.month).toBe(2);
+  });
+
+  test("a call is refused if its worst case could cross the total", async () => {
+    // One describe call's worst case is about $0.12 (4,000 output tokens at $25/M).
+    const h = new LlmHarness({ name: "t", mode: "record", cacheDir: tmp(), totalUsd: 0.05 });
+    const err = await parseWith(h).catch((e) => e);
+    expect(LlmHarness.isBudgetExceeded(err)).toBe(true);
+    expect(hits).toBe(0);
+    const ok = new LlmHarness({ name: "t", mode: "record", cacheDir: tmp(), totalUsd: 0.5 });
+    await parseWith(ok);
+    expect(hits).toBe(1);
+  });
+
+  test("concurrent calls reserve their worst case before any is sent", async () => {
+    const h = new LlmHarness({ name: "t", mode: "record", cacheDir: tmp(), totalUsd: 0.2 });
+    const { understandWithClaude } = await import("@/lib/llm.server");
+    const results = await Promise.all(
+      ["a", "b", "c"].map((t) =>
+        understandWithClaude(`trip ${t}`, { fetch: h.fetch, apiKey: "x" }).then(
+          () => "ok",
+          (e) => (LlmHarness.isBudgetExceeded(e) ? "refused" : "error"),
+        ),
+      ),
+    );
+    // Only one ~$0.12 worst case fits under $0.20 at a time.
+    expect(results.filter((r) => r === "ok")).toHaveLength(1);
+    expect(results.filter((r) => r === "refused")).toHaveLength(2);
   });
 });
 
@@ -261,6 +308,9 @@ describe("arguments", () => {
         ANTHROPIC_API_KEY: "k",
       }),
     ).toMatchObject({ mode: "dry-run", limit: 5, split: "dev", maxUsd: 2 });
+    expect(parseHarnessArgs(["llm"], {}).totalUsd).toBe(15);
+    expect(parseHarnessArgs(["llm", "--total-usd", "9"], {}).totalUsd).toBe(9);
+    expect(parseHarnessArgs(["llm"], { SIGHTLINE_EVAL_TOTAL_USD: "7" }).totalUsd).toBe(7);
     expect(parseHarnessArgs(["llm", "--replay"], { ANTHROPIC_API_KEY: "k" }).mode).toBe("replay");
     expect(parseHarnessArgs(["llm", "--dry-run"], {}).llm).toBe(true);
   });

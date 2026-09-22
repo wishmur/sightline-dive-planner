@@ -209,7 +209,12 @@ if (import.meta.main) {
 
   if (args.llm) {
     const llm = await import("@/lib/llm.server");
-    const h = new LlmHarness({ name: "adversarial", mode: args.mode, maxUsd: args.maxUsd });
+    const h = new LlmHarness({
+      name: "adversarial",
+      mode: args.mode,
+      maxUsd: args.maxUsd,
+      totalUsd: args.totalUsd,
+    });
     const opts = { fetch: h.fetch, apiKey: args.mode === "record" ? undefined : "no-network" };
     banner("Adversarial inputs", args);
     const tripCases = TRIP_ADVERSARIAL.slice(0, args.limit);

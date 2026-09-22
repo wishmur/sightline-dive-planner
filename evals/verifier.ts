@@ -161,7 +161,12 @@ async function pool<T, R>(items: T[], n: number, fn: (t: T) => Promise<R>): Prom
 
 async function runLlm(cases: GoldCase[]) {
   const args = parseHarnessArgs(process.argv.slice(2), process.env);
-  const h = new LlmHarness({ name: "verifier", mode: args.mode, maxUsd: args.maxUsd });
+  const h = new LlmHarness({
+    name: "verifier",
+    mode: args.mode,
+    maxUsd: args.maxUsd,
+    totalUsd: args.totalUsd,
+  });
   const client = new Anthropic({
     fetch: h.fetch,
     maxRetries: 1,

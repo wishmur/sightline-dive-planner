@@ -102,7 +102,12 @@ if (import.meta.main) {
 
   if (args.llm) {
     const llm = await import("@/lib/llm.server");
-    const h = new LlmHarness({ name: "ask", mode: args.mode, maxUsd: args.maxUsd });
+    const h = new LlmHarness({
+      name: "ask",
+      mode: args.mode,
+      maxUsd: args.maxUsd,
+      totalUsd: args.totalUsd,
+    });
     const opts = { fetch: h.fetch, apiKey: args.mode === "record" ? undefined : "no-network" };
     banner("Ask about this destination", args);
     const all: Outcome<unknown>[] = [];

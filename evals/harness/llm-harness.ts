@@ -8,13 +8,16 @@
  * - replay: never touches the network. Misses fail that case, visibly.
  * - dry-run: never touches the network. Captures the exact requests so the
  *   runner can print them and estimate tokens and cost.
- * A budget (--max-usd) stops new paid calls mid-run.
+ * Two budgets stop new paid calls: --max-usd for this run, and --total-usd
+ * (default $15, the owner's cap) for everything ever spent, counted from the
+ * cache. Each call reserves its worst case before it is sent, so neither can
+ * be crossed, even by concurrent calls.
  *
  * The cache stores the response and a hash of the request, never the request:
  * verifier requests carry whole source pages, which stay private.
  */
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { costUsd, PRICES_PER_MTOK, type Usage } from "@/lib/llm-guard";
 
@@ -66,6 +69,24 @@ export function requestKey(path: string, body: unknown): string {
     .update(JSON.stringify(canonical({ path, body })))
     .digest("hex")
     .slice(0, 24);
+}
+
+/** Everything already paid for: the cost of every cached response. */
+export function spentInCache(dir = CACHE_DIR): number {
+  if (!existsSync(dir)) return 0;
+  let usd = 0;
+  for (const f of readdirSync(dir).filter((x) => x.endsWith(".json"))) {
+    const rec = JSON.parse(readFileSync(join(dir, f), "utf8"));
+    if (rec.response?.usage) usd += costUsd(rec.response.usage, rec.response.model);
+  }
+  return usd;
+}
+
+/** Upper bound for one request: input estimated with a 50% margin, every output token used. */
+function worstCase(body: Record<string, unknown>): number {
+  const p = PRICES_PER_MTOK[String(body.model)] ?? PRICES_PER_MTOK["claude-opus-5"]!;
+  const input = tokenSplit(body).total * 1.5;
+  return (input * p.input + Number(body.max_tokens ?? 0) * p.output) / 1e6;
 }
 
 // ---------------------------------------------------------------------------
@@ -121,14 +142,21 @@ export class LlmHarness {
     latencyMs: [],
   };
 
+  /** Spent before this run started (only counted when a total budget is set). */
+  readonly priorUsd: number;
+  private inFlightUsd = 0;
+
   constructor(
     readonly opts: {
       name: string;
       mode: HarnessMode;
       cacheDir?: string;
       maxUsd?: number;
+      totalUsd?: number;
     },
-  ) {}
+  ) {
+    this.priorUsd = opts.totalUsd === undefined ? 0 : spentInCache(opts.cacheDir ?? CACHE_DIR);
+  }
 
   static isDryRun = (err: unknown) => isHarnessError(err, "dry_run");
   static isCacheMiss = (err: unknown) => isHarnessError(err, "cache_miss");
@@ -180,12 +208,25 @@ export class LlmHarness {
       this.stats.misses++;
       return harnessError("cache_miss", new CacheMiss(key).message);
     }
-    if (this.opts.maxUsd !== undefined && this.stats.spentUsd >= this.opts.maxUsd) {
+    // Reserve the worst case before sending (synchronously, so concurrent calls
+    // see each other's reservations), and refuse if either budget could be crossed.
+    const reserve = worstCase(body);
+    const committed = this.stats.spentUsd + this.inFlightUsd + reserve;
+    if (this.opts.maxUsd !== undefined && committed > this.opts.maxUsd) {
       return harnessError("budget_exceeded", new BudgetExceeded(this.opts.maxUsd).message);
     }
+    if (this.opts.totalUsd !== undefined && this.priorUsd + committed > this.opts.totalUsd) {
+      return harnessError("budget_exceeded", new BudgetExceeded(this.opts.totalUsd).message);
+    }
+    this.inFlightUsd += reserve;
 
     const started = performance.now();
-    const res = await globalThis.fetch(input, init);
+    let res: Response;
+    try {
+      res = await globalThis.fetch(input, init);
+    } finally {
+      this.inFlightUsd -= reserve;
+    }
     if (res.ok) {
       const response = await res.clone().json();
       const latency = Math.round(performance.now() - started);
@@ -347,11 +388,14 @@ export type HarnessArgs = {
   limit: number;
   split: Split;
   maxUsd: number;
+  totalUsd: number;
   showPrompts: boolean;
   errors: boolean;
 };
 
 export const DEFAULT_MAX_USD = 5;
+/** The owner's cap on all paid eval spend, set 2026-09-22. */
+export const DEFAULT_TOTAL_USD = 15;
 
 export function parseHarnessArgs(
   argv: string[],
@@ -372,6 +416,10 @@ export function parseHarnessArgs(
   const maxUsd = maxRaw === undefined ? DEFAULT_MAX_USD : Number(maxRaw);
   if (!Number.isFinite(maxUsd) || maxUsd < 0)
     throw new Error(`--max-usd needs a number, got "${maxRaw}"`);
+  const totalRaw = value("--total-usd") ?? env.SIGHTLINE_EVAL_TOTAL_USD;
+  const totalUsd = totalRaw === undefined ? DEFAULT_TOTAL_USD : Number(totalRaw);
+  if (!Number.isFinite(totalUsd) || totalUsd < 0)
+    throw new Error(`--total-usd needs a number, got "${totalRaw}"`);
   const dry = argv.includes("--dry-run");
   const hasKey = Boolean(env.ANTHROPIC_API_KEY || env.ANTHROPIC_AUTH_TOKEN);
   return {
@@ -380,6 +428,7 @@ export function parseHarnessArgs(
     limit,
     split,
     maxUsd,
+    totalUsd,
     showPrompts: argv.includes("--show-prompts"),
     errors: argv.includes("--errors"),
   };

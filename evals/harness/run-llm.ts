@@ -3,7 +3,7 @@
  * verifier.ts: split and limit selection, per-case outcomes, and the summary.
  */
 import { LlmError } from "@/lib/llm-guard";
-import { LlmHarness, usd, type HarnessArgs, type Split } from "./llm-harness";
+import { LlmHarness, spentInCache, usd, type HarnessArgs, type Split } from "./llm-harness";
 
 export type FailReason =
   | "dry_run"
@@ -53,9 +53,13 @@ export function banner(name: string, args: HarnessArgs) {
   const what = {
     "dry-run": "dry run: prints the requests and estimates cost; sends nothing",
     replay: "replay: scores cached responses only; sends nothing",
-    record: `record: uncached requests are sent and paid for (budget ${usd(args.maxUsd)}), then cached`,
+    record: `record: uncached requests are sent and paid for, then cached`,
   }[args.mode];
   console.log(`\n=== ${name} · Claude · ${what} ===`);
+  if (args.mode === "record")
+    console.log(
+      `budgets: this run ${usd(args.maxUsd)} · all paid evals ${usd(args.totalUsd)}, of which ${usd(spentInCache())} already spent`,
+    );
   if (args.limit !== Infinity) console.log(`limit: first ${args.limit} cases of each set`);
   if (args.split !== "all") console.log(`split: ${args.split} only`);
 }
