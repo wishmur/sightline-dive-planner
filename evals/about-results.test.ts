@@ -75,15 +75,6 @@ describe("About page results match the evals", () => {
 
   test("concern evidence, test split", () => {
     const all = score(runMethod((d, c) => concernHits(d, c).map((h) => h.passage.id), SPLIT.test));
-    const top = score(
-      runMethod(
-        (d, c) =>
-          concernHits(d, c)
-            .slice(0, 1)
-            .map((h) => h.passage.id),
-        SPLIT.test,
-      ),
-    );
     const seasick = score(
       runMethod((d, c) => concernHits(d, c).map((h) => h.passage.id), SPLIT.test).filter(
         (p) => p.concern === "seasickness",
@@ -91,21 +82,13 @@ describe("About page results match the evals", () => {
     );
     expect(SPLIT.test.length).toBe(RESULTS.concerns.testDestinations);
     expect(pct(all.hit)).toBe(RESULTS.concerns.hit);
-    expect(pct(top.precision)).toBe(RESULTS.concerns.topSentence);
     expect(pct(all.abstain)).toBe(RESULTS.concerns.abstain);
     expect(pct(seasick.hit)).toBe(RESULTS.concerns.seasicknessHit);
   });
 
   test("keyword rules on held-out trip descriptions", () => {
     const s = summarizeParse(HELDOUT_CASES.map((c) => scoreCase(c, parseTripRules(c.text))));
-    // "Everything else": every field except the worries themselves.
-    const others = Object.entries(s.perField).filter(([f]) => f !== "concerns");
-    const otherFields = others.reduce((n, [, v]) => n + v, 0) / others.length;
-    expect({
-      cases: s.cases,
-      worries: pct(s.concernRecall),
-      otherFields: pct(otherFields),
-    }).toEqual(RESULTS.parser);
+    expect({ worries: pct(s.concernRecall) }).toEqual(RESULTS.parser);
   });
 
   test("keyword fallback on specific questions, test half", () => {

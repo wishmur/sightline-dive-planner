@@ -19,13 +19,12 @@ export const RESULTS = {
   concerns: {
     testDestinations: 18,
     hit: 93,
-    topSentence: 90,
     abstain: 85,
     seasicknessHit: 75,
     embeddingHit: [33, 44] as const,
   },
   /** Keyword-rules reading of 30 held-out trip descriptions (evals/understand.heldout.ts). */
-  parser: { cases: 30, worries: 65, otherFields: 99 },
+  parser: { worries: 65 },
   /** Keyword fallback on specific questions, ask test half (evals/ask.gold.ts). */
   ask: { specificHit: 56 },
 };
