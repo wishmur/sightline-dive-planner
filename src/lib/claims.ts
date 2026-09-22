@@ -30,6 +30,16 @@ export type Claim = {
   inheritedSources: boolean;
 };
 
+/** How each kind of claim is labelled next to a quote. */
+export const CLAIM_KIND_LABEL: Record<ClaimType, string> = {
+  operating: "Access",
+  experience: "Conditions",
+  species: "Marine life",
+  highlight: "Highlight",
+  format: "Trip format",
+  cert: "Certification",
+};
+
 export const claimId = {
   operating: (d: Destination) => `${d.id}/operating`,
   experience: (d: Destination) => `${d.id}/experience`,

@@ -2,6 +2,7 @@ import { X } from "lucide-react";
 import { MONTHS } from "@/lib/destinations";
 import { certLabel, diveTypeLabel } from "@/lib/cards";
 import { getCollection } from "@/lib/collections";
+import { getConcern } from "@/lib/concerns";
 import {
   CURRENT_OPTIONS,
   ENTRY_OPTIONS,
@@ -31,7 +32,11 @@ export function activeChips(f: Filters): Chip[] {
     chips.push({ key: "query", label: `“${f.query.trim()}”`, clear: { query: "" } });
   }
   if (f.where !== "all") {
-    chips.push({ key: "where", label: f.where.split(":")[1] ?? "Anywhere", clear: { where: "all" } });
+    chips.push({
+      key: "where",
+      label: f.where.split(":")[1] ?? "Anywhere",
+      clear: { where: "all" },
+    });
   }
   if (f.month !== "any") {
     chips.push({ key: "month", label: MONTHS[Number(f.month)]!, clear: { month: "any" } });
@@ -75,6 +80,13 @@ export function activeChips(f: Filters): Chip[] {
   }
   if (f.operatingOnly) {
     chips.push({ key: "operating", label: "Fully operating", clear: { operatingOnly: false } });
+  }
+  for (const id of f.concerns) {
+    chips.push({
+      key: `concern:${id}`,
+      label: getConcern(id)?.label ?? id,
+      clear: { concerns: f.concerns.filter((c) => c !== id) },
+    });
   }
   return chips;
 }

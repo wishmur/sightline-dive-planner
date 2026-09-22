@@ -1,0 +1,1674 @@
+{
+ "about": "Concern-evidence gold. For every destination and every concern in src/lib/concerns.ts, the claim sentences (src/lib/passages.ts) a diver with that concern should read before booking. Exhaustive: every sentence of every record was judged against every concern, so an empty list means the record does not address the concern. Labelled 2026-09-21 by the builder with AI assistance, from CONCERNS[].definition, BEFORE any retrieval code existed. The dev split may be used to tune retrieval terms; the test split may not. Frozen: change a label only with a dated reason in `changes`.",
+ "labelledAt": "2026-09-21",
+ "split": {
+  "dev": [
+   "tulamben",
+   "komodo",
+   "lembeh",
+   "tubbataha",
+   "anilao",
+   "socorro",
+   "cozumel",
+   "cocos",
+   "kona",
+   "la-paz",
+   "fakarava",
+   "moorea",
+   "baa-atoll",
+   "red-sea-brothers",
+   "gbr-ribbon-reefs",
+   "yonaguni",
+   "azores",
+   "malta"
+  ],
+  "test": [
+   "nusa-penida",
+   "raja-ampat",
+   "alor",
+   "malapascua",
+   "moalboal",
+   "cabo-pulmo",
+   "yucatan-cenotes",
+   "galapagos",
+   "silfra",
+   "palau",
+   "rangiroa",
+   "ari-atoll",
+   "red-sea-north",
+   "ningaloo",
+   "coral-sea",
+   "tiger-beach",
+   "aliwal-shoal",
+   "oahu"
+  ]
+ },
+ "passageCounts": {
+  "tulamben": 30,
+  "nusa-penida": 26,
+  "komodo": 30,
+  "raja-ampat": 42,
+  "lembeh": 24,
+  "alor": 35,
+  "tubbataha": 30,
+  "malapascua": 35,
+  "anilao": 26,
+  "moalboal": 27,
+  "socorro": 37,
+  "cabo-pulmo": 34,
+  "cozumel": 26,
+  "yucatan-cenotes": 43,
+  "cocos": 26,
+  "galapagos": 42,
+  "kona": 38,
+  "silfra": 26,
+  "la-paz": 31,
+  "palau": 34,
+  "fakarava": 34,
+  "rangiroa": 22,
+  "moorea": 29,
+  "ari-atoll": 26,
+  "baa-atoll": 26,
+  "red-sea-north": 24,
+  "red-sea-brothers": 30,
+  "ningaloo": 32,
+  "gbr-ribbon-reefs": 29,
+  "coral-sea": 23,
+  "yonaguni": 28,
+  "tiger-beach": 26,
+  "azores": 31,
+  "aliwal-shoal": 33,
+  "malta": 24,
+  "oahu": 36
+ },
+ "changes": [],
+ "gold": {
+  "tulamben": {
+   "seasickness": [
+    "tulamben/operating#0",
+    "tulamben/format/0#0",
+    "tulamben/format/0#1"
+   ],
+   "experience": [
+    "tulamben/experience#0",
+    "tulamben/experience#1",
+    "tulamben/experience#2",
+    "tulamben/highlight/1#4"
+   ],
+   "current": [
+    "tulamben/experience#0"
+   ],
+   "crowds": [
+    "tulamben/highlight/1#5",
+    "tulamben/format/1#0",
+    "tulamben/format/2#0"
+   ],
+   "visibility": [
+    "tulamben/operating#1"
+   ],
+   "weather": [
+    "tulamben/operating#0",
+    "tulamben/operating#1",
+    "tulamben/experience#0"
+   ],
+   "photography": [
+    "tulamben/highlight/2#0",
+    "tulamben/highlight/2#1"
+   ],
+   "depth": [
+    "tulamben/experience#1",
+    "tulamben/highlight/1#3",
+    "tulamben/highlight/1#4",
+    "tulamben/highlight/4#0",
+    "tulamben/cert/nitrox#0",
+    "tulamben/cert/nitrox#1"
+   ],
+   "getting_there": [
+    "tulamben/format/1#0",
+    "tulamben/format/2#0"
+   ]
+  },
+  "nusa-penida": {
+   "seasickness": [
+    "nusa-penida/operating#0",
+    "nusa-penida/operating#1",
+    "nusa-penida/species/reef-manta-ray#2",
+    "nusa-penida/format/1#0"
+   ],
+   "cold": [
+    "nusa-penida/experience#3",
+    "nusa-penida/highlight/2#0",
+    "nusa-penida/highlight/2#1"
+   ],
+   "non_diver": [
+    "nusa-penida/format/2#0",
+    "nusa-penida/format/2#1",
+    "nusa-penida/format/2#2"
+   ],
+   "experience": [
+    "nusa-penida/experience#0",
+    "nusa-penida/experience#1",
+    "nusa-penida/experience#2"
+   ],
+   "current": [
+    "nusa-penida/experience#0",
+    "nusa-penida/experience#1"
+   ],
+   "crowds": [
+    "nusa-penida/format/0#0",
+    "nusa-penida/format/1#1",
+    "nusa-penida/format/2#0"
+   ],
+   "visibility": [
+    "nusa-penida/highlight/3#1"
+   ],
+   "weather": [
+    "nusa-penida/operating#0",
+    "nusa-penida/operating#1",
+    "nusa-penida/operating#2",
+    "nusa-penida/species/reef-manta-ray#2"
+   ],
+   "depth": [
+    "nusa-penida/experience#2",
+    "nusa-penida/species/ocean-sunfish#1"
+   ],
+   "getting_there": [
+    "nusa-penida/format/0#0",
+    "nusa-penida/format/1#0"
+   ]
+  },
+  "komodo": {
+   "seasickness": [
+    "komodo/operating#1",
+    "komodo/format/0#0",
+    "komodo/format/0#1",
+    "komodo/format/1#1"
+   ],
+   "cold": [
+    "komodo/experience#1",
+    "komodo/experience#2",
+    "komodo/species/reef-manta-ray#0",
+    "komodo/highlight/2#1",
+    "komodo/highlight/3#1"
+   ],
+   "non_diver": [
+    "komodo/format/2#0",
+    "komodo/format/2#1"
+   ],
+   "experience": [
+    "komodo/experience#3",
+    "komodo/experience#4",
+    "komodo/highlight/1#2"
+   ],
+   "current": [
+    "komodo/experience#1",
+    "komodo/experience#3",
+    "komodo/highlight/1#0",
+    "komodo/highlight/1#1",
+    "komodo/highlight/1#2"
+   ],
+   "crowds": [
+    "komodo/format/2#0",
+    "komodo/format/2#1"
+   ],
+   "visibility": [
+    "komodo/experience#1"
+   ],
+   "weather": [
+    "komodo/operating#1",
+    "komodo/operating#2"
+   ],
+   "photography": [
+    "komodo/highlight/3#1"
+   ],
+   "depth": [
+    "komodo/cert/nitrox#0"
+   ],
+   "getting_there": [
+    "komodo/operating#3",
+    "komodo/species/reef-manta-ray#1",
+    "komodo/format/0#0",
+    "komodo/format/0#1",
+    "komodo/format/1#0",
+    "komodo/format/1#1",
+    "komodo/format/1#2"
+   ]
+  },
+  "raja-ampat": {
+   "seasickness": [
+    "raja-ampat/operating#1",
+    "raja-ampat/operating#2",
+    "raja-ampat/species/giant-oceanic-manta-ray#2",
+    "raja-ampat/format/0#0",
+    "raja-ampat/format/0#1"
+   ],
+   "cold": [
+    "raja-ampat/experience#0"
+   ],
+   "non_diver": [
+    "raja-ampat/highlight/2#0",
+    "raja-ampat/format/2#0"
+   ],
+   "experience": [
+    "raja-ampat/experience#1",
+    "raja-ampat/experience#2",
+    "raja-ampat/experience#3"
+   ],
+   "current": [
+    "raja-ampat/experience#0",
+    "raja-ampat/experience#1",
+    "raja-ampat/highlight/2#1",
+    "raja-ampat/highlight/4#0",
+    "raja-ampat/highlight/4#1"
+   ],
+   "visibility": [
+    "raja-ampat/operating#1"
+   ],
+   "weather": [
+    "raja-ampat/operating#1",
+    "raja-ampat/operating#2",
+    "raja-ampat/operating#3",
+    "raja-ampat/format/0#1"
+   ],
+   "depth": [
+    "raja-ampat/highlight/2#0",
+    "raja-ampat/cert/nitrox#0"
+   ],
+   "getting_there": [
+    "raja-ampat/species/giant-oceanic-manta-ray#2",
+    "raja-ampat/format/0#0",
+    "raja-ampat/format/1#0",
+    "raja-ampat/format/1#1"
+   ]
+  },
+  "lembeh": {
+   "seasickness": [
+    "lembeh/operating#0",
+    "lembeh/format/0#1"
+   ],
+   "cold": [
+    "lembeh/operating#1",
+    "lembeh/experience#3"
+   ],
+   "experience": [
+    "lembeh/experience#0",
+    "lembeh/experience#1"
+   ],
+   "current": [
+    "lembeh/experience#0"
+   ],
+   "visibility": [
+    "lembeh/operating#1",
+    "lembeh/experience#2"
+   ],
+   "weather": [
+    "lembeh/operating#0"
+   ],
+   "photography": [
+    "lembeh/highlight/2#1",
+    "lembeh/highlight/2#2"
+   ],
+   "depth": [
+    "lembeh/experience#0"
+   ],
+   "getting_there": [
+    "lembeh/format/0#0",
+    "lembeh/format/0#1"
+   ]
+  },
+  "alor": {
+   "seasickness": [
+    "alor/format/1#1"
+   ],
+   "cold": [
+    "alor/operating#2",
+    "alor/experience#1",
+    "alor/species/ocean-sunfish#0",
+    "alor/highlight/3#1"
+   ],
+   "non_diver": [
+    "alor/highlight/4#1"
+   ],
+   "experience": [
+    "alor/operating#1",
+    "alor/experience#0",
+    "alor/highlight/3#3"
+   ],
+   "current": [
+    "alor/operating#2",
+    "alor/experience#0"
+   ],
+   "crowds": [
+    "alor/highlight/1#0",
+    "alor/highlight/1#1"
+   ],
+   "visibility": [
+    "alor/operating#0",
+    "alor/operating#1",
+    "alor/highlight/1#2"
+   ],
+   "weather": [
+    "alor/operating#0"
+   ],
+   "remote": [
+    "alor/experience#2"
+   ],
+   "photography": [
+    "alor/operating#1",
+    "alor/species/rhinopias#0",
+    "alor/highlight/2#1"
+   ],
+   "getting_there": [
+    "alor/format/0#1",
+    "alor/format/0#2",
+    "alor/format/1#0",
+    "alor/format/1#1"
+   ]
+  },
+  "tubbataha": {
+   "seasickness": [
+    "tubbataha/operating#2",
+    "tubbataha/format/0#0",
+    "tubbataha/format/0#1",
+    "tubbataha/format/0#2"
+   ],
+   "experience": [
+    "tubbataha/experience#0",
+    "tubbataha/experience#1"
+   ],
+   "current": [
+    "tubbataha/experience#0",
+    "tubbataha/experience#1",
+    "tubbataha/experience#2",
+    "tubbataha/highlight/3#1"
+   ],
+   "visibility": [
+    "tubbataha/experience#2"
+   ],
+   "weather": [
+    "tubbataha/operating#1",
+    "tubbataha/operating#2",
+    "tubbataha/operating#3"
+   ],
+   "rules": [
+    "tubbataha/format/0#3"
+   ],
+   "remote": [
+    "tubbataha/experience#1",
+    "tubbataha/format/0#1",
+    "tubbataha/format/0#2"
+   ],
+   "depth": [
+    "tubbataha/cert/nitrox#0"
+   ],
+   "getting_there": [
+    "tubbataha/operating#4",
+    "tubbataha/format/0#0",
+    "tubbataha/format/0#1",
+    "tubbataha/format/0#2"
+   ]
+  },
+  "malapascua": {
+   "seasickness": [
+    "malapascua/species/pelagic-thresher-shark#2",
+    "malapascua/highlight/3#2"
+   ],
+   "experience": [
+    "malapascua/experience#0",
+    "malapascua/experience#1",
+    "malapascua/experience#2",
+    "malapascua/experience#3",
+    "malapascua/highlight/4#1"
+   ],
+   "current": [
+    "malapascua/experience#0"
+   ],
+   "weather": [
+    "malapascua/operating#0",
+    "malapascua/species/pelagic-thresher-shark#2"
+   ],
+   "rules": [
+    "malapascua/experience#5",
+    "malapascua/highlight/1#2",
+    "malapascua/highlight/4#0"
+   ],
+   "photography": [
+    "malapascua/experience#5",
+    "malapascua/highlight/1#2",
+    "malapascua/highlight/2#1",
+    "malapascua/highlight/2#2",
+    "malapascua/highlight/4#0"
+   ],
+   "depth": [
+    "malapascua/experience#1",
+    "malapascua/experience#4",
+    "malapascua/cert/nitrox#0"
+   ],
+   "getting_there": [
+    "malapascua/highlight/3#2",
+    "malapascua/format/0#1",
+    "malapascua/format/1#0"
+   ]
+  },
+  "anilao": {
+   "seasickness": [
+    "anilao/operating#1",
+    "anilao/highlight/3#2",
+    "anilao/format/0#0"
+   ],
+   "cold": [
+    "anilao/experience#4"
+   ],
+   "experience": [
+    "anilao/experience#0",
+    "anilao/experience#1",
+    "anilao/experience#2",
+    "anilao/experience#3"
+   ],
+   "current": [
+    "anilao/experience#0",
+    "anilao/experience#1"
+   ],
+   "crowds": [
+    "anilao/format/0#0"
+   ],
+   "weather": [
+    "anilao/operating#0",
+    "anilao/operating#1"
+   ],
+   "photography": [
+    "anilao/operating#1",
+    "anilao/highlight/1#0",
+    "anilao/highlight/2#0"
+   ],
+   "depth": [
+    "anilao/experience#4"
+   ],
+   "getting_there": [
+    "anilao/format/0#0",
+    "anilao/format/1#0",
+    "anilao/format/1#1"
+   ]
+  },
+  "moalboal": {
+   "seasickness": [
+    "moalboal/highlight/2#1",
+    "moalboal/format/0#0",
+    "moalboal/format/0#1",
+    "moalboal/format/1#0"
+   ],
+   "non_diver": [
+    "moalboal/format/2#0",
+    "moalboal/format/2#1",
+    "moalboal/format/2#2"
+   ],
+   "experience": [
+    "moalboal/experience#0",
+    "moalboal/experience#1"
+   ],
+   "current": [
+    "moalboal/experience#1"
+   ],
+   "crowds": [
+    "moalboal/operating#0"
+   ],
+   "visibility": [
+    "moalboal/operating#0"
+   ],
+   "weather": [
+    "moalboal/operating#0"
+   ],
+   "rules": [
+    "moalboal/experience#3",
+    "moalboal/format/2#1"
+   ],
+   "depth": [
+    "moalboal/experience#1",
+    "moalboal/highlight/1#1",
+    "moalboal/highlight/2#0",
+    "moalboal/highlight/4#0"
+   ],
+   "getting_there": [
+    "moalboal/format/0#0",
+    "moalboal/format/1#0"
+   ]
+  },
+  "socorro": {
+   "seasickness": [
+    "socorro/experience#0",
+    "socorro/highlight/4#2",
+    "socorro/format/0#0",
+    "socorro/format/0#1"
+   ],
+   "cold": [
+    "socorro/experience#2"
+   ],
+   "experience": [
+    "socorro/experience#0",
+    "socorro/experience#1",
+    "socorro/experience#3"
+   ],
+   "current": [
+    "socorro/experience#0"
+   ],
+   "rules": [
+    "socorro/operating#0",
+    "socorro/operating#3",
+    "socorro/experience#4",
+    "socorro/format/0#3"
+   ],
+   "remote": [
+    "socorro/experience#0",
+    "socorro/highlight/4#2",
+    "socorro/format/0#1"
+   ],
+   "depth": [
+    "socorro/experience#1",
+    "socorro/cert/nitrox#0",
+    "socorro/cert/nitrox#1"
+   ],
+   "getting_there": [
+    "socorro/format/0#0",
+    "socorro/format/0#1",
+    "socorro/format/0#2"
+   ]
+  },
+  "cabo-pulmo": {
+   "seasickness": [
+    "cabo-pulmo/format/0#0"
+   ],
+   "cold": [
+    "cabo-pulmo/operating#2",
+    "cabo-pulmo/experience#1"
+   ],
+   "experience": [
+    "cabo-pulmo/experience#0"
+   ],
+   "current": [
+    "cabo-pulmo/experience#0"
+   ],
+   "crowds": [
+    "cabo-pulmo/operating#1",
+    "cabo-pulmo/format/0#1"
+   ],
+   "visibility": [
+    "cabo-pulmo/operating#2"
+   ],
+   "rules": [
+    "cabo-pulmo/operating#1",
+    "cabo-pulmo/experience#2",
+    "cabo-pulmo/experience#3",
+    "cabo-pulmo/experience#4",
+    "cabo-pulmo/format/0#1"
+   ],
+   "remote": [
+    "cabo-pulmo/experience#5"
+   ],
+   "depth": [
+    "cabo-pulmo/experience#0"
+   ],
+   "getting_there": [
+    "cabo-pulmo/operating#3",
+    "cabo-pulmo/format/0#0",
+    "cabo-pulmo/format/1#0",
+    "cabo-pulmo/format/2#0"
+   ]
+  },
+  "cozumel": {
+   "seasickness": [
+    "cozumel/format/0#0"
+   ],
+   "cold": [
+    "cozumel/operating#0",
+    "cozumel/experience#0"
+   ],
+   "non_diver": [
+    "cozumel/format/2#0",
+    "cozumel/format/2#1"
+   ],
+   "experience": [
+    "cozumel/experience#0",
+    "cozumel/experience#1",
+    "cozumel/experience#2",
+    "cozumel/highlight/1#2",
+    "cozumel/highlight/2#1",
+    "cozumel/cert/cavern#0"
+   ],
+   "current": [
+    "cozumel/experience#0",
+    "cozumel/experience#1",
+    "cozumel/experience#2",
+    "cozumel/highlight/1#0",
+    "cozumel/highlight/1#1",
+    "cozumel/highlight/1#2"
+   ],
+   "crowds": [
+    "cozumel/operating#0",
+    "cozumel/format/2#0"
+   ],
+   "visibility": [
+    "cozumel/operating#0",
+    "cozumel/experience#0"
+   ],
+   "weather": [
+    "cozumel/operating#0",
+    "cozumel/operating#1"
+   ],
+   "rules": [
+    "cozumel/experience#3"
+   ],
+   "depth": [
+    "cozumel/experience#2",
+    "cozumel/highlight/2#1",
+    "cozumel/highlight/4#0",
+    "cozumel/cert/cavern#0"
+   ]
+  },
+  "yucatan-cenotes": {
+   "seasickness": [
+    "yucatan-cenotes/operating#0",
+    "yucatan-cenotes/experience#0",
+    "yucatan-cenotes/format/0#1"
+   ],
+   "cold": [
+    "yucatan-cenotes/operating#0",
+    "yucatan-cenotes/experience#0",
+    "yucatan-cenotes/experience#3"
+   ],
+   "non_diver": [
+    "yucatan-cenotes/format/1#0",
+    "yucatan-cenotes/format/1#1",
+    "yucatan-cenotes/format/1#2"
+   ],
+   "experience": [
+    "yucatan-cenotes/experience#1",
+    "yucatan-cenotes/experience#2",
+    "yucatan-cenotes/highlight/4#1",
+    "yucatan-cenotes/cert/cavern#1",
+    "yucatan-cenotes/cert/cavern#2",
+    "yucatan-cenotes/cert/cave#0",
+    "yucatan-cenotes/cert/cave#1"
+   ],
+   "current": [
+    "yucatan-cenotes/experience#0"
+   ],
+   "crowds": [
+    "yucatan-cenotes/format/1#1"
+   ],
+   "visibility": [
+    "yucatan-cenotes/operating#1",
+    "yucatan-cenotes/highlight/1#2",
+    "yucatan-cenotes/highlight/2#3"
+   ],
+   "weather": [
+    "yucatan-cenotes/operating#0",
+    "yucatan-cenotes/operating#1"
+   ],
+   "rules": [
+    "yucatan-cenotes/experience#4",
+    "yucatan-cenotes/experience#5",
+    "yucatan-cenotes/format/0#2",
+    "yucatan-cenotes/cert/cavern#3",
+    "yucatan-cenotes/cert/cave#0",
+    "yucatan-cenotes/cert/cave#1"
+   ],
+   "depth": [
+    "yucatan-cenotes/experience#0",
+    "yucatan-cenotes/highlight/2#1",
+    "yucatan-cenotes/highlight/2#2",
+    "yucatan-cenotes/cert/cavern#2"
+   ],
+   "getting_there": [
+    "yucatan-cenotes/format/0#0",
+    "yucatan-cenotes/format/0#1",
+    "yucatan-cenotes/format/2#0"
+   ]
+  },
+  "cocos": {
+   "seasickness": [
+    "cocos/format/0#0",
+    "cocos/format/0#1"
+   ],
+   "cold": [
+    "cocos/experience#3"
+   ],
+   "non_diver": [
+    "cocos/format/0#1"
+   ],
+   "experience": [
+    "cocos/experience#0",
+    "cocos/experience#1",
+    "cocos/experience#2",
+    "cocos/highlight/1#2"
+   ],
+   "current": [
+    "cocos/experience#0",
+    "cocos/highlight/1#2"
+   ],
+   "visibility": [
+    "cocos/operating#1",
+    "cocos/species/scalloped-hammerhead#0"
+   ],
+   "weather": [
+    "cocos/operating#1"
+   ],
+   "rules": [
+    "cocos/format/0#2"
+   ],
+   "remote": [
+    "cocos/experience#4",
+    "cocos/format/0#0",
+    "cocos/format/0#1"
+   ],
+   "depth": [
+    "cocos/experience#2",
+    "cocos/cert/nitrox#0"
+   ],
+   "getting_there": [
+    "cocos/format/0#0"
+   ]
+  },
+  "galapagos": {
+   "seasickness": [
+    "galapagos/operating#1",
+    "galapagos/operating#2",
+    "galapagos/experience#1",
+    "galapagos/highlight/1#1",
+    "galapagos/format/0#0"
+   ],
+   "cold": [
+    "galapagos/operating#1",
+    "galapagos/experience#0",
+    "galapagos/experience#1",
+    "galapagos/cert/drysuit#0",
+    "galapagos/cert/drysuit#1"
+   ],
+   "non_diver": [
+    "galapagos/format/2#0",
+    "galapagos/format/2#1"
+   ],
+   "experience": [
+    "galapagos/experience#0",
+    "galapagos/experience#2",
+    "galapagos/experience#3"
+   ],
+   "current": [
+    "galapagos/experience#0",
+    "galapagos/experience#1",
+    "galapagos/experience#2"
+   ],
+   "crowds": [
+    "galapagos/format/2#0"
+   ],
+   "visibility": [
+    "galapagos/operating#2",
+    "galapagos/experience#4"
+   ],
+   "weather": [
+    "galapagos/operating#1",
+    "galapagos/operating#2",
+    "galapagos/operating#3"
+   ],
+   "rules": [
+    "galapagos/operating#3",
+    "galapagos/format/0#1",
+    "galapagos/format/0#2"
+   ],
+   "depth": [
+    "galapagos/cert/nitrox#0"
+   ],
+   "getting_there": [
+    "galapagos/highlight/1#1",
+    "galapagos/format/0#0",
+    "galapagos/format/0#1",
+    "galapagos/format/1#1",
+    "galapagos/format/1#2",
+    "galapagos/format/1#3"
+   ]
+  },
+  "kona": {
+   "seasickness": [
+    "kona/operating#0",
+    "kona/experience#0",
+    "kona/format/0#1"
+   ],
+   "cold": [
+    "kona/experience#0"
+   ],
+   "non_diver": [
+    "kona/highlight/1#0",
+    "kona/format/2#0",
+    "kona/format/2#2"
+   ],
+   "experience": [
+    "kona/experience#0",
+    "kona/experience#1"
+   ],
+   "current": [
+    "kona/experience#0"
+   ],
+   "crowds": [
+    "kona/format/0#1",
+    "kona/format/2#0",
+    "kona/format/2#2"
+   ],
+   "weather": [
+    "kona/operating#1",
+    "kona/operating#2",
+    "kona/experience#2",
+    "kona/format/1#1"
+   ],
+   "rules": [
+    "kona/species/humpback-whale#2",
+    "kona/species/spinner-dolphin#2"
+   ],
+   "photography": [
+    "kona/highlight/2#2"
+   ]
+  },
+  "silfra": {
+   "cold": [
+    "silfra/operating#0",
+    "silfra/experience#1",
+    "silfra/experience#2",
+    "silfra/cert/drysuit#0",
+    "silfra/cert/drysuit#2"
+   ],
+   "non_diver": [
+    "silfra/format/1#1",
+    "silfra/format/1#2",
+    "silfra/format/1#4"
+   ],
+   "experience": [
+    "silfra/experience#0",
+    "silfra/experience#3",
+    "silfra/format/1#3",
+    "silfra/cert/drysuit#0",
+    "silfra/cert/drysuit#1"
+   ],
+   "visibility": [
+    "silfra/highlight/2#1"
+   ],
+   "weather": [
+    "silfra/operating#1"
+   ],
+   "rules": [
+    "silfra/experience#0",
+    "silfra/experience#1",
+    "silfra/experience#3",
+    "silfra/format/0#1",
+    "silfra/cert/drysuit#0",
+    "silfra/cert/drysuit#1",
+    "silfra/cert/drysuit#2"
+   ],
+   "depth": [
+    "silfra/experience#3",
+    "silfra/format/1#2"
+   ],
+   "getting_there": [
+    "silfra/operating#1",
+    "silfra/format/0#0"
+   ]
+  },
+  "la-paz": {
+   "seasickness": [
+    "la-paz/experience#1"
+   ],
+   "cold": [
+    "la-paz/experience#2",
+    "la-paz/experience#3"
+   ],
+   "non_diver": [
+    "la-paz/species/whale-shark#2",
+    "la-paz/format/1#1",
+    "la-paz/format/1#2",
+    "la-paz/format/1#3",
+    "la-paz/format/2#0"
+   ],
+   "experience": [
+    "la-paz/experience#0",
+    "la-paz/experience#1",
+    "la-paz/highlight/3#1"
+   ],
+   "current": [
+    "la-paz/experience#1",
+    "la-paz/experience#2"
+   ],
+   "crowds": [
+    "la-paz/format/2#0"
+   ],
+   "weather": [
+    "la-paz/operating#2"
+   ],
+   "rules": [
+    "la-paz/operating#0",
+    "la-paz/highlight/1#1",
+    "la-paz/format/1#1"
+   ],
+   "depth": [
+    "la-paz/experience#0",
+    "la-paz/highlight/3#1"
+   ],
+   "getting_there": [
+    "la-paz/highlight/3#0",
+    "la-paz/format/0#0",
+    "la-paz/format/0#1"
+   ]
+  },
+  "palau": {
+   "seasickness": [
+    "palau/operating#1",
+    "palau/format/0#0",
+    "palau/format/1#0"
+   ],
+   "cold": [
+    "palau/experience#0"
+   ],
+   "non_diver": [
+    "palau/species/golden-jellyfish#0",
+    "palau/highlight/4#0",
+    "palau/highlight/4#1",
+    "palau/format/2#0",
+    "palau/format/2#1"
+   ],
+   "experience": [
+    "palau/experience#0",
+    "palau/experience#1",
+    "palau/experience#2",
+    "palau/experience#3"
+   ],
+   "current": [
+    "palau/experience#0",
+    "palau/experience#1",
+    "palau/highlight/1#0",
+    "palau/highlight/1#1",
+    "palau/highlight/1#2",
+    "palau/highlight/1#3"
+   ],
+   "visibility": [
+    "palau/operating#1",
+    "palau/operating#2",
+    "palau/experience#0"
+   ],
+   "weather": [
+    "palau/operating#1",
+    "palau/operating#2"
+   ],
+   "rules": [
+    "palau/highlight/4#2",
+    "palau/format/0#2",
+    "palau/format/2#0"
+   ],
+   "depth": [
+    "palau/highlight/2#0",
+    "palau/cert/nitrox#0"
+   ],
+   "getting_there": [
+    "palau/format/0#0",
+    "palau/format/0#1",
+    "palau/format/1#0"
+   ]
+  },
+  "fakarava": {
+   "seasickness": [
+    "fakarava/format/0#1",
+    "fakarava/format/1#1"
+   ],
+   "cold": [
+    "fakarava/operating#1",
+    "fakarava/experience#0"
+   ],
+   "experience": [
+    "fakarava/experience#0",
+    "fakarava/experience#1",
+    "fakarava/experience#2"
+   ],
+   "current": [
+    "fakarava/experience#0",
+    "fakarava/experience#1",
+    "fakarava/highlight/1#0",
+    "fakarava/highlight/2#1",
+    "fakarava/highlight/2#2",
+    "fakarava/highlight/2#3"
+   ],
+   "visibility": [
+    "fakarava/experience#0"
+   ],
+   "weather": [
+    "fakarava/operating#1"
+   ],
+   "remote": [
+    "fakarava/experience#3"
+   ],
+   "depth": [
+    "fakarava/experience#2",
+    "fakarava/cert/nitrox#0"
+   ],
+   "getting_there": [
+    "fakarava/experience#3",
+    "fakarava/format/0#0",
+    "fakarava/format/0#1",
+    "fakarava/format/0#2",
+    "fakarava/format/1#0"
+   ]
+  },
+  "rangiroa": {
+   "cold": [
+    "rangiroa/operating#1",
+    "rangiroa/experience#0"
+   ],
+   "non_diver": [
+    "rangiroa/highlight/2#2"
+   ],
+   "experience": [
+    "rangiroa/experience#0",
+    "rangiroa/experience#1",
+    "rangiroa/experience#2"
+   ],
+   "current": [
+    "rangiroa/experience#0",
+    "rangiroa/experience#1",
+    "rangiroa/highlight/1#0",
+    "rangiroa/highlight/1#2"
+   ],
+   "crowds": [
+    "rangiroa/operating#1"
+   ],
+   "visibility": [
+    "rangiroa/experience#0"
+   ],
+   "weather": [
+    "rangiroa/operating#1"
+   ],
+   "getting_there": [
+    "rangiroa/format/0#0",
+    "rangiroa/format/1#0"
+   ]
+  },
+  "moorea": {
+   "seasickness": [
+    "moorea/experience#0",
+    "moorea/format/0#0"
+   ],
+   "cold": [
+    "moorea/experience#0"
+   ],
+   "non_diver": [
+    "moorea/species/humpback-whale#2",
+    "moorea/highlight/2#0",
+    "moorea/highlight/2#2",
+    "moorea/highlight/2#3",
+    "moorea/format/1#0",
+    "moorea/format/1#1"
+   ],
+   "experience": [
+    "moorea/experience#0",
+    "moorea/experience#1",
+    "moorea/experience#2",
+    "moorea/highlight/3#1"
+   ],
+   "current": [
+    "moorea/experience#0",
+    "moorea/highlight/4#0"
+   ],
+   "crowds": [
+    "moorea/format/1#0"
+   ],
+   "weather": [
+    "moorea/operating#1"
+   ],
+   "rules": [
+    "moorea/experience#2",
+    "moorea/species/humpback-whale#2",
+    "moorea/highlight/2#2"
+   ],
+   "depth": [
+    "moorea/experience#0"
+   ],
+   "getting_there": [
+    "moorea/format/0#1"
+   ]
+  },
+  "ari-atoll": {
+   "seasickness": [
+    "ari-atoll/operating#0"
+   ],
+   "cold": [
+    "ari-atoll/experience#0"
+   ],
+   "non_diver": [
+    "ari-atoll/format/2#0",
+    "ari-atoll/format/2#1"
+   ],
+   "experience": [
+    "ari-atoll/experience#0",
+    "ari-atoll/experience#1",
+    "ari-atoll/experience#2"
+   ],
+   "current": [
+    "ari-atoll/experience#1"
+   ],
+   "crowds": [
+    "ari-atoll/experience#2",
+    "ari-atoll/format/2#0"
+   ],
+   "visibility": [
+    "ari-atoll/operating#0"
+   ],
+   "weather": [
+    "ari-atoll/operating#0",
+    "ari-atoll/operating#1"
+   ],
+   "rules": [
+    "ari-atoll/experience#3",
+    "ari-atoll/format/2#1"
+   ],
+   "depth": [
+    "ari-atoll/experience#0",
+    "ari-atoll/experience#2"
+   ],
+   "getting_there": [
+    "ari-atoll/format/0#0",
+    "ari-atoll/format/0#1",
+    "ari-atoll/format/1#0"
+   ]
+  },
+  "baa-atoll": {
+   "non_diver": [
+    "baa-atoll/experience#0",
+    "baa-atoll/highlight/1#0",
+    "baa-atoll/highlight/2#0",
+    "baa-atoll/format/0#0",
+    "baa-atoll/format/0#1",
+    "baa-atoll/format/1#0"
+   ],
+   "experience": [
+    "baa-atoll/experience#0",
+    "baa-atoll/experience#2"
+   ],
+   "current": [
+    "baa-atoll/experience#2"
+   ],
+   "crowds": [
+    "baa-atoll/highlight/1#2",
+    "baa-atoll/format/0#1"
+   ],
+   "visibility": [
+    "baa-atoll/experience#1"
+   ],
+   "rules": [
+    "baa-atoll/experience#3",
+    "baa-atoll/highlight/1#0",
+    "baa-atoll/highlight/1#2",
+    "baa-atoll/format/0#0",
+    "baa-atoll/format/0#1",
+    "baa-atoll/format/2#0",
+    "baa-atoll/format/2#1"
+   ],
+   "depth": [
+    "baa-atoll/experience#0"
+   ],
+   "getting_there": [
+    "baa-atoll/format/1#0",
+    "baa-atoll/format/2#0",
+    "baa-atoll/format/2#1"
+   ]
+  },
+  "red-sea-north": {
+   "seasickness": [
+    "red-sea-north/operating#0",
+    "red-sea-north/operating#1",
+    "red-sea-north/format/0#1",
+    "red-sea-north/format/2#0"
+   ],
+   "cold": [
+    "red-sea-north/operating#1",
+    "red-sea-north/experience#2"
+   ],
+   "experience": [
+    "red-sea-north/experience#0",
+    "red-sea-north/experience#1",
+    "red-sea-north/format/2#1",
+    "red-sea-north/cert/wreck_penetration#0"
+   ],
+   "current": [
+    "red-sea-north/experience#0",
+    "red-sea-north/experience#1"
+   ],
+   "crowds": [
+    "red-sea-north/operating#1"
+   ],
+   "visibility": [
+    "red-sea-north/experience#0"
+   ],
+   "weather": [
+    "red-sea-north/operating#0",
+    "red-sea-north/operating#1"
+   ],
+   "depth": [
+    "red-sea-north/format/2#1",
+    "red-sea-north/cert/nitrox#0"
+   ],
+   "getting_there": [
+    "red-sea-north/format/0#0",
+    "red-sea-north/format/0#1",
+    "red-sea-north/format/1#0"
+   ]
+  },
+  "red-sea-brothers": {
+   "seasickness": [
+    "red-sea-brothers/operating#1",
+    "red-sea-brothers/experience#2",
+    "red-sea-brothers/format/0#0"
+   ],
+   "cold": [
+    "red-sea-brothers/experience#3"
+   ],
+   "experience": [
+    "red-sea-brothers/experience#0",
+    "red-sea-brothers/experience#1"
+   ],
+   "current": [
+    "red-sea-brothers/experience#1",
+    "red-sea-brothers/highlight/2#0"
+   ],
+   "weather": [
+    "red-sea-brothers/operating#0",
+    "red-sea-brothers/operating#1",
+    "red-sea-brothers/operating#2",
+    "red-sea-brothers/experience#2"
+   ],
+   "rules": [
+    "red-sea-brothers/operating#1",
+    "red-sea-brothers/format/0#2",
+    "red-sea-brothers/format/0#3"
+   ],
+   "remote": [
+    "red-sea-brothers/experience#1",
+    "red-sea-brothers/format/0#0"
+   ],
+   "depth": [
+    "red-sea-brothers/species/scalloped-hammerhead#0",
+    "red-sea-brothers/highlight/3#1",
+    "red-sea-brothers/cert/nitrox#0",
+    "red-sea-brothers/cert/deep#0"
+   ],
+   "getting_there": [
+    "red-sea-brothers/format/0#0"
+   ]
+  },
+  "ningaloo": {
+   "seasickness": [
+    "ningaloo/format/3#0",
+    "ningaloo/format/3#1"
+   ],
+   "cold": [
+    "ningaloo/experience#0",
+    "ningaloo/experience#3"
+   ],
+   "non_diver": [
+    "ningaloo/experience#0",
+    "ningaloo/highlight/1#0",
+    "ningaloo/highlight/1#1",
+    "ningaloo/highlight/1#2",
+    "ningaloo/highlight/4#0",
+    "ningaloo/format/0#0",
+    "ningaloo/format/0#1",
+    "ningaloo/format/0#3",
+    "ningaloo/format/3#0",
+    "ningaloo/format/3#1"
+   ],
+   "experience": [
+    "ningaloo/experience#0",
+    "ningaloo/experience#1",
+    "ningaloo/experience#2"
+   ],
+   "current": [
+    "ningaloo/experience#0"
+   ],
+   "crowds": [
+    "ningaloo/highlight/1#1",
+    "ningaloo/highlight/1#2",
+    "ningaloo/format/0#1"
+   ],
+   "visibility": [
+    "ningaloo/experience#1"
+   ],
+   "weather": [
+    "ningaloo/operating#1"
+   ],
+   "rules": [
+    "ningaloo/highlight/1#1",
+    "ningaloo/highlight/2#2",
+    "ningaloo/format/0#1",
+    "ningaloo/format/1#0"
+   ],
+   "depth": [
+    "ningaloo/species/giant-grouper#0",
+    "ningaloo/highlight/2#1",
+    "ningaloo/format/3#0"
+   ],
+   "getting_there": [
+    "ningaloo/species/whale-shark#0",
+    "ningaloo/format/0#2",
+    "ningaloo/format/2#0"
+   ]
+  },
+  "gbr-ribbon-reefs": {
+   "seasickness": [
+    "gbr-ribbon-reefs/operating#0",
+    "gbr-ribbon-reefs/format/0#0",
+    "gbr-ribbon-reefs/format/0#2"
+   ],
+   "cold": [
+    "gbr-ribbon-reefs/experience#2"
+   ],
+   "non_diver": [
+    "gbr-ribbon-reefs/format/1#1"
+   ],
+   "experience": [
+    "gbr-ribbon-reefs/experience#0",
+    "gbr-ribbon-reefs/experience#1",
+    "gbr-ribbon-reefs/format/1#2",
+    "gbr-ribbon-reefs/format/1#3"
+   ],
+   "current": [
+    "gbr-ribbon-reefs/experience#0"
+   ],
+   "visibility": [
+    "gbr-ribbon-reefs/experience#0",
+    "gbr-ribbon-reefs/highlight/2#0"
+   ],
+   "weather": [
+    "gbr-ribbon-reefs/operating#0"
+   ],
+   "rules": [
+    "gbr-ribbon-reefs/operating#1",
+    "gbr-ribbon-reefs/species/dwarf-minke-whale#2",
+    "gbr-ribbon-reefs/species/dwarf-minke-whale#3",
+    "gbr-ribbon-reefs/highlight/3#2"
+   ],
+   "getting_there": [
+    "gbr-ribbon-reefs/format/0#0",
+    "gbr-ribbon-reefs/format/0#2",
+    "gbr-ribbon-reefs/format/2#0",
+    "gbr-ribbon-reefs/format/2#1"
+   ]
+  },
+  "coral-sea": {
+   "seasickness": [
+    "coral-sea/operating#0",
+    "coral-sea/experience#1",
+    "coral-sea/format/0#0"
+   ],
+   "experience": [
+    "coral-sea/experience#0",
+    "coral-sea/experience#1",
+    "coral-sea/experience#2"
+   ],
+   "visibility": [
+    "coral-sea/experience#2",
+    "coral-sea/highlight/1#1"
+   ],
+   "weather": [
+    "coral-sea/operating#0",
+    "coral-sea/operating#1"
+   ],
+   "remote": [
+    "coral-sea/operating#0",
+    "coral-sea/experience#1"
+   ],
+   "depth": [
+    "coral-sea/experience#2",
+    "coral-sea/cert/nitrox#0"
+   ],
+   "getting_there": [
+    "coral-sea/operating#0",
+    "coral-sea/format/0#0",
+    "coral-sea/format/0#1",
+    "coral-sea/format/0#2"
+   ]
+  },
+  "yonaguni": {
+   "seasickness": [
+    "yonaguni/operating#1",
+    "yonaguni/experience#2",
+    "yonaguni/format/0#0"
+   ],
+   "cold": [
+    "yonaguni/experience#2",
+    "yonaguni/highlight/1#2"
+   ],
+   "experience": [
+    "yonaguni/experience#0",
+    "yonaguni/experience#1",
+    "yonaguni/highlight/1#3"
+   ],
+   "current": [
+    "yonaguni/experience#1",
+    "yonaguni/experience#2",
+    "yonaguni/highlight/1#2",
+    "yonaguni/highlight/3#0"
+   ],
+   "weather": [
+    "yonaguni/operating#1",
+    "yonaguni/operating#2",
+    "yonaguni/experience#2"
+   ],
+   "remote": [
+    "yonaguni/experience#4",
+    "yonaguni/format/0#1"
+   ],
+   "depth": [
+    "yonaguni/experience#3",
+    "yonaguni/highlight/2#1"
+   ],
+   "getting_there": [
+    "yonaguni/format/0#0",
+    "yonaguni/format/0#1",
+    "yonaguni/format/0#2"
+   ]
+  },
+  "tiger-beach": {
+   "seasickness": [
+    "tiger-beach/format/0#0"
+   ],
+   "non_diver": [
+    "tiger-beach/experience#1",
+    "tiger-beach/format/2#0",
+    "tiger-beach/format/2#1"
+   ],
+   "experience": [
+    "tiger-beach/experience#0",
+    "tiger-beach/experience#1",
+    "tiger-beach/experience#2",
+    "tiger-beach/experience#3"
+   ],
+   "visibility": [
+    "tiger-beach/experience#0",
+    "tiger-beach/highlight/2#1"
+   ],
+   "weather": [
+    "tiger-beach/operating#0"
+   ],
+   "photography": [
+    "tiger-beach/experience#3",
+    "tiger-beach/highlight/3#0"
+   ],
+   "depth": [
+    "tiger-beach/experience#0",
+    "tiger-beach/highlight/2#1"
+   ],
+   "getting_there": [
+    "tiger-beach/format/0#0",
+    "tiger-beach/format/1#0"
+   ]
+  },
+  "azores": {
+   "seasickness": [
+    "azores/experience#1",
+    "azores/highlight/4#0",
+    "azores/format/0#0",
+    "azores/format/0#1"
+   ],
+   "cold": [
+    "azores/operating#1",
+    "azores/cert/drysuit#0"
+   ],
+   "non_diver": [
+    "azores/species/sperm-whale#0",
+    "azores/highlight/3#1",
+    "azores/format/2#0",
+    "azores/format/2#1"
+   ],
+   "experience": [
+    "azores/experience#0",
+    "azores/experience#1",
+    "azores/experience#2"
+   ],
+   "visibility": [
+    "azores/operating#1"
+   ],
+   "weather": [
+    "azores/operating#1",
+    "azores/format/0#1",
+    "azores/format/1#0",
+    "azores/format/1#1"
+   ],
+   "rules": [
+    "azores/highlight/1#2",
+    "azores/highlight/3#1",
+    "azores/format/2#1"
+   ],
+   "remote": [
+    "azores/experience#1"
+   ],
+   "depth": [
+    "azores/highlight/4#0"
+   ],
+   "getting_there": [
+    "azores/highlight/2#1",
+    "azores/format/0#0"
+   ]
+  },
+  "aliwal-shoal": {
+   "seasickness": [
+    "aliwal-shoal/operating#0",
+    "aliwal-shoal/experience#0",
+    "aliwal-shoal/experience#1"
+   ],
+   "cold": [
+    "aliwal-shoal/operating#1",
+    "aliwal-shoal/experience#3"
+   ],
+   "non_diver": [
+    "aliwal-shoal/highlight/2#2"
+   ],
+   "experience": [
+    "aliwal-shoal/experience#1",
+    "aliwal-shoal/experience#2"
+   ],
+   "current": [
+    "aliwal-shoal/experience#2"
+   ],
+   "visibility": [
+    "aliwal-shoal/experience#4"
+   ],
+   "weather": [
+    "aliwal-shoal/operating#0",
+    "aliwal-shoal/experience#4"
+   ],
+   "getting_there": [
+    "aliwal-shoal/experience#0",
+    "aliwal-shoal/experience#1",
+    "aliwal-shoal/format/0#0"
+   ]
+  },
+  "malta": {
+   "seasickness": [
+    "malta/operating#0",
+    "malta/highlight/4#1",
+    "malta/format/0#0",
+    "malta/format/0#1"
+   ],
+   "cold": [
+    "malta/operating#0",
+    "malta/operating#1",
+    "malta/experience#3"
+   ],
+   "experience": [
+    "malta/experience#0",
+    "malta/experience#1",
+    "malta/experience#2",
+    "malta/highlight/1#0",
+    "malta/cert/wreck_penetration#0",
+    "malta/cert/trimix#0"
+   ],
+   "current": [
+    "malta/experience#1"
+   ],
+   "crowds": [
+    "malta/format/1#1"
+   ],
+   "visibility": [
+    "malta/experience#1",
+    "malta/highlight/4#1"
+   ],
+   "weather": [
+    "malta/operating#0",
+    "malta/operating#1"
+   ],
+   "depth": [
+    "malta/experience#2",
+    "malta/highlight/1#0",
+    "malta/highlight/1#1",
+    "malta/cert/deep#0",
+    "malta/cert/trimix#0"
+   ],
+   "getting_there": [
+    "malta/format/0#0",
+    "malta/format/0#1",
+    "malta/format/1#0"
+   ]
+  },
+  "oahu": {
+   "seasickness": [
+    "oahu/operating#1",
+    "oahu/highlight/1#1",
+    "oahu/format/0#0"
+   ],
+   "non_diver": [
+    "oahu/highlight/4#0",
+    "oahu/highlight/4#1",
+    "oahu/highlight/4#2",
+    "oahu/format/2#0"
+   ],
+   "experience": [
+    "oahu/experience#0",
+    "oahu/experience#1",
+    "oahu/experience#2"
+   ],
+   "crowds": [
+    "oahu/format/0#1"
+   ],
+   "weather": [
+    "oahu/operating#1",
+    "oahu/operating#2",
+    "oahu/experience#3"
+   ],
+   "rules": [
+    "oahu/species/humpback-whale#1"
+   ],
+   "depth": [
+    "oahu/experience#1",
+    "oahu/highlight/1#1",
+    "oahu/highlight/2#0",
+    "oahu/cert/nitrox#0"
+   ],
+   "getting_there": [
+    "oahu/format/0#0",
+    "oahu/format/1#0"
+   ]
+  }
+ }
+}

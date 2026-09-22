@@ -5,17 +5,20 @@ import { Sources } from "@/components/sightline/Sources";
 import { ReadMore } from "@/components/sightline/ReadMore";
 import { FeedbackDialog } from "@/components/sightline/FeedbackDialog";
 import { SourceCheck } from "@/components/sightline/SourceCheck";
+import { AskRecord, ConcernEvidence } from "@/components/sightline/RecordEvidence";
+import { CONCERNS } from "@/lib/concerns";
+import { CLAIM_KIND_LABEL } from "@/lib/claims";
 import { logEvent } from "@/lib/analytics";
 import { MONTHS, type Destination } from "@/lib/destinations";
 import { CERT_OPTIONS, searchFromFilters, targetLabel, type Filters } from "@/lib/filters";
 import {
   FLAG_LABEL,
   evaluate,
+  fitSummary,
   hasBrief,
   monthRanges,
   selectEvidence,
   type DestinationFit,
-  type EvidenceItem,
   type Verdict,
 } from "@/lib/fit";
 
@@ -28,32 +31,7 @@ function chip(on: boolean) {
   }`;
 }
 
-const CLAIM_KIND: Record<EvidenceItem["claim"]["type"], string> = {
-  operating: "Access",
-  experience: "Conditions",
-  species: "Marine life",
-  highlight: "Highlight",
-  format: "Trip format",
-  cert: "Certification",
-};
-
-function summary(fit: DestinationFit, name: string) {
-  if (fit.unlisted.length) {
-    return `${name} has no record of ${fit.unlisted.map(targetLabel).join(" or ")}`;
-  }
-  switch (fit.tier) {
-    case "good":
-      return "A good fit for your trip";
-    case "caveats":
-      return `A fit, with ${fit.caveats} thing${fit.caveats === 1 ? "" : "s"} to weigh`;
-    case "near_miss":
-      return "Close — one thing doesn't fit";
-    default:
-      return "Not a fit for this trip";
-  }
-}
-
-function VerdictIcon({ v }: { v: Verdict }) {
+export function VerdictIcon({ v }: { v: Verdict }) {
   if (v.status === "met") return <Check className="h-4 w-4 text-primary" aria-label="Fits" />;
   if (v.status === "caveat")
     return <TriangleAlert className="h-4 w-4 text-accent" aria-label="Caveat" />;
@@ -142,6 +120,35 @@ export function TripFit({
             </button>
           ))}
         </div>
+        <p className="eyebrow pt-1">On my mind</p>
+        <div className="flex flex-wrap items-center gap-0.5">
+          {CONCERNS.map((c) => {
+            const on = filters.concerns.includes(c.id);
+            return (
+              <button
+                key={c.id}
+                title={c.question}
+                aria-pressed={on}
+                onClick={() => {
+                  logEvent("concern_toggle", {
+                    destination: d.id,
+                    concern: c.id,
+                    on: !on,
+                    from: "trip_fit",
+                  });
+                  onChange({
+                    concerns: on
+                      ? filters.concerns.filter((x) => x !== c.id)
+                      : [...filters.concerns, c.id],
+                  });
+                }}
+                className={chip(on)}
+              >
+                {c.label}
+              </button>
+            );
+          })}
+        </div>
         {filters.species.length > 0 && (
           <>
             <p className="eyebrow pt-1">To see</p>
@@ -163,14 +170,15 @@ export function TripFit({
       {!active ? (
         <p className="mt-6 border-t border-border pt-6 text-sm leading-relaxed text-muted-foreground">
           Pick a month and your certification to see how {d.name} fits — what works, and what to
-          watch for before you book.
+          watch for before you book. Add what's on your mind and the record's own words on it appear
+          here.
         </p>
       ) : (
         <>
           {/* Verdicts */}
           <div className="mt-6 border-t border-border pt-6">
             <p className="font-display text-xl text-foreground sm:text-2xl">
-              {summary(fit, d.name)}
+              {fitSummary(fit, d.name)}
             </p>
             {fit.tier === "near_miss" && fit.fitsIn.length > 0 && (
               <p className="mt-1 text-sm font-medium text-primary">
@@ -223,6 +231,8 @@ export function TripFit({
             </ul>
           </div>
 
+          <ConcernEvidence d={d} concerns={filters.concerns} verdicts={fit.verdicts} />
+
           {/* Evidence, verbatim */}
           {evidence.length > 0 && (
             <div className="mt-7 border-t border-border pt-6">
@@ -236,7 +246,7 @@ export function TripFit({
                   <li key={claim.id} className="py-4 first:pt-0 last:pb-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="rounded-full bg-secondary px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                        {CLAIM_KIND[claim.type]}
+                        {CLAIM_KIND_LABEL[claim.type]}
                       </span>
                       <span className="text-sm font-semibold text-foreground">{claim.label}</span>
                       {claim.confidence && <ConfidenceTag value={claim.confidence} />}
@@ -288,6 +298,8 @@ export function TripFit({
           </div>
         </>
       )}
+
+      <AskRecord d={d} />
     </div>
   );
 }

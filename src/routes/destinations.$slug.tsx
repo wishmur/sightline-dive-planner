@@ -49,8 +49,8 @@ import { destinationImage, destinationImageAlt, highlightSubjectImage } from "@/
 export const Route = createFileRoute("/destinations/$slug")({
   // Only the brief travels here: when, what, and the diver's limits.
   validateSearch: (search: Record<string, unknown>): BriefSearch => {
-    const { m, sp, cert, cur } = validateFilterSearch(search);
-    return { m, sp, cert, cur };
+    const { m, sp, cert, cur, cn } = validateFilterSearch(search);
+    return { m, sp, cert, cur, cn };
   },
   head: ({ params }) => {
     const d = getDestination(params.slug);

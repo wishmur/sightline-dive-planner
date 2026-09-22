@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/command";
 import { MONTHS } from "@/lib/destinations";
 import { certLabel } from "@/lib/cards";
+import { CONCERNS, type ConcernId } from "@/lib/concerns";
 import {
   CERT_OPTIONS,
   CONTINENTS,
@@ -71,7 +72,18 @@ export function FilterBar({
     filters.entry !== "any" ? `${ENTRY_OPTIONS.find((o) => o.value === filters.entry)?.label} entry` : null,
   ].filter(Boolean) as string[];
   const advanced =
-    (filters.cert !== "any" ? 1 : 0) + (filters.temp !== "any" ? 1 : 0) + (filters.operatingOnly ? 1 : 0);
+    (filters.cert !== "any" ? 1 : 0) +
+    (filters.temp !== "any" ? 1 : 0) +
+    (filters.operatingOnly ? 1 : 0) +
+    filters.concerns.length;
+
+  function toggleConcern(id: ConcernId) {
+    onChange({
+      concerns: filters.concerns.includes(id)
+        ? filters.concerns.filter((c) => c !== id)
+        : [...filters.concerns, id],
+    });
+  }
 
   function toggleSpecies(id: string) {
     onChange({
@@ -339,7 +351,10 @@ export function FilterBar({
               )}
             </button>
           </PopoverTrigger>
-          <PopoverContent align="end" className="theme-light w-[min(24rem,94vw)] space-y-4 p-4">
+          <PopoverContent
+            align="end"
+            className="theme-light max-h-[min(40rem,80vh)] w-[min(24rem,94vw)] space-y-4 overflow-y-auto p-4"
+          >
             <ChipGroup
               label="My certification"
               value={filters.cert}
@@ -370,6 +385,30 @@ export function FilterBar({
               options={ENTRY_OPTIONS}
               onChange={(v) => onChange({ entry: v })}
             />
+            <div className="space-y-2 border-t border-border pt-4">
+              <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                On my mind
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {CONCERNS.map((c) => {
+                  const on = filters.concerns.includes(c.id);
+                  return (
+                    <button
+                      key={c.id}
+                      onClick={() => toggleConcern(c.id)}
+                      title={c.question}
+                      className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+                        on
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-secondary text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {c.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
             <label className="flex items-start gap-3 border-t border-border pt-4 text-sm">
               <input
                 type="checkbox"

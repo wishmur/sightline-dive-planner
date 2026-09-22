@@ -9,6 +9,8 @@ import { DestinationCard } from "@/components/sightline/DestinationCard";
 import { FilterBar, ClearFiltersButton } from "@/components/sightline/FilterBar";
 import { ActiveFilterChips } from "@/components/sightline/ActiveFilterChips";
 import { NearMisses } from "@/components/sightline/NearMisses";
+import { TripDescriber } from "@/components/sightline/TripDescriber";
+import { CompareBar } from "@/components/sightline/CompareBar";
 import { SiteFooter } from "@/components/sightline/SiteFooter";
 import { logEvent } from "@/lib/analytics";
 import { DESTINATIONS, MONTHS, SPECIES_GROUPS, type Destination } from "@/lib/destinations";
@@ -19,15 +21,27 @@ import {
   filtersFromSearch,
   searchFromFilters,
   validateFilterSearch,
+  type FilterSearch,
   type Filters,
 } from "@/lib/filters";
 import { runFit } from "@/lib/fit";
 import { HERO_IMAGE } from "@/lib/imagery";
 
 const PAGE_SIZE = 6;
+export const MAX_COMPARE = 3;
+
+type HomeSearch = FilterSearch & { cmp?: string };
+
+function validateHomeSearch(search: Record<string, unknown>): HomeSearch {
+  const out: HomeSearch = validateFilterSearch(search);
+  const ids = typeof search.cmp === "string" ? search.cmp.split(",") : [];
+  const valid = [...new Set(ids)].filter((id) => DESTINATIONS.some((d) => d.id === id));
+  if (valid.length) out.cmp = valid.slice(0, MAX_COMPARE).join(",");
+  return out;
+}
 
 export const Route = createFileRoute("/")({
-  validateSearch: validateFilterSearch,
+  validateSearch: validateHomeSearch,
   head: () => {
     const title = "Sightline — Independent dive destination reference";
     const description =
@@ -61,10 +75,30 @@ function Home() {
   const fitById = useMemo(() => new Map(run.results.map((r) => [r.destination.id, r])), [run]);
   const brief = briefSearch(filters);
   const active = countActive(filters);
+  const compared = useMemo(() => (search.cmp ? search.cmp.split(",") : []), [search.cmp]);
 
   function setFilters(next: Filters | ((f: Filters) => Filters)) {
     const value = typeof next === "function" ? next(filters) : next;
-    navigate({ search: searchFromFilters(value), replace: true, resetScroll: false });
+    navigate({
+      search: { ...searchFromFilters(value), cmp: search.cmp },
+      replace: true,
+      resetScroll: false,
+    });
+  }
+
+  function setCompared(ids: string[]) {
+    navigate({
+      search: (prev) => ({ ...prev, cmp: ids.length ? ids.join(",") : undefined }),
+      replace: true,
+      resetScroll: false,
+    });
+  }
+
+  function toggleCompare(id: string) {
+    const on = compared.includes(id);
+    if (!on && compared.length >= MAX_COMPARE) return;
+    logEvent("compare_toggle", { destination: id, on: !on });
+    setCompared(on ? compared.filter((x) => x !== id) : [...compared, id]);
   }
 
   // What was asked and what was shown, once the brief settles.
@@ -206,7 +240,8 @@ function Home() {
                 {run.brief ? (
                   <>
                     {shown.length} of {DESTINATIONS.length} destinations fit your trip. Best fits first,
-                    then fewest caveats — thin or conflicting evidence counts as a caveat.
+                    then fewest caveats — thin or conflicting evidence counts as a caveat
+                    {filters.concerns.length > 0 ? ", and so do your worries where the record is clear" : ""}.
                   </>
                 ) : (
                   <>
@@ -219,7 +254,11 @@ function Home() {
             {active > 0 && <ClearFiltersButton onClick={() => setFilters(EMPTY_FILTERS)} />}
           </div>
 
-          <div className="mt-7">
+          <div className="mt-7 space-y-3">
+            <TripDescriber
+              onApply={setFilters}
+              onPatch={patch}
+            />
             <FilterBar filters={filters} onChange={patch} />
           </div>
 
@@ -268,6 +307,9 @@ function Home() {
                       highlighted={hoveredPin === d.id}
                       fit={run.brief ? fitById.get(d.id) : undefined}
                       brief={brief}
+                      compared={compared.includes(d.id)}
+                      compareFull={compared.length >= MAX_COMPARE}
+                      onCompare={toggleCompare}
                     />
                   </li>
                 ))}
@@ -318,6 +360,8 @@ function Home() {
           <NearMisses misses={run.nearMisses} brief={brief} emptyResults={shown.length === 0} />
         </div>
       </section>
+
+      <CompareBar ids={compared} brief={brief} onRemove={toggleCompare} onClear={() => setCompared([])} />
 
       <SiteFooter />
     </div>

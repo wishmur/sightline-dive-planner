@@ -8,24 +8,11 @@
  */
 import { readFileSync, existsSync } from "node:fs";
 import { cachePath, hashOf, MANIFEST, type SourceRecord } from "../sources/fetch";
+import { tokenize } from "../../src/lib/text";
 
 export type Passage = { id: string; url: string; index: number; text: string; tokens: string[] };
 
-const STOP = new Set(
-  "a an and are as at be but by for from has have in is it its of on or that the this to was were will with which you your can not no into than then there their they these those also more most very".split(
-    " ",
-  ),
-);
-
-export function tokenize(text: string) {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .split(/[^a-z0-9]+/)
-    .filter((t) => t.length > 1 && !STOP.has(t))
-    .map((t) => (t.length > 4 ? t.replace(/(ing|es|s)$/, "") : t));
-}
+export { tokenize };
 
 const MIN_WORDS = 60;
 const MAX_WORDS = 160;

@@ -1,5 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Check, GraduationCap, CalendarRange, TriangleAlert } from "lucide-react";
+import {
+  ArrowUpRight,
+  Check,
+  GraduationCap,
+  CalendarRange,
+  Plus,
+  TriangleAlert,
+} from "lucide-react";
 import { bestMonthsLabel, type Destination } from "@/lib/destinations";
 import { certLabel, destinationTagChips } from "@/lib/cards";
 import { destinationImage, destinationImageAlt } from "@/lib/imagery";
@@ -15,6 +22,9 @@ export function DestinationCard({
   highlighted = false,
   fit,
   brief,
+  compared = false,
+  compareFull = false,
+  onCompare,
 }: {
   destination: Destination;
   onHover?: (id: string | null) => void;
@@ -24,6 +34,10 @@ export function DestinationCard({
   /** Present only when the diver has a brief; renders the one-line fit summary. */
   fit?: DestinationFit;
   brief?: BriefSearch;
+  /** Shortlist for side-by-side comparison (home page only). */
+  compared?: boolean;
+  compareFull?: boolean;
+  onCompare?: (id: string) => void;
 }) {
   const tags = destinationTagChips(d).slice(0, 3);
   const season = bestMonthsLabel(d.best_months_overall) ?? "Season varies";
@@ -53,6 +67,23 @@ export function DestinationCard({
           height={768}
           className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.06]"
         />
+        {onCompare && (
+          <button
+            type="button"
+            onClick={() => onCompare(d.id)}
+            disabled={!compared && compareFull}
+            aria-pressed={compared}
+            title={!compared && compareFull ? "You can compare up to three" : undefined}
+            className={`absolute right-3 top-3 z-20 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold shadow-sm ring-1 ring-inset backdrop-blur-md transition disabled:opacity-50 ${
+              compared
+                ? "bg-primary text-primary-foreground ring-primary"
+                : "bg-white/85 text-slate-900 ring-black/5 hover:bg-white"
+            }`}
+          >
+            {compared ? <Check className="h-3 w-3" aria-hidden /> : <Plus className="h-3 w-3" aria-hidden />}
+            {compared ? "Comparing" : "Compare"}
+          </button>
+        )}
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col p-4">

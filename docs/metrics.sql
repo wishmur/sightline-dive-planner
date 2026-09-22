@@ -69,3 +69,59 @@ select created_at, destination_id, kind, message
 from feedback
 where created_at > now() - interval '30 days'
 order by created_at desc;
+
+-- ---------------------------------------------------------------------------
+-- Plain-language planning (added 2026-09-21). The raw text people type is never
+-- logged; these events carry only what was understood.
+
+-- 8. Does "Describe your trip" get used, and does it understand people? An empty
+--    parse means the diver wrote something and nothing changed.
+select
+  payload->>'engine' as engine,
+  count(*) as descriptions,
+  count(*) filter (where (payload->>'empty')::boolean) as understood_nothing,
+  avg(jsonb_array_length(payload->'fields')) as fields_set
+from events
+where event_type = 'trip_described' and created_at > now() - interval '30 days'
+group by 1;
+
+-- 9. What's on divers' minds? Concerns raised (typed or toggled). This is the
+--    curation queue: a concern raised often and "not covered" often is data work.
+select concern, count(*) as raised
+from events, jsonb_array_elements_text(payload->'concerns') as concern
+where event_type = 'trip_described' and created_at > now() - interval '90 days'
+group by 1 order by raised desc;
+
+-- 10. What do people ask for that Sightline can't answer? (Roadmap, not a bug list.)
+select ask, count(*) as times
+from events, jsonb_array_elements_text(payload->'unsupported') as ask
+where event_type = 'trip_described' and created_at > now() - interval '90 days'
+group by 1 order by times desc;
+
+-- 11. Ask about this destination: how often is the answer "the record doesn't
+--     say", by engine and destination? High not_covered on one record = a gap.
+select payload->>'destination' as destination,
+       payload->>'engine' as engine,
+       count(*) filter (where payload->>'status' = 'not_covered') as not_covered,
+       count(*) as questions
+from events
+where event_type = 'ask_question' and created_at > now() - interval '90 days'
+group by 1, 2 order by questions desc;
+
+-- 12. Does comparing help people decide? Qualified shortlist rate for sessions
+--     that opened a comparison vs those that didn't.
+with s as (
+  select session_id,
+         bool_or(event_type = 'compare_open') as compared,
+         bool_or(event_type = 'fit_results') as briefed,
+         bool_or(event_type = 'fit_panel_view') as panel,
+         bool_or(event_type in ('click_source', 'verification_open', 'concern_evidence_open')) as evidence
+  from events
+  where created_at > now() - interval '30 days'
+  group by session_id
+)
+select compared,
+       count(*) filter (where briefed and panel and evidence)::float
+         / nullif(count(*) filter (where briefed), 0) as qualified_shortlist_rate,
+       count(*) filter (where briefed) as briefed_sessions
+from s group by 1;

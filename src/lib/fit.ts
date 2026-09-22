@@ -25,7 +25,9 @@ import { aliasesFor, canonicalSpeciesId, getGroupDef } from "@/lib/taxonomy";
 import { claimId, getClaim, isContested, isSnorkelOnly, type Claim } from "@/lib/claims";
 import { certLabel } from "@/lib/cards";
 import { hasDiscoveredConflict } from "@/lib/verification";
-import { passesScope, type Filters } from "@/lib/filters";
+import { passesScope, targetLabel, type Filters } from "@/lib/filters";
+import type { ConcernId } from "@/lib/concerns";
+import { concernHits } from "@/lib/retrieve";
 
 export const CERT_LADDER = ["open_water", "advanced", "advanced_plus_experience"];
 export const CURRENT_LADDER = ["none", "mild", "moderate", "strong"];
@@ -38,13 +40,17 @@ export type Flag =
   | "snorkel_only"
   | "baited"
   | "required_cert"
-  | "current_variable";
+  | "current_variable"
+  | "liveaboard_only"
+  | "no_snorkel"
+  | "cold_water"
+  | "rough_water";
 
 export type Reason = "closed" | "operating" | "target" | "season" | "cert" | "current";
 export type Status = "met" | "caveat" | "violated";
 
 export type Verdict = {
-  kind: "access" | "target" | "season" | "cert" | "current" | "required_cert";
+  kind: "access" | "target" | "season" | "cert" | "current" | "required_cert" | "concern";
   status: Status;
   reason?: Reason;
   flags: Flag[];
@@ -54,6 +60,7 @@ export type Verdict = {
   short: string;
   claimIds: string[];
   targetId?: string;
+  concern?: ConcernId;
 };
 
 export type Tier = "good" | "caveats" | "near_miss" | "out";
@@ -80,6 +87,10 @@ export const FLAG_LABEL: Record<Flag, string> = {
   baited: "Baited encounter",
   required_cert: "Extra cert required",
   current_variable: "Variable current",
+  liveaboard_only: "Liveaboard only",
+  no_snorkel: "No snorkel option",
+  cold_water: "Cold water",
+  rough_water: "Rough water",
 };
 
 /** Most decision-relevant caveat first: what a card shows when space allows one. */
@@ -87,6 +98,10 @@ export const FLAG_PRIORITY: Flag[] = [
   "snorkel_only",
   "contested",
   "limited",
+  "liveaboard_only",
+  "rough_water",
+  "cold_water",
+  "no_snorkel",
   "required_cert",
   "current_variable",
   "baited",
@@ -118,7 +133,13 @@ export function monthRanges(months: number[]): string {
 // Brief and targets
 
 export function hasBrief(f: Filters) {
-  return f.month !== "any" || f.species.length > 0 || f.cert !== "any" || f.current !== "any";
+  return (
+    f.month !== "any" ||
+    f.species.length > 0 ||
+    f.cert !== "any" ||
+    f.current !== "any" ||
+    f.concerns.length > 0
+  );
 }
 
 export type Target = { id: string; label: string; members: string[] };
@@ -355,6 +376,167 @@ function currentVerdict(d: Destination, max: string): Verdict {
 }
 
 // ---------------------------------------------------------------------------
+// Concerns. Only three change ranking, each through a fact that is exact in the
+// data, and only as a caveat. Every other concern is evidence only (retrieve.ts).
+
+const SLEEP_ABOARD = new Set(["liveaboard", "expedition"]);
+
+const SEA_STATE = /\b(?:rough|swell|high waves|winds?|blown?[- ]out|sea state)\b/i;
+
+/** A sea-state warning in the record that names the trip month. */
+export function roughSpell(d: Destination, month: number): { claimId: string } | null {
+  for (const { passage } of concernHits(d, "seasickness")) {
+    if (!SEA_STATE.test(passage.text)) continue;
+    const months = new Set([
+      ...monthsMentioned(passage.text),
+      ...seasonMonths(passage.text, d.coordinates.lat),
+    ]);
+    if (months.has(month)) return { claimId: passage.claimId };
+  }
+  return null;
+}
+
+function seasicknessVerdict(d: Destination, month: number | null): Verdict {
+  const aboard =
+    d.trip_formats.length > 0 && d.trip_formats.every((t) => SLEEP_ABOARD.has(t.format));
+  const rough = month === null ? null : roughSpell(d, month);
+  const flags: Flag[] = [];
+  if (aboard) flags.push("liveaboard_only");
+  if (rough) flags.push("rough_water");
+  const m = month === null ? "" : MONTHS[month]!;
+  if (!flags.length) {
+    return {
+      kind: "concern",
+      concern: "seasickness",
+      status: "met",
+      flags: [],
+      label: m
+        ? `Can be dived without a liveaboard; no rough-water warning for ${m}`
+        : "Can be dived without a liveaboard",
+      short: "Not liveaboard-only",
+      claimIds: [],
+    };
+  }
+  const parts = [
+    aboard ? "Only reachable by liveaboard" : null,
+    rough ? `${aboard ? "rough" : "Rough"} water noted for ${m}` : null,
+  ].filter(Boolean);
+  return {
+    kind: "concern",
+    concern: "seasickness",
+    status: "caveat",
+    flags,
+    label: parts.join("; "),
+    short: aboard ? "Liveaboard only" : `Rough water in ${m.slice(0, 3)}`,
+    claimIds: [
+      ...(aboard ? d.trip_formats.map((_, i) => claimId.format(d, i)) : []),
+      ...(rough ? [rough.claimId] : []),
+    ],
+  };
+}
+
+function nonDiverVerdict(d: Destination): Verdict {
+  const formats = d.trip_formats
+    .map((t, i) => ({ t, i }))
+    .filter(({ t }) => t.orientation === "snorkel" || t.orientation === "mixed");
+  const highlights = d.highlights.filter((h) => isSnorkelOnly(h.note));
+  if (formats.length || highlights.length) {
+    return {
+      kind: "concern",
+      concern: "non_diver",
+      status: "met",
+      flags: [],
+      label: "Snorkelling options in this record",
+      short: "Snorkel options",
+      claimIds: [
+        ...formats.map(({ i }) => claimId.format(d, i)),
+        ...highlights.map((h) => claimId.highlight(d, h.rank)),
+      ],
+    };
+  }
+  return {
+    kind: "concern",
+    concern: "non_diver",
+    status: "caveat",
+    flags: ["no_snorkel"],
+    label: "No snorkelling option in this record",
+    short: "No snorkel option",
+    claimIds: [],
+  };
+}
+
+const COLD_C = 22;
+const TEMP = /\b(\d{1,2})(?:\s?[-–]\s?\d{1,2})?\s?°?C\b/g;
+
+/** Months a note's season words refer to, by the destination's hemisphere. */
+function seasonMonths(text: string, lat: number): number[] {
+  const north = lat >= 0;
+  const out: number[] = [];
+  if (/\bwinter\b/i.test(text)) out.push(...(north ? [11, 0, 1] : [5, 6, 7]));
+  if (/\bsummer\b/i.test(text)) out.push(...(north ? [5, 6, 7] : [11, 0, 1]));
+  return out;
+}
+
+/** The record's coldest stated temperature for a month, from its cold-water notes. */
+export function coldSpell(
+  d: Destination,
+  month: number,
+): { tempC: number; claimId: string } | null {
+  let best: { tempC: number; claimId: string } | null = null;
+  for (const { passage } of concernHits(d, "cold")) {
+    const temps = [...passage.text.matchAll(TEMP)].map((m) => Number(m[1]));
+    if (!temps.length) continue;
+    const tempC = Math.min(...temps);
+    if (tempC > COLD_C) continue;
+    const months = new Set([
+      ...monthsMentioned(passage.text),
+      ...seasonMonths(passage.text, d.coordinates.lat),
+    ]);
+    if (months.has(month) && (!best || tempC < best.tempC))
+      best = { tempC, claimId: passage.claimId };
+  }
+  return best;
+}
+
+function coldVerdict(d: Destination, month: number | null): Verdict {
+  const [lo = 0, hi = 0] = d.conditions.water_temp_c;
+  const m = month === null ? null : MONTHS[month]!;
+  const spell = month === null ? null : coldSpell(d, month);
+  const cold = hi <= COLD_C || (month === null ? lo <= 20 : spell !== null);
+  if (cold) {
+    const tempC = spell?.tempC ?? lo;
+    return {
+      kind: "concern",
+      concern: "cold",
+      status: "caveat",
+      flags: ["cold_water"],
+      label: m ? `Cold water in ${m}: down to ${tempC}°C` : `Cold water: down to ${lo}°C`,
+      short: `Cold water (${tempC}°C)`,
+      claimIds: spell ? [spell.claimId] : [claimId.experience(d)],
+    };
+  }
+  return {
+    kind: "concern",
+    concern: "cold",
+    status: "met",
+    flags: [],
+    label: m
+      ? `Water ${lo}–${hi}°C across the year; no cold spell noted for ${m}`
+      : `Water ${lo}–${hi}°C across the year`,
+    short: `Water ${lo}–${hi}°C`,
+    claimIds: [],
+  };
+}
+
+function concernVerdicts(d: Destination, f: Filters, month: number | null): Verdict[] {
+  const out: Verdict[] = [];
+  if (f.concerns.includes("seasickness")) out.push(seasicknessVerdict(d, month));
+  if (f.concerns.includes("non_diver")) out.push(nonDiverVerdict(d));
+  if (f.concerns.includes("cold")) out.push(coldVerdict(d, month));
+  return out;
+}
+
+// ---------------------------------------------------------------------------
 // Evaluation
 
 const MONTH_DEPENDENT: Reason[] = ["closed", "operating", "target", "season"];
@@ -374,6 +556,7 @@ function verdictsFor(d: Destination, f: Filters): { verdicts: Verdict[]; unliste
   if (month !== null && f.species.length === 0) verdicts.push(seasonVerdict(d, month));
   if (f.cert !== "any") verdicts.push(...certVerdicts(d, f.cert));
   if (f.current !== "any") verdicts.push(currentVerdict(d, f.current));
+  verdicts.push(...concernVerdicts(d, f, month));
   return { verdicts, unlisted };
 }
 
@@ -658,4 +841,21 @@ export function pageClaimCount(d: Destination) {
     d.trip_formats.length +
     d.conditions.required_certs.length
   );
+}
+
+/** One line on how a destination fits, for panels and comparisons. */
+export function fitSummary(fit: DestinationFit, name: string) {
+  if (fit.unlisted.length) {
+    return `${name} has no record of ${fit.unlisted.map(targetLabel).join(" or ")}`;
+  }
+  switch (fit.tier) {
+    case "good":
+      return "A good fit for your trip";
+    case "caveats":
+      return `A fit, with ${fit.caveats} thing${fit.caveats === 1 ? "" : "s"} to weigh`;
+    case "near_miss":
+      return "Close — one thing doesn't fit";
+    default:
+      return "Not a fit for this trip";
+  }
 }

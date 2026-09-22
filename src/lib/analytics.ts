@@ -12,7 +12,15 @@ export type EventType =
   | "fit_panel_view"
   | "fit_feedback"
   // Provenance: did anyone open the evidence behind a claim?
-  | "verification_open";
+  | "verification_open"
+  // Plain-language planning: what was understood (never the raw text), which
+  // concerns people raise, whether questions get answered, and comparisons.
+  | "trip_described"
+  | "concern_toggle"
+  | "concern_evidence_open"
+  | "ask_question"
+  | "compare_toggle"
+  | "compare_open";
 
 const KEY = "sightline_session_id";
 

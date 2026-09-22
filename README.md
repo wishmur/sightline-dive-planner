@@ -1,6 +1,6 @@
 # Sightline
 
-**An independent dive-trip reference that tells you where your trip actually fits, what the catch is, and exactly where each claim comes from.**
+**An independent dive-trip reference. Describe your trip in your own words; it tells you where it actually fits, what the catch is, what the record says about your worries, and exactly where each claim comes from.**
 
 Live: https://sightline-dive-planner.lovable.app
 
@@ -17,6 +17,8 @@ The diver this is built for has 15–100 logged dives, one trip a year, a travel
 
 Operator pages don't warn about any of this. Everything is "great year-round".
 
+Divers also have worries that no filter can hold: *I get seasick. My partner doesn't dive. I feel the cold. I only have 30 dives.* The researched records often answer these, but in their own words, not the diver's. Nobody writes "seasick"; they write "a 10–12 hour crossing" or "Dec–Mar swell cancels Manta Point".
+
 Sightline's curated dataset already knew most of these catches, but only as prose buried on long detail pages. Before this work, the search also answered the core question wrongly:
 
 - **The certification filter was an exact match.** An Advanced diver saw 12 of the 30 destinations they qualify for.
@@ -26,15 +28,25 @@ Sightline's curated dataset already knew most of these catches, but only as pros
 
 ## What it does now
 
-1. **Trip fit.** You tell it the month, the animals, your certification and the most current you're comfortable with. It ranks destinations by fit:
+1. **Describe your trip.** Type it the way you'd say it: *"Mantas in September. I'm Advanced with about 40 dives, I get seasick, and my partner snorkels. Is it expensive?"*
+   - It becomes the ordinary filters (September, manta rays, Advanced) plus the worries (seasickness, non-diving partner). Everything stays editable.
+   - It says plainly what it won't answer (*cost: Sightline holds no evidence on it*).
+   - If you name destinations, it offers to compare them for your trip.
+   - Claude reads the text when an API key is configured; deterministic rules do it otherwise. The page says which one did.
+2. **Trip fit.** Ranks destinations for the brief:
    - Good fits first.
    - Then fits with caveats, fewest first. Thin or disputed evidence counts as a caveat, so it can demote a destination but never promote one.
-   - Each card shows the one catch that matters most, e.g. *Snorkel-only encounter* or *Limited access in Jan*.
-2. **Close, but…** Instead of a dead-end "no results", you see destinations that break exactly one part of your brief, and when they would fit. For example: *Tubbataha · Closed in September · fits Mar–Jun*.
-3. **For your trip.** On every destination page:
+   - Each card shows the one catch that matters most, e.g. *Snorkel-only encounter*, *Limited access in Jan*, *Rough water*.
+3. **Your worries count.** Thirteen diver concerns (seasickness, cold water, a non-diving partner, experience, currents, crowds, visibility, weather, permits and rules, remoteness, photography, depth, getting there):
+   - Three change ranking, and only through facts that are exact in the data, as caveats: *Liveaboard only* and *Rough water in {month}* for seasickness, *Cold water in {month}* for the cold, *No snorkel option* for a non-diving partner. For example, for a seasick diver who wants mantas in September, Komodo and Raja Ampat are flagged for rough water that month and Nusa Penida isn't.
+   - On every destination page, each concern gets the record's own sentences on it, quoted verbatim with their source check. When the record is silent, it says so.
+4. **Close, but…** Instead of a dead-end "no results", you see destinations that break exactly one part of your brief, and when they would fit. For example: *Tubbataha · Closed in September · fits Mar–Jun*.
+5. **For your trip.** On every destination page:
    - A verdict for each part of your brief.
    - The few notes in the record that bear on your trip, quoted verbatim: a median of 4 out of about 15.
-4. **Source checks.** Key claims show whether their cited sources support them:
+   - **Ask about this destination.** Any question, answered with at most three sentences from that record, verbatim, or "this record doesn't answer that".
+6. **Compare.** Shortlist two or three destinations and see them side by side against the same trip: each part of the brief, the catches, the facts, and what each record says about your worries. Month is switchable in place. Works at phone width.
+7. **Source checks.** Key claims show whether their cited sources support them:
    - The status, the verbatim passage, and the date of the check.
    - When a claim was wrong, the page says it was corrected and why.
    - When sources disagree, both sides are shown.
@@ -48,12 +60,18 @@ Each decision below was made on evidence, and several reversed an earlier plan.
 | Decision | Evidence |
 |---|---|
 | **Fix the deterministic search before adding any AI.** | Against 26 scenario briefs (24 written before the engine; 2 added later, each with a dated reason in the file), the shipped filter was fully correct on 10. The new engine gets 26. The wrong answers came from logic bugs, not missing intelligence. |
-| **No RAG over Sightline's own dataset.** | The whole curated corpus is ~19k words and fits in one prompt. Selecting evidence for a brief is a linking problem: catches sit across species, highlight, format and experience notes. Deterministic linking by species aliases, site names and month mentions finds **39 of 39** must-see catches, with a median of 4 notes shown out of ~15 (ablation: 95% → 97% → 100%). |
+| **The next gap was worries, not more filters.** | The records address the 13 concerns far more than their vocabulary suggests: of 468 destination×concern pairs, 335 are covered by at least one sentence (845 relevant sentences). None of it was reachable: "seasick" appears in zero notes. |
+| **Answers are extractive. The model selects; it never writes a fact.** | This is a trust product. Every answer to a concern or question is the record's own sentences, with their source check, so a wrong answer is a wrong *choice of sentence* that the diver can see, not an invented fact. It also makes answers measurable against labelled sentences. |
+| **No vector search. A curated concern lexicon beats it by a wide margin.** | On the untouched test split (18 destinations): lexicon finds relevant evidence for **93%** of covered concerns vs **33–44%** for local embedding models (bge-small, MiniLM) and **55%** for BM25 with the concern's definition as query. Ranking only, with no thresholds: hit@3 **97%** vs 72–84%; precision@1 **92%** vs 46–64%. Fusing the lexicon with either embedding model makes it *worse*. |
+| **Vector search is kept out of the product.** | The lexicon also abstains correctly on **85%** of the 66 test pairs the record doesn't cover. Shipping an embedding model would add ~25 MB and a runtime model for a measured loss. |
+| **Claude reads trip descriptions; rules are the fallback, not the plan.** | On 30 held-out descriptions written after the rules parser was frozen, rules get **97%** of fields right but find only **65%** of stated worries ("I've never dived dry", "she doesn't dive"). That gap is language understanding, the job an LLM does well. The rules parser's 100% on the original 40 cases is dev data and isn't claimed. |
+| **Claude answers free-text questions by choosing sentence numbers.** | The keyword fallback finds a relevant sentence for only **56%** of long-tail test questions, and **64%** of what it shows is on point. A destination record is ~30 sentences, so Claude reads all of it. A deterministic gate keeps only sentence numbers that exist, at most three. |
+| **Concerns change ranking only through exact facts, month-aware, as caveats.** | Written as goldens before the code (15 scenarios). "Cold water" and "Rough water" fire only when a note ties a temperature ≤ 22°C or a sea-state word to the trip month, by month words or by hemisphere season. Galápagos is cold in August and not flagged in March. |
+| **Allowed IDs go in the prompt; the product validates them, not the schema.** | A contract test against a local stand-in for the Messages API showed this SDK version sends enums as descriptions, then validates client-side, so one out-of-list ID would void the whole parse. Fields are now strings; `normalizeTrip()` drops unknown values and the eval counts them. |
+| **No RAG over Sightline's own dataset for trip fit.** | The whole curated corpus is ~17k words of notes. Selecting evidence for a brief is a linking problem. Deterministic linking by species aliases, site names and month mentions finds **39 of 39** must-see catches, with a median of 4 notes shown out of ~15. |
 | **Verify the data before building on it.** | Snapshotting the 80 cited sources and reviewing the 78 claims the product leans on hardest found: **50** supported, **22** partial, **5** contradicted, **1** unsourced, and **2** undeclared conflicts between cited sources. |
-| **The showcase catch was false, and it's now fixed.** | The Komodo record said the best manta window (Dec–Feb) was the worst southern access window. All three cited sources say the opposite: the south is rough mid-May to early September and at its best mid-November to March. Six claims were corrected, each with before/after values and verbatim evidence in `data/verification/corrections.json`. The page says so. |
-| **Claim-as-query retrieval is confirmation-biased, so the verifier reads whole pages.** | Claim-scoped BM25 finds the supporting passage in the top 5 for 95% of gold quotes, but it misses precisely the facts that refute or sharpen a claim. Examples: Hanifaru's scuba ban, Komodo's access window, Socorro's April–June whale sharks. A wrong claim doesn't resemble the text that refutes it. Cited pages are small (median 16 passages), so the verifier reads them whole. Retrieval is kept for pinpointing the quote a diver sees, and for long documents. |
-| **The support judgement needs an LLM, and it's gated by deterministic checks.** | A lexical-overlap verifier ranks supported claims above contradicted ones with probability **0.52**, a coin flip: contradicted claims share their refuters' vocabulary. So judgement goes to Claude, and every quote must be verbatim in the page it names or it is rejected and counted. Verifier output is a proposal for a human reviewer; it never edits data. |
-| **Defer "describe your trip in words".** | The filter bar already captures the structured brief. Free text mainly adds soft concerns (crowds, boat time, seasickness), and the evidence for those is thin and unverified. A parser would mostly produce confident-sounding abstentions. Revisit once coverage of those notes is verified. |
+| **The showcase catch was false, and it's now fixed.** | The Komodo record said the best manta window (Dec–Feb) was the worst southern access window. All three cited sources say the opposite. Six claims were corrected, each with before/after values and verbatim evidence in `data/verification/corrections.json`. |
+| **The support judgement needs an LLM, and it's gated by deterministic checks.** | A lexical-overlap verifier separates supported from contradicted claims with probability **0.52**, a coin flip. So judgement goes to Claude, and every quote must be verbatim in the page it names. Verifier output is a proposal for a human reviewer; it never edits data. |
 
 ## Architecture
 
@@ -62,19 +80,26 @@ curated data (src/data/destinations.json, versioned in git)
    │
    ├─ taxonomy.ts      canonical species + diver-facing groups ("Manta rays")
    ├─ claims.ts        every note as an addressable claim with a stable ID
-   ├─ fit.ts           deterministic verdicts, tiers, near misses, evidence linking
+   ├─ passages.ts      every claim split into verbatim sentences (<claim>#<n>)
+   ├─ concerns.ts      13 diver worries + what counts as evidence for each
+   ├─ retrieve.ts      concern lexicon over sentences; BM25 for free-text fallback
+   ├─ fit.ts           verdicts, tiers, near misses, evidence linking, concern caveats
    └─ verification.ts  review status, quotes, corrections, recheck policy
         │
-        └─ UI: filter bar (URL state) → ranked cards → Close, but… → For your trip
+        └─ UI: describe your trip → filter bar (URL state) → ranked cards → Close, but…
+               → For your trip (verdicts · your concerns · read before you book · ask)
+               → Compare (2–3 destinations, same brief)
+
+request path, server only (src/lib/api/plan.functions.ts → llm.server.ts)
+   understandTrip   text → brief + concerns + unsupported asks   Claude, else understand.ts rules
+   askDestination   question → ≤3 sentence IDs of one record      Claude, else ask.ts rules
+   Both: claude-opus-5, structured output, effort "low", server-side refusal fallback,
+   output validated before use, any failure falls back to rules. Raw text is never logged.
 
 offline, curator-side (never in the request path)
    scripts/sources/fetch.ts         snapshot cited pages (robots.txt respected; text stays private)
-   scripts/lib/retrieval.ts         passages + BM25
-   scripts/verify/packets.ts        review packets
-   scripts/verify/verifiers.ts      lexical baseline · Claude verifier · verbatim-quote gate
-   scripts/verify/merge-reviews.ts  validated reviews → data/verification/reviews.json
-   scripts/verify/apply-corrections.ts  source-backed fixes, with an audit trail
-   scripts/verify/status.ts         stale reviews, recheck dates, unfetchable sources
+   scripts/lib/retrieval.ts         passages + BM25 over source pages
+   scripts/verify/*                 review packets, verifiers, corrections, recheck status
 ```
 
 ### Where AI is and isn't used
@@ -82,65 +107,67 @@ offline, curator-side (never in the request path)
 | Job | Approach | Why |
 |---|---|---|
 | Is the animal there in my month? Is it open? Is it within my level? | Structured data + deterministic rules | Exact, testable, instant. |
-| Ranking | Deterministic tiers | Explainable; confidence can only demote. |
-| Which notes matter for this brief | Deterministic linking (aliases, sites, months) | 39/39 catches; no model needed at this corpus size. |
-| Finding the passage to show | BM25 over the cited page | Cheap, and measured. |
-| Does the source support the claim? | Claude (`claude-opus-5`), whole page, structured output | Semantic judgement; the lexical baseline is at chance. |
-| Deciding what ships | Human reviewer | Verifier output is a proposal. |
-| Cost, flights, hotels, operator quality | Not answered | No evidence in the corpus; the UI doesn't pretend otherwise. |
+| Ranking | Deterministic tiers | Explainable; confidence and concerns can only demote. |
+| Which notes matter for this brief | Deterministic linking (aliases, sites, months) | 39/39 catches; no model needed. |
+| Which sentences answer a known concern | Curated lexicon, measured | Beats BM25 and embeddings by 38+ points on held-out data. |
+| Turning a trip description into a brief | Claude (rules fallback) | Worries are stated indirectly; rules find 65% of them. |
+| Answering a free-text question | Claude picks sentence numbers (rules fallback) | Long-tail questions; the fallback's precision is 64%. |
+| Writing any fact the diver reads | Never a model | Every answer is a verbatim sentence with its source check. |
+| Does the source support the claim? | Claude, whole page, verbatim-quote gate | Semantic judgement; the lexical baseline is at chance. |
+| Deciding what ships in the data | Human reviewer | Verifier output is a proposal. |
+| Cost, hotels, visas, operator quality | Not answered, and said so | No evidence in the corpus. |
 
 ## Evaluation
 
 ```bash
-bun run test        # 65 tests: integrity, scenario goldens, properties, evidence, verification invariants
-bun run eval        # scenarios vs the shipped filter; evidence-linking ablation
-bun scripts/sources/fetch.ts        # snapshot sources (needed by the next two)
-bun evals/retrieval.ts              # source-passage retrieval vs gold quotes
-bun evals/verifier.ts lexical       # baseline verifier
-bun evals/verifier.ts llm           # Claude verifier (needs ANTHROPIC_API_KEY; ~$5–10 for all 78 claims)
-bun scripts/verify/status.ts        # what needs rechecking
+bun run test                  # 97 tests: integrity, goldens, properties, evidence, verification,
+                              #   concern gold integrity + retrieval gates, parser floors, LLM contract + gates
+bun run eval                  # all reports below, deterministic paths
+bun evals/concerns.ts --dense # adds the local embedding-model comparison (downloads two small models once)
+bun evals/understand.ts llm   # Claude parse vs gold and held-out (needs ANTHROPIC_API_KEY; ~70 short calls)
+bun evals/ask.ts llm          # Claude sentence selection (needs ANTHROPIC_API_KEY; 73 short calls)
+bun evals/verifier.ts llm     # Claude verifier on the 78 reviewed claims (~$5–10)
 ```
 
 | Component | Result |
 |---|---|
 | Scenario goldens (26 briefs across four journeys) | trip fit 26/26 · shipped filter 10/26 |
-| Individual checks | 115/115 · shipped filter 81/115 |
-| Critical catches surfaced | 39/39 (plus 3/3 on cases written after the rule), median panel 4 notes |
-| Source-passage retrieval (92 gold quotes) | BM25 R@3 90%, R@5 95% · no-retrieval baseline R@5 41% |
-| Lexical verifier (78 reviewed claims) | 35% accuracy · 0% contradiction recall · separability 0.52 |
-| Claude verifier | Built and gated by tests. **Not yet run**: needs an API key. |
+| Concern scenarios (15, written before the rules) | 15/15 |
+| Critical catches surfaced | 39/39, median panel 4 notes |
+| Concern evidence, test split (234 pairs) | lexicon: hit 93% · precision@3 81% (top sentence 90%) · abstains 85% |
+| … baselines on the same split | BM25 33–55% hit · bge-small 33% · MiniLM 44% · lexicon+embedding fusion 80–88% |
+| Describe your trip, held-out (30) | rules: fields 97% · worries found 65% (precision 94%) · Claude: *not yet run* |
+| Ask a destination, test half (36) | rules: hit 61% · precision 69% · abstains on off-record 80% · Claude: *not yet run* |
+| Claude integration contract (local mock) | request shape, validation and fallback: pass |
+| Source-passage retrieval (92 gold quotes) | BM25 R@5 95% · no-retrieval baseline 41% |
+| Lexical verifier (78 reviewed claims) | 35% accuracy · separability 0.52 |
 
 **Rules the evals follow:**
-- Gold was written before the code it tests; later additions are marked and dated.
-- Changes to gold are dated and explained in the files: the Komodo expectations moved because the data was corrected, not to make tests pass.
-- Evals score claims as they were reviewed, not as corrected, so fixes can't flatter the retriever or the verifier.
-- Hard gates (false support, hallucinated quotes) are reported separately and never averaged into an accuracy number.
+- Gold was written before the code it tests; later additions are marked and dated. The concern gold is exhaustive: every one of 1,095 sentences was judged against all 13 concerns, so an empty label means the record is silent.
+- Split by destination: the lexicon was tuned on the dev half only. Its first, untuned test score (hit 89%, precision 83%) is recorded alongside the tuned one.
+- When a set has been seen, it's labelled as such: the rules parser's original gold is dev data, and one post-hoc routing rule in the ask fallback (format words → access evidence) was added after the test half had been inspected. It helps real format questions and costs one off-record case; both numbers are reported.
+- Hard gates (false support, hallucinated quotes, invalid sentence numbers) are reported separately and never averaged into an accuracy number.
 
 **Known limitations of the evidence:**
-- **One labeller.** The builder wrote every gold label and reviewed every claim, with AI assistance. No external diver has reviewed the rankings or the panel yet.
-- **Optimistic retrieval gold.** Quotes were found starting from BM25's top passages, so retrieval recall is optimistic.
-- **Partial coverage.** 78 of 495 claims are reviewed: every access note, plus every claim behind a critical catch.
+- **The Claude paths have not been measured.** They're built, contract-tested and wired with fallbacks, but no API key was available. The product is fully usable without one (rules everywhere, labelled as such); the claims above about where Claude should win are hypotheses until `evals/understand.ts llm` and `evals/ask.ts llm` run.
+- **One labeller, who also wrote the lexicon.** The concern gold and the lexicon share a notion of relevance. The dev/test split guards against tuning, not against that. No external diver has labelled anything yet.
+- **Seasickness is the weakest concern** (hit 75%); boat time is often implied by format rather than stated.
+- **Month-aware caveats depend on notes naming months.** "Winter water drops to 21–23°C" works by hemisphere; a cold spell described without any month word is shown as evidence but doesn't flag.
+- **Water temperature is an annual range** in the data; the compare view says "across the year" for that reason.
+- **Partial verification coverage.** 78 of 495 claims are source-checked.
 
 ## Keeping it honest over time
 
 - **Freshness.** Re-running `fetch.ts` hashes every source. A review whose source changed is marked *source changed since it was checked*. Access and cert claims come due for recheck after 12 months, everything else after 36.
-- **Corrections.** "Something's off" on any panel lands in the `feedback` table. Triage follows the same path as the Komodo fix: review packet → review → `corrections.json` → `apply-corrections.ts` → evals → deploy. Every correction keeps its before, after, reason and verbatim evidence.
-- **Measurement.** `docs/metrics.sql` holds one query per product question:
-  - How many sessions use the brief?
-  - How often is it empty, and do near misses rescue it?
-  - Does the panel help, by tier?
-  - Does anyone open the evidence?
-  - The **qualified-shortlist rate**: sessions that brief, open a panel and follow the evidence.
-
-  Ratings are never used as correctness labels. Divers rate optimistic answers higher.
+- **Corrections.** "Something's off" on any panel lands in the `feedback` table and follows the same path as the Komodo fix: review packet → review → `corrections.json` → `apply-corrections.ts` → evals → deploy.
+- **Measurement.** `docs/metrics.sql` holds one query per product question, including what worries divers raise, what they ask for that Sightline can't answer, how often "the record doesn't say" per destination (the curation queue), and whether comparing leads to a qualified shortlist. Ratings are never used as correctness labels.
 
 ## What's next
 
-1. **External-diver review.** 3–5 divers who fit the target profile rate about 20 briefs and the panel. This is the largest gap: all quality judgements so far are one person's.
-2. **Run the Claude verifier.** Run it against the 78 reviewed claims and adopt it only if false support is ≈0% with no hallucinated quotes. Then extend coverage beyond 78/495 claims, with humans confirming every *contradicted* verdict before data changes.
-3. **Promote the curator's markers to schema fields.** "SNORKEL ONLY", "BAITED" and format reach ("only liveaboards reach the south") are read from prose today.
-4. **Define month states.** What "peak" means for a resident species: 109 resident listings are uniform all year.
-5. **Month ranges** for trips that span two months, and **monthly sea temperature** from climatology rather than annual ranges.
+1. **Run the Claude evals** (needs `ANTHROPIC_API_KEY`): parse and ask, then the verifier. Adopt Claude for parsing if it closes the worry-recall gap without losing field accuracy; for ask, if precision beats the fallback's 64% with abstention on off-record questions held. Add the key to the Lovable project's secrets to turn it on in production.
+2. **External-diver review.** 3–5 divers who fit the target profile rate about 20 briefs, the concern evidence and the comparisons, and label a sample of concern pairs independently of the builder.
+3. **Promote the curator's markers to schema fields.** "SNORKEL ONLY", "BAITED", format reach ("only liveaboards reach the south"), and monthly water temperature.
+4. **Extend verification** beyond 78/495 claims, prioritising the sentences most often shown as concern evidence.
 
 ## Development
 
@@ -152,5 +179,7 @@ bun run dev         # http://localhost:8080
 bun run typecheck
 bun run build
 ```
+
+`ANTHROPIC_API_KEY` (server-side only) turns on Claude for "Describe your trip" and "Ask". Without it both run on the deterministic rules.
 
 Source snapshots live in `data/.source-cache/` and are never committed: page text belongs to its publishers. Only hashes, fetch status and short quotes (≤ 25 words) are in the repo.

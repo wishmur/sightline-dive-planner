@@ -2,6 +2,7 @@ import { DESTINATIONS, SPECIES_GROUPS, type Destination } from "@/lib/destinatio
 import { COLLECTIONS, getCollection } from "@/lib/collections";
 import { diveTypeLabel } from "@/lib/cards";
 import { GROUP_DEFS, getGroupDef } from "@/lib/taxonomy";
+import { isConcernId, type ConcernId } from "@/lib/concerns";
 
 /** Country -> continent grouping for the "Where" filter. */
 export const CONTINENTS: { name: string; countries: string[] }[] = (() => {
@@ -125,6 +126,7 @@ export type Filters = {
   entry: string; // "any" | shore|boat
   operatingOnly: boolean;
   collection: string; // "all" | collection id
+  concerns: ConcernId[]; // worries the filters can't express (lib/concerns.ts)
 };
 
 export const EMPTY_FILTERS: Filters = {
@@ -140,6 +142,7 @@ export const EMPTY_FILTERS: Filters = {
   entry: "any",
   operatingOnly: false,
   collection: "all",
+  concerns: [],
 };
 
 export function countActive(f: Filters) {
@@ -156,6 +159,7 @@ export function countActive(f: Filters) {
   if (f.entry !== "any") n++;
   if (f.operatingOnly) n++;
   if (f.collection !== "all") n++;
+  if (f.concerns.length) n++;
   return n;
 }
 
@@ -218,6 +222,7 @@ export type FilterSearch = {
   entry?: string;
   open?: boolean;
   col?: string;
+  cn?: string; // comma-separated concern IDs
 };
 
 const SEARCH_KEYS: (keyof FilterSearch)[] = [
@@ -233,6 +238,7 @@ const SEARCH_KEYS: (keyof FilterSearch)[] = [
   "entry",
   "open",
   "col",
+  "cn",
 ];
 
 export function validateFilterSearch(search: Record<string, unknown>): FilterSearch {
@@ -275,6 +281,7 @@ export function filtersFromSearch(s: FilterSearch): Filters {
     entry: oneOf(s.entry, ENTRY_OPTIONS, "any"),
     operatingOnly: s.open === true,
     collection: s.col && COLLECTIONS.some((c) => c.id === s.col) ? s.col : "all",
+    concerns: [...new Set((s.cn ?? "").split(",").filter(isConcernId))],
   };
 }
 
@@ -292,13 +299,14 @@ export function searchFromFilters(f: Filters): FilterSearch {
   if (f.entry !== "any") s.entry = f.entry;
   if (f.operatingOnly) s.open = true;
   if (f.collection !== "all") s.col = f.collection;
+  if (f.concerns.length) s.cn = f.concerns.join(",");
   return s;
 }
 
-/** The part of a brief a destination page needs: when, what, and the diver's limits. */
-export type BriefSearch = Pick<FilterSearch, "m" | "sp" | "cert" | "cur">;
+/** The part of a brief a destination page needs: when, what, the diver's limits and worries. */
+export type BriefSearch = Pick<FilterSearch, "m" | "sp" | "cert" | "cur" | "cn">;
 
 export function briefSearch(f: Filters): BriefSearch {
-  const { m, sp, cert, cur } = searchFromFilters(f);
-  return { m, sp, cert, cur };
+  const { m, sp, cert, cur, cn } = searchFromFilters(f);
+  return { m, sp, cert, cur, cn };
 }

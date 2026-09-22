@@ -1,6 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, BadgeCheck, Layers, RefreshCw, Search, ShieldCheck } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  BadgeCheck,
+  CircleSlash,
+  Layers,
+  MessageSquareQuote,
+  RefreshCw,
+  Search,
+  ShieldCheck,
+  SlidersHorizontal,
+} from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
 import { SiteFooter } from "@/components/sightline/SiteFooter";
 import { FeedbackDialog } from "@/components/sightline/FeedbackDialog";
@@ -57,6 +68,24 @@ const PRINCIPLES = [
     icon: <RefreshCw className="h-5 w-5" />,
     title: "Rechecked periodically",
     body: "Sources are re-fetched and compared. When a source changes, the claims that rest on it are flagged for recheck, and diver submissions are verified before they change anything.",
+  },
+];
+
+const READING = [
+  {
+    icon: <SlidersHorizontal className="h-5 w-5" />,
+    title: "Your words become filters",
+    body: "Describe a trip and it's turned into the same filters you could set by hand: month, animals, certification, worries. Claude does the reading when it's available, keyword rules when it isn't. Either way it fills in filters; it never picks destinations.",
+  },
+  {
+    icon: <MessageSquareQuote className="h-5 w-5" />,
+    title: "Answers are quotes",
+    body: "Ask about seasickness, cold water or a non-diving partner, or type any question about a destination, and the answer is sentences from that destination's record, word for word, each with its source check. Nothing is paraphrased or generated.",
+  },
+  {
+    icon: <CircleSlash className="h-5 w-5" />,
+    title: "Silence is an answer",
+    body: "If a record doesn't cover something, Sightline says so rather than showing something that merely sounds related. Costs, hotels, visas and which operator is best aren't answered at all: there's no evidence here for them.",
   },
 ];
 
@@ -166,6 +195,34 @@ function AboutPage() {
                   <span className="text-primary">{p.icon}</span>
                   <h3 className="mt-3 font-display text-lg text-foreground">{p.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* READING YOUR TRIP */}
+          <section id="reading" className="scroll-mt-20">
+            <p className="eyebrow">Planning in your own words</p>
+            <h2 className="mt-2 font-display text-2xl text-foreground sm:text-3xl">
+              How Sightline reads your trip
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+              The questions that decide a trip are often the ones no filter holds: will I be seasick,
+              is it too cold, is there anything for my partner. Sightline answers them from the same
+              researched records as everything else, and each behaviour is measured against
+              hand-labelled test cases before it ships.
+            </p>
+            <div className="mt-6 space-y-3">
+              {READING.map((p) => (
+                <div
+                  key={p.title}
+                  className="flex items-start gap-4 rounded-2xl bg-card p-5 shadow-sm ring-1 ring-inset ring-border"
+                >
+                  <span className="mt-0.5 shrink-0 text-primary">{p.icon}</span>
+                  <div>
+                    <h3 className="font-display text-lg text-foreground">{p.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+                  </div>
                 </div>
               ))}
             </div>
