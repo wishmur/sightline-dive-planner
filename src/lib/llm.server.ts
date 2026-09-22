@@ -27,7 +27,7 @@ import {
   TARGET_SPECIES,
 } from "@/lib/filters";
 import { passagesFor, type Passage } from "@/lib/passages";
-import { normalizeTrip, type ParsedTrip } from "@/lib/understand";
+import { normalizeTrip, parseTripRules, safestCert, type ParsedTrip } from "@/lib/understand";
 import { LlmError, worstCaseUsd, type Usage } from "@/lib/llm-guard";
 
 export const LLM_MODEL = "claude-opus-5";
@@ -101,12 +101,12 @@ const UNDERSTAND_SYSTEM = `You turn a scuba diver's description of a trip into t
 Fields:
 - month: the trip month. For a window ("late Oct to early Nov") use its first month and put the rest in also_months. Leave it null for hemisphere-dependent words (summer, autumn, winter), moving holidays (Easter), or no date. Christmas is December; New Year is January.
 - targets: animals the diver wants to see, as IDs from the list. Prefer a group ID ("manta-rays") when they name the animal generally, a species ID when they name the species ("giant mantas" → giant-oceanic-manta-ray). "Sharks" alone matches no target: leave it out rather than guess a species.
-- cert: the diver's own level. Advanced with 50 or more logged dives, Rescue, Divemaster or Instructor → advanced_plus_experience. A dive count with no card: 25 or fewer → open_water, 100 or more → advanced_plus_experience, otherwise null.
+- cert: the diver's own level. A level they state counts without the word "certified" ("I'm Advanced", "AOW", "advanced plus nitrox" → advanced). Advanced with 50 or more logged dives, Rescue, Divemaster or Instructor → advanced_plus_experience. A dive count with no card: 25 or fewer → open_water, 100 or more → advanced_plus_experience, otherwise null.
 - current_limit: only when the diver states a limit ("nothing strong" → mild, "moderate is fine" → moderate). Nervousness about current without a limit is the "current" concern instead.
-- format, dive_type: only what the diver asks for. "Not a liveaboard" sets nothing. Worries are not requests ("drift dives make me nervous" is not dive_type drift).
+- format, dive_type: only what the diver asks for. "Not a liveaboard" sets nothing. Worries are not requests ("drift dives make me nervous" is not dive_type drift). Animals are targets, never a dive type ("sharks" is not dive_type shark; "turtles and reef fish" is not dive_type reef).
 - where: a country or continent they name. A place that is itself a listed destination (Malta, Palau) goes in destinations, not where. Regions that aren't a country (Bali, the Caribbean) set nothing.
 - destinations: listed destinations they name.
-- concerns: worries the filters can't express, from the list below, including ones stated indirectly ("I turn green on boats" → seasickness; "she doesn't dive" → non_diver; "never dived dry" → cold and experience). A dive count on its own is not a concern; doubt about it is.
+- concerns: worries the filters can't express, from the list below, including ones stated indirectly ("I turn green on boats" → seasickness; "she doesn't dive" → non_diver; "never dived dry" → cold and experience; "warm water please" → cold). A dive count on its own is not a concern; doubt about it is.
 - unsupported: things they ask for that the reference holds no data on.
 
 Concerns:
@@ -145,7 +145,14 @@ export function understandParams(text: string) {
 export async function understandWithClaude(
   text: string,
   opts: LlmOptions = {},
-): Promise<{ trip: ParsedTrip; model: string; dropped: string[]; usage: Usage }> {
+): Promise<{
+  trip: ParsedTrip;
+  model: string;
+  dropped: string[];
+  /** Values changed by a deterministic gate, e.g. "cert:advanced->open_water". */
+  adjusted: string[];
+  usage: Usage;
+}> {
   const response = await parseOrFail(() =>
     client(opts).beta.messages.parse(understandParams(text)),
   );
@@ -171,19 +178,24 @@ export async function understandWithClaude(
     unsupported: p.unsupported as ParsedTrip["unsupported"],
     destinations: p.destinations,
   };
-  const trip = normalizeTrip(raw);
+  const normalized = normalizeTrip(raw);
+  const cert = safestCert(normalized.cert, parseTripRules(text).cert);
+  const trip = { ...normalized, cert };
+  const adjusted =
+    cert !== normalized.cert ? [`cert:${normalized.cert ?? "none"}->${cert ?? "none"}`] : [];
+  // Out-of-list values only; gate adjustments are reported separately.
   const dropped = [
-    ...(p.month && trip.month === null ? [`month:${p.month}`] : []),
+    ...(p.month && normalized.month === null ? [`month:${p.month}`] : []),
     ...(["cert", "current", "format", "diveType", "where"] as const).flatMap((k) =>
-      raw[k] && trip[k] !== raw[k] ? [`${k}:${raw[k]}`] : [],
+      raw[k] && normalized[k] !== raw[k] ? [`${k}:${raw[k]}`] : [],
     ),
     ...(["targets", "concerns", "unsupported", "destinations"] as const).flatMap((k) =>
       (raw[k] as string[])
-        .filter((v) => !(trip[k] as string[]).includes(v))
+        .filter((v) => !(normalized[k] as string[]).includes(v))
         .map((v) => `${k}:${v}`),
     ),
   ];
-  return { model: response.model, trip, dropped, usage: response.usage };
+  return { model: response.model, trip, dropped, adjusted, usage: response.usage };
 }
 
 // ---------------------------------------------------------------------------

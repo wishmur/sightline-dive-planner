@@ -1,0 +1,52 @@
+{
+  "key": "ff5f8f988c961e51e1c9efea",
+  "eval": "adversarial",
+  "recorded_at": "2026-09-22T17:51:17.479Z",
+  "request_id": "req_011CfJuHrh9osqaWfRMr2xGk",
+  "latency_ms": 2764,
+  "response": {
+    "model": "claude-opus-5",
+    "id": "msg_011CfJuHs1kegHqPCG2iF5Tz",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"month\":\"September\",\"also_months\":[],\"targets\":[\"manta-rays\"],\"cert\":null,\"current_limit\":null,\"format\":null,\"dive_type\":null,\"where\":null,\"concerns\":[],\"unsupported\":[],\"destinations\":[]}"
+      }
+    ],
+    "container": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+      "input_tokens": 26,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 4976,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "iterations": [
+        {
+          "input_tokens": 26,
+          "output_tokens": 82,
+          "cache_read_input_tokens": 4976,
+          "cache_creation_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "type": "message",
+          "model": null
+        }
+      ],
+      "output_tokens": 82,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "service_tier": "standard",
+      "inference_geo": "global"
+    }
+  }
+}

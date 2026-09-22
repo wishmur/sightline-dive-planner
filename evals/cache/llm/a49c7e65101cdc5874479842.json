@@ -1,0 +1,57 @@
+{
+  "key": "a49c7e65101cdc5874479842",
+  "eval": "adversarial",
+  "recorded_at": "2026-09-22T17:50:05.381Z",
+  "request_id": "req_011CfJuCYKDakXSX92nPVa1A",
+  "latency_ms": 2795,
+  "response": {
+    "model": "claude-opus-5",
+    "id": "msg_011CfJuCYaMLCfkS3tHQkWzv",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      {
+        "type": "thinking",
+        "thinking": "",
+        "signature": "CAISoQIKjgEIEhgCKkDwebYBSis4ocf5RhRrrnfrLYpvPTGSJEWLCdDjtqwq2NH/OvCRdcWJPQ84gNIPu2ZTk+psW5eKomJldAQE7Nf0Mg1jbGF1ZGUtb3B1cy01OAFCCHRoaW5raW5nWiQwZmI1NjdkNi02N2ZjLTQxYWMtOWUzYS01NmMyYjU2ZDUwZmSoAcz/ytUGEgzBjWz7nbwqi+BLotIaDOsAbEowJcILYK4GUyIwHJqWtKM0hspTjV0GDHGLkCcjywlw9KGqGO5QA2vhaytt3dSI0bsK5LVVbO7QZbHjKkAtPnE4X20rr/IC9K4LASLKCNsfG4Yr/+kC0cApTjSW/8C74biK2WFGzuLgLd1jckdY+UXcHtnRq+g4v0g6zxjSGAE="
+      },
+      {
+        "type": "text",
+        "text": "{\"month\":\"May\",\"also_months\":[],\"targets\":[\"manta-rays\"],\"cert\":null,\"current_limit\":null,\"format\":null,\"dive_type\":null,\"where\":null,\"concerns\":[],\"unsupported\":[],\"destinations\":[]}"
+      }
+    ],
+    "container": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+      "input_tokens": 51,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 4976,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "iterations": [
+        {
+          "input_tokens": 51,
+          "output_tokens": 103,
+          "cache_read_input_tokens": 4976,
+          "cache_creation_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "type": "message",
+          "model": null
+        }
+      ],
+      "output_tokens": 103,
+      "output_tokens_details": {
+        "thinking_tokens": 21
+      },
+      "service_tier": "standard",
+      "inference_geo": "global"
+    }
+  }
+}

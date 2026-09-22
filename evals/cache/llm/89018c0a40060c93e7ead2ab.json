@@ -1,0 +1,57 @@
+{
+  "key": "89018c0a40060c93e7ead2ab",
+  "eval": "understand",
+  "recorded_at": "2026-09-22T17:45:14.558Z",
+  "request_id": "req_011CfJtpzafLLEGiEFZ2MzRp",
+  "latency_ms": 4275,
+  "response": {
+    "model": "claude-opus-5",
+    "id": "msg_011CfJtpzwEvyDL6eEHChZ7j",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      {
+        "type": "thinking",
+        "thinking": "",
+        "signature": "CAISvQMKjgEIEhgCKkB36nnkdFDLBvwsh/WOxBYfxFQw+IUw4HfZrzY3uAD3h5CiVWzMnBa9WpUasBDdGlKwl5+nFtenEKKo75ijq5fhMg1jbGF1ZGUtb3B1cy01OAFCCHRoaW5raW5nWiQwZmI1NjdkNi02N2ZjLTQxYWMtOWUzYS01NmMyYjU2ZDUwZmSoAan9ytUGEgwURxFy/lE9YXKHu5caDCd24Hqeu1M+Btl+UyIw7UcatBM0x3W2lG46HR4roFt/Bb1Zu9B8Y3F4M6nqCbJg9xRg2FXzByFEghWttb3xKtsBR1shizHp6EaeQyO6KHJRz0tyef8SYNosGMY+tV/tNsrxSRNlAXr8nFJjhn1DryoMtChboCz6sFh3VHIEppSpMUihJAHge6eZ4f2lkzQzR6DEbGG89j3AGGBqq3yt+8Seskj19liO+RwqTMfIqu+u2E+BeqyYxDJxD1Akr9OtBE/XGheWaVvXh/ix3pcNyNOsZVdQ57gURYDN1u4iwwxnwpYTgilTySjuS9Zy1NsKA8sERnNiGrF4tKM+NJtqx13yT5kZ3QvfmKOFiCz4FxPcY36vFWfo/cIzHWQIGAE="
+      },
+      {
+        "type": "text",
+        "text": "{\"month\":\"July\",\"also_months\":[\"August\"],\"targets\":[\"frogfishes\",\"pygmy-seahorse\"],\"cert\":null,\"current_limit\":null,\"format\":null,\"dive_type\":\"macro\",\"where\":\"country:Indonesia\",\"concerns\":[\"photography\"],\"unsupported\":[],\"destinations\":[]}"
+      }
+    ],
+    "container": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+      "input_tokens": 49,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 4976,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 0,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "iterations": [
+        {
+          "input_tokens": 49,
+          "output_tokens": 182,
+          "cache_read_input_tokens": 4976,
+          "cache_creation_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "type": "message",
+          "model": null
+        }
+      ],
+      "output_tokens": 182,
+      "output_tokens_details": {
+        "thinking_tokens": 78
+      },
+      "service_tier": "standard",
+      "inference_geo": "global"
+    }
+  }
+}
