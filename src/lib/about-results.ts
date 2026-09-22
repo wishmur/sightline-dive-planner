@@ -30,6 +30,21 @@ export const RESULTS = {
   parser: { worries: 65, worryPrecision: 94, fields: 97 },
   /** Keyword fallback on specific questions, ask test half (evals/ask.gold.ts). */
   ask: { specificHit: 56, specificPrecision: 64, testHit: 61, testPrecision: 69 },
+  /**
+   * Claude, first paid runs 2026-09-22. `final` is the shipped prompt and gates,
+   * replayed from evals/cache/llm by the test; `untuned` is the pre-registered
+   * first run, read from its report. Describe was tuned on dev and Ask capped at
+   * two sentences on dev; held-out errors had been viewed (docs/paid-evals.md).
+   */
+  claude: {
+    parser: { final: { worries: 100, worryPrecision: 92, fields: 98 }, untuned: { worries: 87 } },
+    ask: {
+      final: { testHit: 100, testPrecision: 89, abstain: 100 },
+      untuned: { testPrecision: 75 },
+    },
+    adversarial: { violations: 0, trip: [26, 27] as const, ask: [17, 17] as const },
+    verifier: { falseSupport: [0, 6] as const, contradictions: [4, 5] as const, accuracy: 59 },
+  },
   /** Adversarial inputs on the keyword path (evals/adversarial.gold.ts). */
   adversarial: { cases: 44, violations: 0, trip: [24, 27] as const, ask: [16, 17] as const },
 };
