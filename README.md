@@ -65,7 +65,7 @@ Each decision below was made on evidence, and several reversed an earlier plan.
 | **No vector search. A curated concern lexicon beats it by a wide margin.** | On the untouched test split (18 destinations): lexicon finds relevant evidence for **93%** of covered concerns vs **33–44%** for local embedding models (bge-small, MiniLM) and **55%** for BM25 with the concern's definition as query. Ranking only, with no thresholds: hit@3 **97%** vs 72–84%; precision@1 **92%** vs 46–64%. Fusing the lexicon with either embedding model makes it *worse*. |
 | **Vector search is kept out of the product.** | The lexicon also abstains correctly on **85%** of the 66 test pairs the record doesn't cover. Shipping an embedding model would add ~25 MB and a runtime model for a measured loss. |
 | **Claude reads trip descriptions; rules are the fallback, not the plan.** | On 30 held-out descriptions written after the rules parser was frozen, rules get **97%** of fields right but find only **65%** of stated worries ("I've never dived dry", "she doesn't dive"). That gap is language understanding, the job an LLM does well. **Measured:** Claude's first, untuned run found **87%** (20 of 23) at 95% precision, and **100%** after one tuning round on dev (held-out errors had been viewed). The rules parser's 100% on the original 40 cases is dev data and isn't claimed. |
-| **Claude answers free-text questions by choosing sentence numbers.** | The keyword fallback finds a relevant sentence for only **56%** of long-tail test questions, and **64%** of what it shows is on point. A destination record is ~30 sentences, so Claude reads all of it. A deterministic gate keeps only sentence numbers that exist. **Measured (test half):** Claude found a relevant sentence for all 28 answerable questions (rules 17) and abstained on all 8 it couldn't answer. But its first-run precision, **75%**, missed my pre-registered 80%: its third sentence was relevant less than half the time. Asking for fewer sentences didn't fix that, so the gate now shows **at most two**. Result: precision **89%**, chosen on dev and disclosed as post hoc. |
+| **Claude answers free-text questions by choosing sentence numbers.** | The keyword fallback finds a relevant sentence for only **56%** of long-tail test questions, and **64%** of what it shows is on point. A destination record is ~30 sentences, so Claude reads all of it. A deterministic gate keeps only sentence numbers that exist. **Measured (test half):** Claude found a relevant sentence for all 28 answerable questions (rules 17) and abstained on all 8 it couldn't answer. But its first-run precision, **75%**, missed my pre-registered 80%: its third sentence was relevant less than half the time. Asking for fewer sentences didn't fix that, so the gate now shows **at most two**. Result: precision **89%**, chosen on dev and disclosed as post hoc, then confirmed prospectively on 30 fresh questions labelled before the run: precision **82%**, hit 25/25, abstains 5/5 (keyword rules on the same set: hit 48%, precision 39%). |
 | **Concerns change ranking only through exact facts, month-aware, as caveats.** | Written as goldens before the code (15 scenarios). "Cold water" and "Rough water" fire only when a note ties a temperature ≤ 22°C or a sea-state word to the trip month, by month words or by hemisphere season. Galápagos is cold in August and not flagged in March. |
 | **Allowed IDs go in the prompt; the product validates them, not the schema.** | A contract test against a local stand-in for the Messages API showed this SDK version sends enums as descriptions, then validates client-side, so one out-of-list ID would void the whole parse. Fields are now strings; `normalizeTrip()` drops unknown values and the eval counts them. |
 | **No RAG over Sightline's own dataset for trip fit.** | The whole curated corpus is ~17k words of notes. Selecting evidence for a brief is a linking problem. Deterministic linking by species aliases, site names and month mentions finds **39 of 39** must-see catches, with a median of 4 notes shown out of ~15. |
@@ -126,7 +126,7 @@ offline, curator-side (never in the request path)
 ## Evaluation
 
 ```bash
-bun run test                  # 207 tests: goldens, properties, evidence, verification, retrieval gates,
+bun run test                  # 209 tests: goldens, properties, evidence, verification, retrieval gates,
                               #   parser floors, LLM contract + gates, spend guard (incl. the migration in
                               #   embedded Postgres), eval harness, adversarial set, pinned results
 bun run eval                  # all reports below, deterministic paths
@@ -155,13 +155,14 @@ bun evals/understand.ts llm --limit 3 --max-usd 0.5
 | … baselines on the same split | BM25 33–55% hit · bge-small 33% · MiniLM 44% · lexicon+embedding fusion 80–88% |
 | Describe your trip, held-out (30) | rules: fields 97% · worries 65% (precision 94%) · **Claude:** worries **87%** first run (precision 95%), **100%** tuned (precision 92%) · other fields 99% · p95 4.7 s |
 | Ask a destination, test half (36) | rules: hit 61% · precision 69% · abstains 7/8 · **Claude:** hit **100%** · precision 75% first run, **89%** with the two-sentence cap · abstains 8/8 · p95 3.4 s |
+| Ask, confirmation set (30 fresh questions, labelled before the run) | rules: hit 48% · precision 39% · abstains 4/5 · **Claude: hit 100% · precision 82% · abstains 5/5** · p95 2.8 s |
 | Adversarial inputs (44: injection, off-topic, abuse, long, other languages, made-up places, markup) | 0 invariant violations for both · expected behaviour: rules 24/27 describe, 16/17 ask · **Claude 26/27, 17/17** (all five other languages read correctly) |
 | Claude integration contract (local mock) | request shape, caching, validation, refusals and fallback: pass; a hostile stand-in never gets past the gates |
 | Inter-annotator agreement (60 concern pairs, blind) | tool built · *second labeller's labels pending* |
 | Source-passage retrieval (92 gold quotes) | BM25 R@5 95% · no-retrieval baseline 41% |
 | Lexical verifier (78 reviewed claims) | 35% accuracy · separability 0.52 |
 | Claude verifier (78 reviewed claims) | false support 0/6 · contradictions 4/5 · accuracy 59% (bar: 60%, not adopted) · 1 fabricated quote in 376 |
-| Paid evaluation, all runs | **$7.63** of a $15 cap (worst-case reservation in the harness) |
+| Paid evaluation, all runs | **$7.78** of a $15 cap (worst-case reservation in the harness) |
 
 **Rules the evals follow:**
 - Gold was written before the code it tests; later additions are marked and dated. The concern gold is exhaustive: every one of 1,095 sentences was judged against all 13 concerns, so an empty label means the record is silent.
@@ -172,7 +173,7 @@ bun evals/understand.ts llm --limit 3 --max-usd 0.5
 - Every number quoted here, on the About page and in `portfolio/` is pinned by `evals/about-results.test.ts`.
 
 **Known limitations of the evidence:**
-- **Claude is measured on test cases, not on visitors.** The Describe and Ask test sets are small (30 descriptions, 36 questions). The tuned numbers come after held-out errors had been viewed, and Ask's pass is post hoc; the untuned first runs are the clean numbers. Both routes stay off until switched on in production (`docs/paid-evals.md`), and their live behaviour is watched with `docs/metrics.sql` queries 13–16.
+- **Claude is measured on test cases, not on visitors.** The Describe and Ask test sets are small (30 descriptions, 36 questions). The tuned Describe numbers come after held-out errors had been viewed, so its untuned first run is the clean number; Ask's cap was confirmed prospectively on a fresh labelled set. Both routes stay off until switched on in production (`docs/paid-evals.md`), and their live behaviour is watched with `docs/metrics.sql` queries 13–16.
 - **One regression is left in the tuned Describe prompt.** An example I added ("reef fish is not dive_type reef") made it drop a real "easy reef" request on held-out data. It isn't patched, because fixing an error seen on held-out data would contaminate that set.
 - **One labeller, with AI assistance, who also wrote the lexicon.** The concern gold and the lexicon share a notion of relevance. The dev/test split guards against tuning, not against that. A blind second-labeller tool is built (`bun run label`); its agreement number waits on the labels.
 - **Two surface swims aren't marked.** Fakarava's humpbacks and the Ribbon Reefs minkes are snorkel encounters whose records carry no SNORKEL ONLY marker, so they aren't flagged as snorkel-only.
@@ -189,7 +190,7 @@ bun evals/understand.ts llm --limit 3 --max-usd 0.5
 
 ## What's next
 
-1. **Switch on the two routes that passed** (`docs/paid-evals.md`, "Turning it on"): apply the quota migration, then add the key and `SIGHTLINE_LLM_ROUTES=understand,ask` to the Lovable secrets. Confirm Ask on about 30 fresh, labelled questions, since its pass was post hoc. Have a second reviewer adjudicate the verifier's 25 supported-vs-partial disagreements.
+1. **Switch on the two routes that passed** (`docs/paid-evals.md`, "Turning it on"): apply the quota migration, then add the key and `SIGHTLINE_LLM_ROUTES=understand,ask` to the Lovable secrets. Have a second reviewer adjudicate the verifier's 25 supported-vs-partial disagreements.
 2. **Second labeller**, then **external-diver review.** Label the 60 blind pairs and report kappa. Then 3–5 divers who fit the target profile try the product in a task-based session: at current traffic this answers the A/B's question months sooner (`docs/experiment-describe.md`).
 3. **Promote the curator's markers to schema fields.** "SNORKEL ONLY", "BAITED", not-in-water encounters, format reach ("only liveaboards reach the south"), and monthly water temperature.
 4. **Extend verification** beyond 78/495 claims, prioritising the sentences most often shown as concern evidence.

@@ -40,6 +40,8 @@ export const RESULTS = {
     ask: {
       final: { testHit: 100, testPrecision: 89, abstain: 100 },
       untuned: { testPrecision: 75 },
+      /** Fresh 30-question set written and labelled after the cap was chosen, scored once. */
+      confirmed: { cases: 30, hit: 100, precision: 82, abstain: 100, rulesHit: 48 },
     },
     adversarial: { violations: 0, trip: [26, 27] as const, ask: [17, 17] as const },
     verifier: { falseSupport: [0, 6] as const, contradictions: [4, 5] as const, accuracy: 59 },

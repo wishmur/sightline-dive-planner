@@ -112,7 +112,7 @@ reviewer still confirms every verdict before anything changes in the data.
 
 ## Results (2026-09-22)
 
-**Spent $7.63 of the owner's $15 cap**, enforced in the harness by worst-case reservation
+**Spent $7.78 of the owner's $15 cap**, enforced in the harness by worst-case reservation
 against everything already spent. First runs used the prompts as written. Tuning happened on
 dev splits afterwards, and every post-hoc change is disclosed below. The "final" numbers are
 recomputed in CI by replaying the committed responses (`evals/about-results.test.ts`).
@@ -120,7 +120,8 @@ recomputed in CI by replaying the committed responses (`evals/about-results.test
 | Route | Pre-registered first run (test) | Final (test) | Rules | Decision |
 |---|---|---|---|---|
 | **Describe your trip** | worries **20/23 (87%)** · precision 95% · other fields 99.7% · 0 failures · p95 4.7 s | worries **23/23 (100%)** · precision 92% · other fields 99.0% · p95 3.8 s | worries 15/23 (65%) · precision 94% | **Passes, both versions. Switch on.** |
-| **Ask** | hit 28/28 · **precision 75% ✗** · abstains 8/8 | hit 28/28 · **precision 89%** · abstains 8/8 · p95 3.4 s | hit 17/28 · precision 69% · abstains 7/8 | **First run fails the primary line; the capped final passes, post hoc.** Switch on, then confirm on fresh questions. |
+| **Ask** | hit 28/28 · **precision 75% ✗** · abstains 8/8 | hit 28/28 · **precision 89%** · abstains 8/8 · p95 3.4 s | hit 17/28 · precision 69% · abstains 7/8 | **First run fails the primary line; the capped final passes and is now confirmed on a fresh set (below).** Switch on. |
+| **Ask, confirmation set** (30 fresh questions, labelled before the run) | n/a | hit **25/25** · precision **82%** · abstains **5/5** · 0 invalid · p95 2.8 s | hit 48% · precision 39% · abstains 4/5 | **Passes every pre-registered mark prospectively** |
 | **Adversarial** (44) | 0 violations · describe 25/27 · ask 17/17 | 0 violations · describe **26/27** · ask 17/17 | 0 violations · 24/27 · 16/17 | Passes |
 | **Verifier** (78) | false support **0/6** · contradictions 4/5 · **accuracy 59% ✗** | not tuned | lexical: accuracy 35% | **Not adopted**: misses the accuracy line by one claim |
 
@@ -147,7 +148,10 @@ recomputed in CI by replaying the committed responses (`evals/about-results.test
   - The gate now shows at most two, which is free to evaluate from the cache: dev precision
     89%.
   - *Disclosure:* the test half's per-position breakdown was printed alongside dev's before
-    the cap was chosen.
+    the cap was chosen. That is why the cap was then tested prospectively: 30 questions written
+    and labelled on 2026-09-22 after the cap existed and before any was sent
+    (`evals/ask.confirm.ts`, $0.15). It passed every mark, so the 89% is no longer the only
+    evidence for the cap.
 - **Verifier.** It never made the dangerous error: false support was 0 of 6. Its misses lean
   strict: 25 of 50 claims the reviewer called supported were judged "partial". In every one
   of seven sampled cases, it named a specific decisive detail missing from the cited pages.

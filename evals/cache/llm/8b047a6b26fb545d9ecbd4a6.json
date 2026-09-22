@@ -1,0 +1,52 @@
+{
+  "key": "8b047a6b26fb545d9ecbd4a6",
+  "eval": "ask-confirm",
+  "recorded_at": "2026-09-22T18:34:16.763Z",
+  "request_id": "req_011CfJxZzhuHwk8Ue83mhjtA",
+  "latency_ms": 2708,
+  "response": {
+    "model": "claude-opus-5",
+    "id": "msg_011CfJxa121EKHUiaSsjA8vN",
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"sentences\":[3,23,4],\"status\":\"answered\"}"
+      }
+    ],
+    "container": null,
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "stop_details": null,
+    "usage": {
+      "input_tokens": 28,
+      "cache_creation_input_tokens": 1953,
+      "cache_read_input_tokens": 0,
+      "cache_creation": {
+        "ephemeral_5m_input_tokens": 1953,
+        "ephemeral_1h_input_tokens": 0
+      },
+      "iterations": [
+        {
+          "input_tokens": 28,
+          "output_tokens": 23,
+          "cache_read_input_tokens": 0,
+          "cache_creation_input_tokens": 1953,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 1953,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "type": "message",
+          "model": null
+        }
+      ],
+      "output_tokens": 23,
+      "output_tokens_details": {
+        "thinking_tokens": 0
+      },
+      "service_tier": "standard",
+      "inference_geo": "global"
+    }
+  }
+}

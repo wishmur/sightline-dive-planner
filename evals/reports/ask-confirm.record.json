@@ -1,0 +1,481 @@
+{
+  "eval": "ask-confirm",
+  "mode": "record",
+  "generated_at": "2026-09-22T18:34:42.531Z",
+  "harness": {
+    "requests": 30,
+    "cacheHits": 0,
+    "recorded": 30,
+    "misses": 0,
+    "spentUsd": 0.15069224999999997,
+    "representedUsd": 0.15069224999999997,
+    "usage": {
+      "input_tokens": 718,
+      "output_tokens": 695,
+      "cache_creation_input_tokens": 16977,
+      "cache_read_input_tokens": 47242
+    },
+    "latencyMs": [
+      2684,
+      2242,
+      2066,
+      2340,
+      2348,
+      2664,
+      2230,
+      2202,
+      2209,
+      2428,
+      2228,
+      2184,
+      2189,
+      2065,
+      2326,
+      1905,
+      2773,
+      3229,
+      2708,
+      2300,
+      2212,
+      2073,
+      2212,
+      2728,
+      2224,
+      2555,
+      2313,
+      2078,
+      2534,
+      2472
+    ]
+  },
+  "model": "claude-opus-5",
+  "prompt_version": "2026-09-21.ea78eb7b",
+  "cases": 30,
+  "outcomes": {
+    "ok": 30
+  },
+  "rules": {
+    "n": 30,
+    "hit": 0.48,
+    "precision": 0.3902439024390244,
+    "abstain": 0.8,
+    "answerable": 25,
+    "unanswerable": 5
+  },
+  "claude": {
+    "n": 30,
+    "hit": 1,
+    "precision": 0.82,
+    "abstain": 1,
+    "answerable": 25,
+    "unanswerable": 5
+  },
+  "verdict": {
+    "precision": [
+      "82%",
+      "≥ 80%",
+      true
+    ],
+    "hit": [
+      "100%",
+      "≥ rules (48%)",
+      true
+    ],
+    "abstains": [
+      "5/5",
+      "≥ 4/5",
+      true
+    ],
+    "invalidSentences": [
+      "0",
+      "0",
+      true
+    ],
+    "failedCalls": [
+      "0",
+      "0",
+      true
+    ]
+  },
+  "rows": [
+    {
+      "id": "c-specific-1",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "tulamben/format/0#1",
+        "tulamben/format/0#0"
+      ],
+      "relevant": [
+        "tulamben/format/0#1",
+        "tulamben/format/0#0"
+      ]
+    },
+    {
+      "id": "c-specific-2",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "tulamben/highlight/1#5",
+        "tulamben/format/1#0"
+      ],
+      "relevant": [
+        "tulamben/highlight/1#5",
+        "tulamben/format/1#0"
+      ]
+    },
+    {
+      "id": "c-specific-3",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "komodo/species/reef-manta-ray#0",
+        "komodo/operating#2"
+      ],
+      "relevant": [
+        "komodo/species/reef-manta-ray#0",
+        "komodo/operating#2"
+      ]
+    },
+    {
+      "id": "c-specific-4",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "komodo/experience#1",
+        "komodo/experience#2"
+      ],
+      "relevant": [
+        "komodo/experience#1",
+        "komodo/experience#2"
+      ]
+    },
+    {
+      "id": "c-specific-5",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "komodo/highlight/1#2",
+        "komodo/experience#3"
+      ],
+      "relevant": [
+        "komodo/highlight/1#2",
+        "komodo/experience#3"
+      ]
+    },
+    {
+      "id": "c-specific-6",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "socorro/operating#0",
+        "socorro/experience#4"
+      ],
+      "relevant": [
+        "socorro/experience#4",
+        "socorro/format/0#3"
+      ]
+    },
+    {
+      "id": "c-specific-7",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "socorro/format/0#2",
+        "socorro/experience#2"
+      ],
+      "relevant": [
+        "socorro/format/0#2"
+      ]
+    },
+    {
+      "id": "c-specific-8",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "socorro/experience#3",
+        "socorro/experience#0"
+      ],
+      "relevant": [
+        "socorro/experience#3",
+        "socorro/experience#1"
+      ]
+    },
+    {
+      "id": "c-specific-9",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "palau/species/grey-reef-shark#1",
+        "palau/species/grey-reef-shark#0"
+      ],
+      "relevant": [
+        "palau/species/grey-reef-shark#1",
+        "palau/species/grey-reef-shark#0"
+      ]
+    },
+    {
+      "id": "c-specific-10",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "palau/operating#1",
+        "palau/operating#2"
+      ],
+      "relevant": [
+        "palau/operating#1"
+      ]
+    },
+    {
+      "id": "c-specific-11",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "silfra/experience#1",
+        "silfra/cert/drysuit#0"
+      ],
+      "relevant": [
+        "silfra/experience#1",
+        "silfra/cert/drysuit#2",
+        "silfra/cert/drysuit#0"
+      ]
+    },
+    {
+      "id": "c-specific-12",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "silfra/highlight/2#2",
+        "silfra/highlight/2#1"
+      ],
+      "relevant": [
+        "silfra/highlight/2#2",
+        "silfra/species/dwarf-arctic-char#0",
+        "silfra/species/arctic-char#0"
+      ]
+    },
+    {
+      "id": "c-specific-13",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "ningaloo/experience#2",
+        "ningaloo/highlight/1#1"
+      ],
+      "relevant": [
+        "ningaloo/experience#2"
+      ]
+    },
+    {
+      "id": "c-specific-14",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "ningaloo/format/1#0",
+        "ningaloo/highlight/2#2"
+      ],
+      "relevant": [
+        "ningaloo/highlight/2#2",
+        "ningaloo/format/1#0"
+      ]
+    },
+    {
+      "id": "c-specific-15",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "ningaloo/format/3#0",
+        "ningaloo/format/3#1"
+      ],
+      "relevant": [
+        "ningaloo/format/3#0",
+        "ningaloo/format/3#1"
+      ]
+    },
+    {
+      "id": "c-specific-16",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "galapagos/experience#1",
+        "galapagos/cert/drysuit#0"
+      ],
+      "relevant": [
+        "galapagos/experience#1",
+        "galapagos/cert/drysuit#0"
+      ]
+    },
+    {
+      "id": "c-specific-17",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "galapagos/highlight/1#1",
+        "galapagos/format/1#2"
+      ],
+      "relevant": [
+        "galapagos/highlight/1#1",
+        "galapagos/format/1#2",
+        "galapagos/format/0#0"
+      ]
+    },
+    {
+      "id": "c-specific-18",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "galapagos/species/scalloped-hammerhead#1",
+        "galapagos/species/scalloped-hammerhead#2"
+      ],
+      "relevant": [
+        "galapagos/species/scalloped-hammerhead#1",
+        "galapagos/species/scalloped-hammerhead#2"
+      ]
+    },
+    {
+      "id": "c-specific-19",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "moorea/experience#0",
+        "moorea/highlight/3#1"
+      ],
+      "relevant": [
+        "moorea/experience#0",
+        "moorea/experience#1",
+        "moorea/experience#2"
+      ]
+    },
+    {
+      "id": "c-specific-20",
+      "kind": "specific",
+      "status": "answered",
+      "shown": [
+        "moorea/species/humpback-whale#0",
+        "moorea/highlight/2#1"
+      ],
+      "relevant": [
+        "moorea/species/humpback-whale#0",
+        "moorea/operating#1"
+      ]
+    },
+    {
+      "id": "c-offrecord-1",
+      "kind": "off_record",
+      "status": "not_covered",
+      "shown": [],
+      "relevant": []
+    },
+    {
+      "id": "c-offrecord-2",
+      "kind": "off_record",
+      "status": "not_covered",
+      "shown": [],
+      "relevant": []
+    },
+    {
+      "id": "c-offrecord-3",
+      "kind": "off_record",
+      "status": "not_covered",
+      "shown": [],
+      "relevant": []
+    },
+    {
+      "id": "c-offrecord-4",
+      "kind": "off_record",
+      "status": "not_covered",
+      "shown": [],
+      "relevant": []
+    },
+    {
+      "id": "c-offrecord-5",
+      "kind": "off_record",
+      "status": "not_covered",
+      "shown": [],
+      "relevant": []
+    },
+    {
+      "id": "c-paraphrase-1",
+      "kind": "paraphrase",
+      "status": "answered",
+      "shown": [
+        "galapagos/experience#1",
+        "galapagos/cert/drysuit#0"
+      ],
+      "relevant": [
+        "galapagos/operating#1",
+        "galapagos/experience#0",
+        "galapagos/experience#1",
+        "galapagos/cert/drysuit#0",
+        "galapagos/cert/drysuit#1"
+      ]
+    },
+    {
+      "id": "c-paraphrase-2",
+      "kind": "paraphrase",
+      "status": "answered",
+      "shown": [
+        "komodo/experience#3",
+        "komodo/experience#1"
+      ],
+      "relevant": [
+        "komodo/experience#1",
+        "komodo/experience#3",
+        "komodo/highlight/1#0",
+        "komodo/highlight/1#1",
+        "komodo/highlight/1#2"
+      ]
+    },
+    {
+      "id": "c-paraphrase-3",
+      "kind": "paraphrase",
+      "status": "answered",
+      "shown": [
+        "socorro/format/0#1",
+        "socorro/experience#0"
+      ],
+      "relevant": [
+        "socorro/format/0#0",
+        "socorro/format/0#1",
+        "socorro/format/0#2"
+      ]
+    },
+    {
+      "id": "c-paraphrase-4",
+      "kind": "paraphrase",
+      "status": "answered",
+      "shown": [
+        "ningaloo/format/3#0",
+        "ningaloo/experience#0"
+      ],
+      "relevant": [
+        "ningaloo/experience#0",
+        "ningaloo/highlight/1#0",
+        "ningaloo/highlight/1#1",
+        "ningaloo/highlight/1#2",
+        "ningaloo/highlight/4#0",
+        "ningaloo/format/0#0",
+        "ningaloo/format/0#1",
+        "ningaloo/format/0#3",
+        "ningaloo/format/3#0",
+        "ningaloo/format/3#1"
+      ]
+    },
+    {
+      "id": "c-paraphrase-5",
+      "kind": "paraphrase",
+      "status": "partly",
+      "shown": [
+        "silfra/experience#0",
+        "silfra/cert/drysuit#0"
+      ],
+      "relevant": [
+        "silfra/experience#0",
+        "silfra/experience#3",
+        "silfra/format/1#3",
+        "silfra/cert/drysuit#0",
+        "silfra/cert/drysuit#1"
+      ]
+    }
+  ]
+}
