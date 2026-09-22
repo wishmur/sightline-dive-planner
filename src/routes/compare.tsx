@@ -187,12 +187,12 @@ function ComparePage() {
     <div className="min-h-screen overflow-x-hidden">
       <SightlineNav />
 
-      <header className="theme-deep px-6 pt-36 pb-12 lg:px-10 lg:pt-40">
+      <header className="theme-deep pt-36 pb-12 lg:pt-40">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto max-w-7xl"
+          className="page-frame"
         >
           <Link
             to="/"
@@ -223,8 +223,8 @@ function ComparePage() {
         </motion.div>
       </header>
 
-      <main className="theme-light px-6 py-12 lg:px-10 lg:py-16">
-        <div className="mx-auto max-w-7xl">
+      <main className="theme-light py-12 lg:py-16">
+        <div className="page-frame">
           {destinations.length < 2 ? (
             <div className="rounded-2xl bg-card p-10 text-center ring-1 ring-inset ring-border">
               <p className="text-sm font-medium">Pick two or three destinations to compare.</p>

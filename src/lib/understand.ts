@@ -24,7 +24,7 @@ import {
   isKnownTarget,
   type Filters,
 } from "@/lib/filters";
-import { aliasesFor } from "@/lib/taxonomy";
+import { aliasesFor, getGroupDef } from "@/lib/taxonomy";
 
 export type Cert = "open_water" | "advanced" | "advanced_plus_experience";
 
@@ -161,16 +161,51 @@ const EXTRA_TARGET_ALIASES: Alias[] = [
   { phrase: "mimic octopus", id: "mimic-octopus" },
 ];
 
+function singular(phrase: string) {
+  if (/(?:us|sh)es$/.test(phrase)) return phrase.slice(0, -2); // octopuses, frogfishes
+  return phrase.endsWith("s") ? phrase.slice(0, -1) : phrase;
+}
+
+/** A group by its label in both numbers: "Whales" → whales, whale; "Devil & mobula rays" → devil ray(s), mobula ray(s). */
+function groupPhrases(label: string): string[] {
+  const f = fold(label);
+  const pair = /^(\w+) & (\w+) (\w+)$/.exec(f);
+  const plurals = pair ? [`${pair[1]} ${pair[3]}`, `${pair[2]} ${pair[3]}`] : [f];
+  return plurals.flatMap((p) => [p, singular(p)]);
+}
+
+/**
+ * Phrases → targets. Groups come first, in singular and plural, so a generic
+ * word means the whole group: "whale" is every whale, "thresher shark" includes
+ * pelagic threshers. A species alias shared by several species of one group
+ * ("dolphin", "devil ray") resolves to that group, never to one member.
+ */
 const TARGET_ALIASES: Alias[] = (() => {
   const list: Alias[] = [...EXTRA_TARGET_ALIASES];
-  for (const g of TARGET_GROUPS) list.push({ phrase: fold(g.label), id: g.id });
+  const has = (phrase: string) => list.some((x) => x.phrase === phrase);
+  for (const g of TARGET_GROUPS)
+    for (const phrase of groupPhrases(g.label)) if (!has(phrase)) list.push({ phrase, id: g.id });
+
+  const speciesByPhrase = new Map<string, Set<string>>();
   for (const s of TARGET_SPECIES) {
     for (const a of aliasesFor(s.id, s.label)) {
-      // Generic one-word aliases ("turtle", "manta") map to groups above.
-      if (!a.includes(" ") && list.some((x) => x.phrase === a)) continue;
-      list.push({ phrase: fold(a), id: s.id });
-      if (!a.endsWith("s")) list.push({ phrase: `${fold(a)}s`, id: s.id });
+      const phrase = fold(a);
+      for (const p of phrase.endsWith("s") ? [phrase] : [phrase, `${phrase}s`]) {
+        if (!speciesByPhrase.has(p)) speciesByPhrase.set(p, new Set());
+        speciesByPhrase.get(p)!.add(s.id);
+      }
     }
+  }
+  for (const [phrase, ids] of speciesByPhrase) {
+    if (has(phrase)) continue;
+    if (ids.size === 1) {
+      list.push({ phrase, id: [...ids][0]! });
+      continue;
+    }
+    const group = TARGET_GROUPS.find((g) =>
+      [...ids].every((id) => getGroupDef(g.id)?.members.includes(id)),
+    );
+    if (group) list.push({ phrase, id: group.id });
   }
   return list.filter((a) => isKnownTarget(a.id)).sort((a, b) => b.phrase.length - a.phrase.length);
 })();

@@ -183,7 +183,7 @@ function DestinationPage() {
           aria-hidden
           className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(6,16,32,0.8)_0%,rgba(6,16,32,0.45)_40%,rgba(6,16,32,0.95)_100%)]"
         />
-        <div className="mx-auto w-full max-w-6xl px-6 pt-32 pb-10 lg:px-10">
+        <div className="page-frame pt-32 pb-10">
           <Link
             to="/"
             search={searchFromFilters(filters)}
@@ -232,7 +232,7 @@ function DestinationPage() {
       <SectionNav sections={SECTIONS} />
 
       <div className="theme-light">
-        <div className="mx-auto max-w-6xl space-y-16 px-6 pt-16 pb-11 lg:px-10 lg:pt-20 lg:pb-14">
+        <div className="page-frame space-y-16 pt-16 pb-11 lg:pt-20 lg:pb-14">
           {/* FOR YOUR TRIP */}
           <Section id="for-your-trip" eyebrow="For your trip" title={`How ${d.name} fits your trip`}>
             <TripFit destination={d} filters={filters} onChange={patchBrief} />

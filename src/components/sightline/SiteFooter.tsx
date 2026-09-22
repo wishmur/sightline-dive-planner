@@ -3,8 +3,8 @@ import { FeedbackDialog } from "@/components/sightline/FeedbackDialog";
 
 export function SiteFooter() {
   return (
-    <footer className="theme-light border-t border-border px-6 py-12 lg:px-10">
-      <div className="mx-auto grid max-w-7xl gap-8 sm:grid-cols-2 sm:items-start">
+    <footer className="theme-light border-t border-border py-12">
+      <div className="page-frame grid gap-8 sm:grid-cols-2 sm:items-start">
         <div className="min-w-0">
           <Link to="/" className="font-wordmark text-xl font-semibold tracking-[0.14em] text-foreground">
             SIGHTLINE<span className="text-primary">.</span>
