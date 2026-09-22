@@ -14,11 +14,12 @@ type Body = {
   fallbacks: string;
   output_config: { effort: string; format: { type: string } };
   system: { cache_control?: unknown }[];
-  messages: { content: string }[];
+  messages: { content: string | { type: string; text: string; cache_control?: unknown }[] }[];
 };
 type Captured = { headers: Record<string, string>; body: Body };
 const captured: Captured[] = [];
 let reply: unknown = {};
+let refusal = false;
 let server: ReturnType<typeof Bun.serve>;
 const env = { key: process.env.ANTHROPIC_API_KEY, url: process.env.ANTHROPIC_BASE_URL };
 
@@ -28,8 +29,8 @@ function message(json: unknown) {
     type: "message",
     role: "assistant",
     model: "claude-opus-5",
-    content: [{ type: "text", text: JSON.stringify(json) }],
-    stop_reason: "end_turn",
+    content: refusal ? [] : [{ type: "text", text: JSON.stringify(json) }],
+    stop_reason: refusal ? "refusal" : "end_turn",
     stop_sequence: null,
     usage: { input_tokens: 1, output_tokens: 1 },
   };
@@ -74,7 +75,10 @@ describe("understandWithClaude", () => {
       unsupported: ["cost"],
       destinations: ["atlantis"],
     };
-    const { trip, dropped } = await understandWithClaude("Mantas in September, I get seasick");
+    const { trip, dropped, usage } = await understandWithClaude(
+      "Mantas in September, I get seasick",
+    );
+    expect(usage).toEqual({ input_tokens: 1, output_tokens: 1 });
     // One bad ID is dropped and counted; it doesn't void the rest of the parse.
     expect(dropped).toEqual(["concerns:sharks", "destinations:atlantis"]);
     expect(trip).toEqual({
@@ -116,9 +120,37 @@ describe("selectWithClaude", () => {
     const s = await selectWithClaude(d, "Can I see Manta Alley from Labuan Bajo?");
     expect(s.passageIds).toEqual([ps[23]!.id, ps[24]!.id]);
     expect(s.rejected).toEqual([999]);
+    expect(s.usage).toEqual({ input_tokens: 1, output_tokens: 1 });
     const content = captured.at(-1)!.body.messages[0]!.content;
-    expect(content).toContain(`S1 [${ps[0]!.claim.label}] ${ps[0]!.text}`);
-    expect(content).toContain(`S${ps.length} `);
+    if (typeof content === "string") throw new Error("expected content blocks");
+    // The record is its own block with a cache breakpoint, so follow-up questions
+    // on the same destination read it from cache; the question comes after it.
+    const [record, question] = content;
+    expect(record!.text).toContain(`S1 [${ps[0]!.claim.label}] ${ps[0]!.text}`);
+    expect(record!.text).toContain(`S${ps.length} `);
+    expect(record!.cache_control).toEqual({ type: "ephemeral" });
+    expect(record!.text).not.toContain("Manta Alley from Labuan Bajo");
+    expect(question!.text).toContain("Can I see Manta Alley from Labuan Bajo?");
+    expect(question!.cache_control).toBeUndefined();
+  });
+
+  test("a refusal is a typed failure carrying what it cost", async () => {
+    const { selectWithClaude } = await import("@/lib/llm.server");
+    const { LlmError } = await import("@/lib/llm-guard");
+    refusal = true;
+    try {
+      await selectWithClaude(getDestination("komodo")!, "anything");
+      throw new Error("expected a refusal");
+    } catch (e) {
+      expect(e).toBeInstanceOf(LlmError);
+      expect((e as InstanceType<typeof LlmError>).reason).toBe("refusal");
+      expect((e as InstanceType<typeof LlmError>).usage).toEqual({
+        input_tokens: 1,
+        output_tokens: 1,
+      });
+    } finally {
+      refusal = false;
+    }
   });
 });
 

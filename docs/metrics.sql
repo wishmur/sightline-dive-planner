@@ -125,3 +125,64 @@ select compared,
          / nullif(count(*) filter (where briefed), 0) as qualified_shortlist_rate,
        count(*) filter (where briefed) as briefed_sessions
 from s group by 1;
+
+-- ---------------------------------------------------------------------------
+-- Claude operations (added 2026-09-21). One 'llm_call' event per request to
+-- understandTrip / askDestination, written server-side (src/lib/llm-route.ts):
+-- engine, reason rules answered, prompt version, model, latency, tokens, cost.
+-- Never the diver's text; `chars` is its length.
+
+-- 13. Who answered, and why rules did. no_key = Claude not configured;
+--     kill_switch / *_limit / daily_* = the guard; the rest are failures.
+select
+  payload->>'route' as route,
+  payload->>'engine' as engine,
+  coalesce(payload->>'reason', '-') as reason,
+  count(*) as calls
+from events
+where event_type = 'llm_call' and created_at > now() - interval '7 days'
+group by 1, 2, 3
+order by 1, 4 desc;
+
+-- 14. Latency and cost per answered call, by route and prompt version.
+--     A new prompt version shows up as a new row, so a regression is visible.
+select
+  payload->>'route' as route,
+  payload->>'prompt_version' as prompt_version,
+  count(*) as calls,
+  percentile_cont(0.5) within group (order by (payload->>'latency_ms')::int) as p50_ms,
+  percentile_cont(0.95) within group (order by (payload->>'latency_ms')::int) as p95_ms,
+  avg((payload->>'input_tokens')::int) as avg_input_tokens,
+  avg((payload->>'cache_read_tokens')::int) as avg_cache_read_tokens,
+  avg((payload->>'output_tokens')::int) as avg_output_tokens,
+  avg((payload->>'usd')::numeric) as avg_usd
+from events
+where event_type = 'llm_call' and payload->>'engine' = 'claude'
+  and created_at > now() - interval '7 days'
+group by 1, 2
+order by 1, 2;
+
+-- 15. Spend per day against the cap (SIGHTLINE_LLM_DAILY_USD, default $5), and
+--     the share of calls the guard turned away. Cross-check with llm_quota.
+select
+  date_trunc('day', created_at) as day,
+  sum((payload->>'usd')::numeric) as usd,
+  count(*) filter (where payload->>'reason' in
+    ('session_limit', 'ip_limit', 'daily_calls', 'daily_spend')) as guarded,
+  count(*) filter (where (payload->>'attempted')::boolean) as claude_requests
+from events
+where event_type = 'llm_call' and created_at > now() - interval '30 days'
+group by 1
+order by 1 desc;
+
+-- 16. Output the product had to discard: out-of-list IDs dropped by
+--     normalizeTrip(), sentence numbers rejected by the ask gate.
+select
+  payload->>'route' as route,
+  sum(coalesce((payload->'counts'->>'dropped')::int, 0)) as dropped_values,
+  sum(coalesce((payload->'counts'->>'rejected')::int, 0)) as rejected_sentences,
+  count(*) as answered_calls
+from events
+where event_type = 'llm_call' and payload->>'engine' = 'claude'
+  and created_at > now() - interval '30 days'
+group by 1;
