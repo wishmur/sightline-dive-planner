@@ -144,7 +144,7 @@ describe("a hostile model", () => {
     const ps = passagesFor(d);
     reply = { sentences: [0, -1, 999, 3, 3, 4, 5, 6, 7], status: "hacked" };
     const s = await selectWithClaude(d, "anything", { apiKey: "test" });
-    expect(s.passageIds).toEqual([ps[2]!.id, ps[3]!.id, ps[4]!.id]);
+    expect(s.passageIds).toEqual([ps[2]!.id, ps[3]!.id]);
     expect(askViolations("komodo", { engine: "claude", concerns: [], ...s })).toEqual([]);
   });
 

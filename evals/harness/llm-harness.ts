@@ -273,7 +273,13 @@ export class LlmHarness {
     return file;
   }
 
-  writeReport(payload: Record<string, unknown>, suffix = this.opts.mode) {
+  /** A dev- or test-only run gets its own file, so it never replaces a full run's report. */
+  writeReport(
+    payload: Record<string, unknown>,
+    suffix = payload.split && payload.split !== "all"
+      ? `${this.opts.mode}.${String(payload.split)}`
+      : this.opts.mode,
+  ) {
     mkdirSync(REPORT_DIR, { recursive: true });
     const file = join(REPORT_DIR, `${this.opts.name}.${suffix}.json`);
     writeFileSync(

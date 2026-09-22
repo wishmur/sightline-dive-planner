@@ -289,7 +289,15 @@ export function reservationUsd(params: { system: unknown; messages: unknown }) {
   return worstCaseUsd(roughInputTokens(params), MAX_TOKENS, LLM_MODEL);
 }
 
-/** Deterministic gate: only real sentence numbers survive, at most three, no repeats. */
+/**
+ * Sentences shown per Claude answer. Two, not three: on the ask dev half of the
+ * first paid run, Claude's first pick was relevant 28/28, its second 20/26 and
+ * its third 10/21. A prompt asking for fewer sentences didn't fix it (third
+ * pick still 8/17), so the gate enforces it. The rules fallback keeps three.
+ */
+export const MAX_SHOWN = 2;
+
+/** Deterministic gate: only real sentence numbers survive, at most MAX_SHOWN, no repeats. */
 export function validateSelection(
   out: { sentences: number[]; status: Selection["status"] },
   passages: Passage[],
@@ -300,7 +308,7 @@ export function validateSelection(
   );
   const ids = [
     ...new Set(out.sentences.filter((n) => !rejected.includes(n)).map((n) => passages[n - 1]!.id)),
-  ].slice(0, 3);
+  ].slice(0, MAX_SHOWN);
   const status = out.status === "not_covered" || ids.length === 0 ? "not_covered" : out.status;
   return { passageIds: status === "not_covered" ? [] : ids, status, rejected, model };
 }

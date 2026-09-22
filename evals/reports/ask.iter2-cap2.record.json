@@ -1,0 +1,1147 @@
+{
+  "eval": "ask",
+  "mode": "replay",
+  "generated_at": "2026-09-22T17:43:45.887Z",
+  "harness": {
+    "requests": 73,
+    "cacheHits": 73,
+    "recorded": 0,
+    "misses": 0,
+    "spentUsd": 0,
+    "representedUsd": 0.5519097500000001,
+    "usage": {
+      "input_tokens": 1633,
+      "output_tokens": 2046,
+      "cache_creation_input_tokens": 72481,
+      "cache_read_input_tokens": 79177
+    },
+    "latencyMs": [
+      3337,
+      2515,
+      2693,
+      4533,
+      2179,
+      2719,
+      3068,
+      2180,
+      3089,
+      2634,
+      2992,
+      5107,
+      2324,
+      2383,
+      2861,
+      2453,
+      2920,
+      2986,
+      2548,
+      2686,
+      3324,
+      2152,
+      2272,
+      2376,
+      3180,
+      2230,
+      2598,
+      3134,
+      2927,
+      2700,
+      2883,
+      3349,
+      2884,
+      2396,
+      2895,
+      2864,
+      3031,
+      1869,
+      2422,
+      2501,
+      2345,
+      2632,
+      4153,
+      2599,
+      3084,
+      2538,
+      2952,
+      2918,
+      2350,
+      2033,
+      3171,
+      2265,
+      2933,
+      2158,
+      2354,
+      2962,
+      2730,
+      2558,
+      2725,
+      2461,
+      3097,
+      2477,
+      2728,
+      2587,
+      2966,
+      3237,
+      2602,
+      3237,
+      2947,
+      3663,
+      2310,
+      2733,
+      2678
+    ]
+  },
+  "model": "claude-opus-5",
+  "prompt_version": "2026-09-21.ea78eb7b",
+  "split": "all",
+  "limit": null,
+  "halves": [
+    {
+      "half": "dev half",
+      "split": "dev",
+      "cases": 37,
+      "scored": 37,
+      "outcomes": {
+        "ok": 37
+      },
+      "rejected": 0,
+      "byKind": {
+        "specific": {
+          "n": 19,
+          "hit": 1,
+          "precision": 0.8918918918918919,
+          "abstain": 0,
+          "answerable": 19,
+          "unanswerable": 0
+        },
+        "off_record": {
+          "n": 5,
+          "hit": 0,
+          "precision": 1,
+          "abstain": 1,
+          "answerable": 0,
+          "unanswerable": 5
+        },
+        "paraphrase": {
+          "n": 13,
+          "hit": 0.9,
+          "precision": 0.8823529411764706,
+          "abstain": 1,
+          "answerable": 10,
+          "unanswerable": 3
+        },
+        "all": {
+          "n": 37,
+          "hit": 0.9655172413793104,
+          "precision": 0.8888888888888888,
+          "abstain": 1,
+          "answerable": 29,
+          "unanswerable": 8
+        }
+      },
+      "rows": [
+        {
+          "id": "specific-1",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "tulamben/format/0#0",
+            "tulamben/format/0#1"
+          ],
+          "relevant": [
+            "tulamben/highlight/1#3",
+            "tulamben/format/0#0",
+            "tulamben/format/0#1"
+          ]
+        },
+        {
+          "id": "specific-3",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "komodo/format/0#1",
+            "komodo/format/0#0"
+          ],
+          "relevant": [
+            "komodo/format/0#0",
+            "komodo/format/0#1",
+            "komodo/format/1#2"
+          ]
+        },
+        {
+          "id": "specific-5",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "malapascua/highlight/1#2",
+            "malapascua/format/0#2"
+          ],
+          "relevant": [
+            "malapascua/species/pelagic-thresher-shark#0",
+            "malapascua/species/pelagic-thresher-shark#1",
+            "malapascua/highlight/1#2"
+          ]
+        },
+        {
+          "id": "specific-7",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "cabo-pulmo/experience#4",
+            "cabo-pulmo/operating#1"
+          ],
+          "relevant": [
+            "cabo-pulmo/operating#1",
+            "cabo-pulmo/experience#4"
+          ]
+        },
+        {
+          "id": "specific-9",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "yucatan-cenotes/highlight/3#0",
+            "yucatan-cenotes/highlight/3#1"
+          ],
+          "relevant": [
+            "yucatan-cenotes/highlight/3#0",
+            "yucatan-cenotes/highlight/3#1",
+            "yucatan-cenotes/highlight/3#2"
+          ]
+        },
+        {
+          "id": "specific-11",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "galapagos/format/1#2",
+            "galapagos/highlight/1#1"
+          ],
+          "relevant": [
+            "galapagos/highlight/1#1",
+            "galapagos/format/0#0",
+            "galapagos/format/1#2"
+          ]
+        },
+        {
+          "id": "specific-13",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "la-paz/format/1#1",
+            "la-paz/species/whale-shark#2"
+          ],
+          "relevant": [
+            "la-paz/species/whale-shark#2",
+            "la-paz/format/1#1",
+            "la-paz/format/1#2",
+            "la-paz/format/1#3"
+          ]
+        },
+        {
+          "id": "specific-15",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "fakarava/format/0#1",
+            "fakarava/format/0#2"
+          ],
+          "relevant": [
+            "fakarava/format/0#1",
+            "fakarava/format/0#2"
+          ]
+        },
+        {
+          "id": "specific-17",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "baa-atoll/highlight/1#0",
+            "baa-atoll/format/0#2"
+          ],
+          "relevant": [
+            "baa-atoll/highlight/1#0",
+            "baa-atoll/format/0#0",
+            "baa-atoll/format/0#2"
+          ]
+        },
+        {
+          "id": "specific-19",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "gbr-ribbon-reefs/species/dwarf-minke-whale#0",
+            "gbr-ribbon-reefs/operating#1"
+          ],
+          "relevant": [
+            "gbr-ribbon-reefs/operating#1",
+            "gbr-ribbon-reefs/species/dwarf-minke-whale#0"
+          ]
+        },
+        {
+          "id": "specific-21",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "tiger-beach/highlight/1#0",
+            "tiger-beach/species/tiger-shark#2"
+          ],
+          "relevant": [
+            "tiger-beach/species/tiger-shark#2",
+            "tiger-beach/highlight/1#0"
+          ]
+        },
+        {
+          "id": "specific-23",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "aliwal-shoal/format/1#1",
+            "aliwal-shoal/highlight/4#1"
+          ],
+          "relevant": [
+            "aliwal-shoal/highlight/4#1",
+            "aliwal-shoal/format/1#1"
+          ]
+        },
+        {
+          "id": "specific-25",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "oahu/highlight/4#2",
+            "oahu/highlight/4#1"
+          ],
+          "relevant": [
+            "oahu/highlight/4#0",
+            "oahu/highlight/4#2",
+            "oahu/format/2#0"
+          ]
+        },
+        {
+          "id": "specific-27",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "alor/highlight/4#1",
+            "alor/highlight/4#0"
+          ],
+          "relevant": [
+            "alor/highlight/4#0",
+            "alor/highlight/4#1"
+          ]
+        },
+        {
+          "id": "specific-29",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "tubbataha/operating#1",
+            "tubbataha/operating#2"
+          ],
+          "relevant": [
+            "tubbataha/operating#1",
+            "tubbataha/operating#2"
+          ]
+        },
+        {
+          "id": "specific-31",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "anilao/highlight/2#2",
+            "anilao/highlight/2#1"
+          ],
+          "relevant": [
+            "anilao/experience#2",
+            "anilao/highlight/2#0",
+            "anilao/highlight/2#2"
+          ]
+        },
+        {
+          "id": "specific-33",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "silfra/cert/drysuit#0",
+            "silfra/experience#0"
+          ],
+          "relevant": [
+            "silfra/experience#0",
+            "silfra/cert/drysuit#0"
+          ]
+        },
+        {
+          "id": "specific-35",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "ari-atoll/species/whale-shark#2"
+          ],
+          "relevant": [
+            "ari-atoll/species/whale-shark#2"
+          ]
+        },
+        {
+          "id": "specific-37",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "coral-sea/highlight/2#0",
+            "coral-sea/highlight/2#2"
+          ],
+          "relevant": [
+            "coral-sea/species/grey-reef-shark#1",
+            "coral-sea/highlight/2#0"
+          ]
+        },
+        {
+          "id": "off-record-2",
+          "kind": "off_record",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "off-record-4",
+          "kind": "off_record",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "off-record-6",
+          "kind": "off_record",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "off-record-8",
+          "kind": "off_record",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "off-record-10",
+          "kind": "off_record",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "paraphrase-seasickness-2",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "partly",
+          "shown": [
+            "raja-ampat/operating#1",
+            "raja-ampat/operating#2"
+          ],
+          "relevant": [
+            "raja-ampat/operating#1",
+            "raja-ampat/operating#2",
+            "raja-ampat/species/giant-oceanic-manta-ray#2",
+            "raja-ampat/format/0#0",
+            "raja-ampat/format/0#1"
+          ]
+        },
+        {
+          "id": "paraphrase-cold-2",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "paraphrase-non_diver-2",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "paraphrase-experience-2",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "partly",
+          "shown": [
+            "galapagos/experience#3",
+            "galapagos/experience#2"
+          ],
+          "relevant": [
+            "galapagos/experience#0",
+            "galapagos/experience#2",
+            "galapagos/experience#3"
+          ]
+        },
+        {
+          "id": "paraphrase-current-2",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "palau/experience#0",
+            "palau/highlight/1#1"
+          ],
+          "relevant": [
+            "palau/experience#0",
+            "palau/experience#1",
+            "palau/highlight/1#0",
+            "palau/highlight/1#1",
+            "palau/highlight/1#2",
+            "palau/highlight/1#3"
+          ]
+        },
+        {
+          "id": "paraphrase-crowds-2",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "ari-atoll/format/2#0",
+            "ari-atoll/experience#2"
+          ],
+          "relevant": [
+            "ari-atoll/experience#2",
+            "ari-atoll/format/2#0"
+          ]
+        },
+        {
+          "id": "paraphrase-visibility-2",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "partly",
+          "shown": [
+            "ningaloo/experience#1",
+            "ningaloo/format/3#0"
+          ],
+          "relevant": [
+            "ningaloo/experience#1"
+          ]
+        },
+        {
+          "id": "paraphrase-weather-2",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "tiger-beach/operating#0"
+          ],
+          "relevant": [
+            "tiger-beach/operating#0"
+          ]
+        },
+        {
+          "id": "paraphrase-rules-2",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "partly",
+          "shown": [
+            "oahu/species/humpback-whale#1",
+            "oahu/highlight/4#4"
+          ],
+          "relevant": [
+            "oahu/species/humpback-whale#1"
+          ]
+        },
+        {
+          "id": "paraphrase-remote-2",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "paraphrase-photography-2",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "partly",
+          "shown": [
+            "malapascua/experience#5",
+            "malapascua/highlight/4#0"
+          ],
+          "relevant": [
+            "malapascua/experience#5",
+            "malapascua/highlight/1#2",
+            "malapascua/highlight/2#1",
+            "malapascua/highlight/2#2",
+            "malapascua/highlight/4#0"
+          ]
+        },
+        {
+          "id": "paraphrase-depth-2",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": [
+            "cabo-pulmo/experience#0"
+          ]
+        },
+        {
+          "id": "paraphrase-getting_there-2",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "partly",
+          "shown": [
+            "galapagos/format/1#1",
+            "galapagos/highlight/1#1"
+          ],
+          "relevant": [
+            "galapagos/highlight/1#1",
+            "galapagos/format/0#0",
+            "galapagos/format/0#1",
+            "galapagos/format/1#1",
+            "galapagos/format/1#2",
+            "galapagos/format/1#3"
+          ]
+        }
+      ]
+    },
+    {
+      "half": "test half",
+      "split": "test",
+      "cases": 36,
+      "scored": 36,
+      "outcomes": {
+        "ok": 36
+      },
+      "rejected": 0,
+      "byKind": {
+        "specific": {
+          "n": 18,
+          "hit": 1,
+          "precision": 0.8823529411764706,
+          "abstain": 0,
+          "answerable": 18,
+          "unanswerable": 0
+        },
+        "off_record": {
+          "n": 5,
+          "hit": 0,
+          "precision": 1,
+          "abstain": 1,
+          "answerable": 0,
+          "unanswerable": 5
+        },
+        "paraphrase": {
+          "n": 13,
+          "hit": 1,
+          "precision": 0.8947368421052632,
+          "abstain": 1,
+          "answerable": 10,
+          "unanswerable": 3
+        },
+        "all": {
+          "n": 36,
+          "hit": 1,
+          "precision": 0.8867924528301887,
+          "abstain": 1,
+          "answerable": 28,
+          "unanswerable": 8
+        }
+      },
+      "rows": [
+        {
+          "id": "specific-2",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "tulamben/species/bumphead-parrotfish#0",
+            "tulamben/species/bumphead-parrotfish#1"
+          ],
+          "relevant": [
+            "tulamben/species/bumphead-parrotfish#0",
+            "tulamben/species/bumphead-parrotfish#1",
+            "tulamben/species/bumphead-parrotfish#2"
+          ]
+        },
+        {
+          "id": "specific-4",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "raja-ampat/species/whale-shark#0",
+            "raja-ampat/species/whale-shark#1"
+          ],
+          "relevant": [
+            "raja-ampat/species/whale-shark#0",
+            "raja-ampat/species/whale-shark#1",
+            "raja-ampat/species/whale-shark#2",
+            "raja-ampat/species/whale-shark#3"
+          ]
+        },
+        {
+          "id": "specific-6",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "socorro/species/humpback-whale#0",
+            "socorro/highlight/3#0"
+          ],
+          "relevant": [
+            "socorro/species/humpback-whale#0",
+            "socorro/highlight/3#0"
+          ]
+        },
+        {
+          "id": "specific-8",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "cozumel/species/splendid-toadfish#0",
+            "cozumel/highlight/3#2"
+          ],
+          "relevant": [
+            "cozumel/species/splendid-toadfish#0",
+            "cozumel/highlight/3#2"
+          ]
+        },
+        {
+          "id": "specific-10",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "cocos/species/whitetip-reef-shark#0",
+            "cocos/highlight/2#0"
+          ],
+          "relevant": [
+            "cocos/species/whitetip-reef-shark#0"
+          ]
+        },
+        {
+          "id": "specific-12",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "kona/species/reef-manta-ray#2",
+            "kona/species/reef-manta-ray#0"
+          ],
+          "relevant": [
+            "kona/species/reef-manta-ray#0",
+            "kona/species/reef-manta-ray#2"
+          ]
+        },
+        {
+          "id": "specific-14",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "palau/format/2#0",
+            "palau/highlight/4#0"
+          ],
+          "relevant": [
+            "palau/highlight/4#0",
+            "palau/format/2#0"
+          ]
+        },
+        {
+          "id": "specific-16",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "moorea/highlight/1#0",
+            "moorea/highlight/1#1"
+          ],
+          "relevant": [
+            "moorea/species/lemon-shark#0",
+            "moorea/highlight/1#0",
+            "moorea/highlight/1#1"
+          ]
+        },
+        {
+          "id": "specific-18",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "ningaloo/species/whale-shark#2"
+          ],
+          "relevant": [
+            "ningaloo/species/whale-shark#2"
+          ]
+        },
+        {
+          "id": "specific-20",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "yonaguni/highlight/2#0",
+            "yonaguni/highlight/2#2"
+          ],
+          "relevant": [
+            "yonaguni/highlight/2#0",
+            "yonaguni/highlight/2#2",
+            "yonaguni/highlight/2#3"
+          ]
+        },
+        {
+          "id": "specific-22",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "azores/species/sperm-whale#0",
+            "azores/highlight/3#1"
+          ],
+          "relevant": [
+            "azores/species/sperm-whale#0",
+            "azores/highlight/3#1",
+            "azores/format/2#1"
+          ]
+        },
+        {
+          "id": "specific-24",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "malta/highlight/3#1",
+            "malta/highlight/3#2"
+          ],
+          "relevant": [
+            "malta/highlight/3#1",
+            "malta/highlight/3#2"
+          ]
+        },
+        {
+          "id": "specific-26",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "red-sea-north/format/2#1",
+            "red-sea-north/format/2#0"
+          ],
+          "relevant": [
+            "red-sea-north/format/2#1"
+          ]
+        },
+        {
+          "id": "specific-28",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "lembeh/highlight/3#1",
+            "lembeh/highlight/3#0"
+          ],
+          "relevant": [
+            "lembeh/highlight/1#1",
+            "lembeh/highlight/1#3",
+            "lembeh/highlight/3#0",
+            "lembeh/highlight/3#1"
+          ]
+        },
+        {
+          "id": "specific-30",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "nusa-penida/species/ocean-sunfish#0",
+            "nusa-penida/highlight/2#0"
+          ],
+          "relevant": [
+            "nusa-penida/species/ocean-sunfish#0",
+            "nusa-penida/species/ocean-sunfish#2"
+          ]
+        },
+        {
+          "id": "specific-32",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "moalboal/highlight/1#1",
+            "moalboal/species/bali-sardinella#0"
+          ],
+          "relevant": [
+            "moalboal/species/bali-sardinella#0",
+            "moalboal/species/bali-sardinella#1",
+            "moalboal/highlight/1#1"
+          ]
+        },
+        {
+          "id": "specific-34",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "rangiroa/species/reef-manta-ray#0",
+            "rangiroa/species/great-hammerhead#0"
+          ],
+          "relevant": [
+            "rangiroa/operating#2",
+            "rangiroa/species/reef-manta-ray#0"
+          ]
+        },
+        {
+          "id": "specific-36",
+          "kind": "specific",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "red-sea-brothers/format/0#2"
+          ],
+          "relevant": [
+            "red-sea-brothers/format/0#2"
+          ]
+        },
+        {
+          "id": "off-record-1",
+          "kind": "off_record",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "off-record-3",
+          "kind": "off_record",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "off-record-5",
+          "kind": "off_record",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "off-record-7",
+          "kind": "off_record",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "off-record-9",
+          "kind": "off_record",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "paraphrase-seasickness-1",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "partly",
+          "shown": [
+            "nusa-penida/format/1#0",
+            "nusa-penida/format/0#0"
+          ],
+          "relevant": [
+            "nusa-penida/operating#0",
+            "nusa-penida/operating#1",
+            "nusa-penida/species/reef-manta-ray#2",
+            "nusa-penida/format/1#0"
+          ]
+        },
+        {
+          "id": "paraphrase-cold-1",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "alor/experience#1",
+            "alor/operating#2"
+          ],
+          "relevant": [
+            "alor/operating#2",
+            "alor/experience#1",
+            "alor/species/ocean-sunfish#0",
+            "alor/highlight/3#1"
+          ]
+        },
+        {
+          "id": "paraphrase-non_diver-1",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "moalboal/format/2#1",
+            "moalboal/format/2#0"
+          ],
+          "relevant": [
+            "moalboal/format/2#0",
+            "moalboal/format/2#1",
+            "moalboal/format/2#2"
+          ]
+        },
+        {
+          "id": "paraphrase-experience-1",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "yucatan-cenotes/cert/cavern#1",
+            "yucatan-cenotes/cert/cavern#2"
+          ],
+          "relevant": [
+            "yucatan-cenotes/experience#1",
+            "yucatan-cenotes/experience#2",
+            "yucatan-cenotes/highlight/4#1",
+            "yucatan-cenotes/cert/cavern#1",
+            "yucatan-cenotes/cert/cavern#2",
+            "yucatan-cenotes/cert/cave#0",
+            "yucatan-cenotes/cert/cave#1"
+          ]
+        },
+        {
+          "id": "paraphrase-current-1",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "paraphrase-crowds-1",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "partly",
+          "shown": [
+            "rangiroa/operating#1",
+            "rangiroa/format/0#1"
+          ],
+          "relevant": [
+            "rangiroa/operating#1"
+          ]
+        },
+        {
+          "id": "paraphrase-visibility-1",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "partly",
+          "shown": [
+            "red-sea-north/experience#0"
+          ],
+          "relevant": [
+            "red-sea-north/experience#0"
+          ]
+        },
+        {
+          "id": "paraphrase-weather-1",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "partly",
+          "shown": [
+            "coral-sea/operating#1",
+            "coral-sea/operating#0"
+          ],
+          "relevant": [
+            "coral-sea/operating#0",
+            "coral-sea/operating#1"
+          ]
+        },
+        {
+          "id": "paraphrase-rules-1",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "paraphrase-remote-1",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "not_covered",
+          "shown": [],
+          "relevant": []
+        },
+        {
+          "id": "paraphrase-photography-1",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "partly",
+          "shown": [
+            "alor/species/rhinopias#0",
+            "alor/operating#1"
+          ],
+          "relevant": [
+            "alor/operating#1",
+            "alor/species/rhinopias#0",
+            "alor/highlight/2#1"
+          ]
+        },
+        {
+          "id": "paraphrase-depth-1",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "answered",
+          "shown": [
+            "moalboal/highlight/1#1",
+            "moalboal/highlight/2#0"
+          ],
+          "relevant": [
+            "moalboal/experience#1",
+            "moalboal/highlight/1#1",
+            "moalboal/highlight/2#0",
+            "moalboal/highlight/4#0"
+          ]
+        },
+        {
+          "id": "paraphrase-getting_there-1",
+          "kind": "paraphrase",
+          "engine": "claude",
+          "status": "partly",
+          "shown": [
+            "yucatan-cenotes/format/0#1",
+            "yucatan-cenotes/format/0#0"
+          ],
+          "relevant": [
+            "yucatan-cenotes/format/0#0",
+            "yucatan-cenotes/format/0#1",
+            "yucatan-cenotes/format/2#0"
+          ]
+        }
+      ]
+    }
+  ]
+}
