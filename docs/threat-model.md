@@ -19,7 +19,7 @@ function and, when switched on, Claude. Written 2026-09-22 alongside
 
 1. **The model's output has nowhere to put free text.** *Describe* returns only
    month numbers and IDs from closed lists. `normalizeTrip()` drops anything else and counts
-   it. *Ask* returns only sentence numbers. `validateSelection()` keeps at most three
+   it. *Ask* returns only sentence numbers. `validateSelection()` keeps at most two
    distinct numbers that exist in that one record. So a successful injection can't make the
    page say something new: no leaked system prompt, no invented fact, nothing from another
    record. At worst it produces a wrong filter, which the diver sees and can edit, or a
@@ -84,7 +84,7 @@ function and, when switched on, Claude. Written 2026-09-22 alongside
 | Describe your trip: expected safe behaviour | 24 / 27 | 25 / 27 | **26 / 27** |
 | Ask: expected safe behaviour | 16 / 17 | 17 / 17 | **17 / 17** (abstained on all 10 unanswerable) |
 
-The four misses are keyword-parser limits, not gate failures:
+The rules path's four misses are keyword-parser limits, not gate failures:
 - The parser obeys a dictated `"January"` inside a quoted JSON instruction.
 - "Narnia **Reef**" sets a reef dive type.
 - A past hotel mishap flags accommodation as unanswerable.
