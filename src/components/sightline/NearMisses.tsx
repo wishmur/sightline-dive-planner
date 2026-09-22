@@ -1,11 +1,62 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Check, TriangleAlert, X } from "lucide-react";
 import { logEvent } from "@/lib/analytics";
 import type { BriefSearch } from "@/lib/filters";
-import { monthRanges, type DestinationFit } from "@/lib/fit";
+import { monthRanges, type DestinationFit, type Verdict } from "@/lib/fit";
 
 const SHOWN = 4;
+
+/**
+ * Every part of the brief as a pill, in the card tags' shape. Colour stays in the
+ * product's own language (cyan check = fits, coral = look here) rather than
+ * green/red, and every state also has its own icon, so nothing rests on colour
+ * alone. Only the part that breaks is tinted: it's what the row is about.
+ */
+const PILL = {
+  violated: {
+    icon: X,
+    label: "Doesn't fit",
+    className: "bg-accent/12 text-foreground ring-1 ring-inset ring-accent/35",
+    iconClassName: "text-accent",
+  },
+  caveat: {
+    icon: TriangleAlert,
+    label: "Fits, with a caveat",
+    className: "bg-secondary text-secondary-foreground",
+    iconClassName: "text-accent",
+  },
+  met: {
+    icon: Check,
+    label: "Fits",
+    className: "bg-secondary text-secondary-foreground",
+    iconClassName: "text-primary",
+  },
+} as const;
+
+const ORDER: Record<Verdict["status"], number> = { violated: 0, caveat: 1, met: 2 };
+
+function BriefPills({ verdicts }: { verdicts: Verdict[] }) {
+  const sorted = [...verdicts].sort((a, b) => ORDER[a.status] - ORDER[b.status]);
+  return (
+    <span className="mt-2.5 flex flex-wrap gap-1.5">
+      {sorted.map((v, i) => {
+        const pill = PILL[v.status];
+        const Icon = pill.icon;
+        return (
+          <span
+            key={`${v.kind}-${v.targetId ?? v.concern ?? i}`}
+            className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium ${pill.className}`}
+          >
+            <Icon className={`h-3 w-3 shrink-0 ${pill.iconClassName}`} aria-hidden />
+            <span className="sr-only">{pill.label}: </span>
+            {v.short}
+          </span>
+        );
+      })}
+    </span>
+  );
+}
 
 /**
  * Destinations that break exactly one part of the brief. Replaces the dead-end
@@ -59,11 +110,9 @@ export function NearMisses({
                   <span className="block truncate text-xs text-muted-foreground">
                     {d.region}, {d.country}
                   </span>
-                  <span className="mt-2 block text-sm text-foreground/85">
-                    {fit.violation?.label}
-                  </span>
+                  <BriefPills verdicts={fit.verdicts} />
                   {fit.fitsIn.length > 0 && (
-                    <span className="mt-1 block text-xs font-medium text-primary">
+                    <span className="mt-2.5 block text-xs font-medium text-primary">
                       Fits your brief in {monthRanges(fit.fitsIn)}
                     </span>
                   )}

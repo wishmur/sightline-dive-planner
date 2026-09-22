@@ -68,8 +68,8 @@ function SpeciesPage() {
     <div className="theme-light min-h-screen">
       <SightlineNav />
 
-      <header className="border-b border-border px-6 pt-36 pb-12 lg:px-10">
-        <div className="mx-auto max-w-6xl">
+      <header className="border-b border-border pt-36 pb-12">
+        <div className="page-frame">
           <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-4 w-4" /> All destinations
           </Link>
@@ -113,7 +113,7 @@ function SpeciesPage() {
         </div>
       </header>
 
-      <section className="mx-auto max-w-6xl px-6 py-12 lg:px-10">
+      <section className="page-frame py-12">
         <MonthStripLegend />
 
         <div className="mt-8 space-y-4">

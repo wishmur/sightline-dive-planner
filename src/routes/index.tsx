@@ -171,7 +171,7 @@ function Home() {
           aria-hidden
           className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(6,16,32,0.62)_0%,rgba(6,16,32,0.22)_38%,rgba(6,16,32,0.78)_100%)]"
         />
-        <div className="mx-auto w-full max-w-7xl px-6 pt-36 pb-14 lg:px-10 lg:pb-20">
+        <div className="page-frame pt-36 pb-14 lg:pb-20">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -210,8 +210,8 @@ function Home() {
       </section>
 
       {/* DISCOVERY SHORTCUTS */}
-      <section className="theme-deep px-6 py-16 lg:px-10 lg:py-20">
-        <div className="mx-auto max-w-7xl">
+      <section className="theme-deep py-16 lg:py-20">
+        <div className="page-frame">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="eyebrow text-primary">What are you diving for?</p>
@@ -229,8 +229,8 @@ function Home() {
       </section>
 
       {/* EXPLORE */}
-      <section id="explore" className="theme-light scroll-mt-20 px-6 py-16 lg:px-10 lg:py-24">
-        <div className="mx-auto max-w-7xl">
+      <section id="explore" className="theme-light scroll-mt-20 py-16 lg:py-24">
+        <div className="page-frame">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <h2 className="font-display text-3xl text-foreground sm:text-4xl">

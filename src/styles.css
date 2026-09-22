@@ -197,6 +197,22 @@
   color: var(--foreground);
 }
 
+/*
+ * The page frame. Every page, header, nav and footer uses this one frame so
+ * their edges line up: 80rem of content (max-w-7xl) with 1.5rem gutters, 2.5rem
+ * from lg. Full-bleed backgrounds sit on the parent; the frame sits inside.
+ * Long prose inside the frame keeps its own reading width (max-w-3xl or less).
+ */
+@utility page-frame {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 85rem; /* 80rem content + 2 × 2.5rem gutters */
+  padding-inline: 1.5rem;
+  @media (min-width: 64rem) {
+    padding-inline: 2.5rem;
+  }
+}
+
 @utility hatch-closed {
   background-image: repeating-linear-gradient(
     45deg,

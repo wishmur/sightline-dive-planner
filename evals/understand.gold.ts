@@ -248,6 +248,32 @@ export const UNDERSTAND_CASES: UnderstandCase[] = [
       where: "country:Mexico",
     },
   },
+  // Added 2026-09-21 from a user report: "whale in March" set no animal, because
+  // groups were only recognised by their plural label. The others are the same bug.
+  {
+    id: "reported-whale-singular",
+    text: "whale in March",
+    expect: { month: 2, targets: ["whales"] },
+    note: "User report 2026-09-21.",
+  },
+  {
+    id: "reported-dolphin-singular",
+    text: "dolphin in May",
+    expect: { month: 4, targets: ["dolphins"] },
+    note: "Was bottlenose only, dropping spinner dolphins.",
+  },
+  {
+    id: "reported-thresher-singular",
+    text: "thresher shark, advanced",
+    expect: { month: null, targets: ["thresher-sharks"], cert: "advanced" },
+    note: "Was the genus-level entry only, dropping Malapascua's pelagic threshers.",
+  },
+  {
+    id: "reported-devil-ray-singular",
+    text: "devil ray in June",
+    expect: { month: 5, targets: ["devil-rays"] },
+    note: "Was sicklefin devil ray only.",
+  },
   // Hard: colloquial, indirect, or needs world knowledge.
   {
     id: "hard-mantas-slang",
