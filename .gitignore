@@ -39,3 +39,4 @@ data/.source-cache/
 # verifier's hold private source pages.
 evals/reports/*
 !evals/reports/*.record.json
+!evals/reports/agreement.json

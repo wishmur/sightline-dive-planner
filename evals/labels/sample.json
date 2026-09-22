@@ -1,0 +1,246 @@
+{
+  "version": "9411a1752e6c",
+  "seed": 20260922,
+  "pairs": [
+    {
+      "destination": "aliwal-shoal",
+      "concern": "remote"
+    },
+    {
+      "destination": "aliwal-shoal",
+      "concern": "non_diver"
+    },
+    {
+      "destination": "aliwal-shoal",
+      "concern": "rules"
+    },
+    {
+      "destination": "aliwal-shoal",
+      "concern": "photography"
+    },
+    {
+      "destination": "aliwal-shoal",
+      "concern": "seasickness"
+    },
+    {
+      "destination": "galapagos",
+      "concern": "visibility"
+    },
+    {
+      "destination": "galapagos",
+      "concern": "current"
+    },
+    {
+      "destination": "galapagos",
+      "concern": "depth"
+    },
+    {
+      "destination": "galapagos",
+      "concern": "getting_there"
+    },
+    {
+      "destination": "galapagos",
+      "concern": "weather"
+    },
+    {
+      "destination": "cabo-pulmo",
+      "concern": "experience"
+    },
+    {
+      "destination": "cabo-pulmo",
+      "concern": "crowds"
+    },
+    {
+      "destination": "cabo-pulmo",
+      "concern": "cold"
+    },
+    {
+      "destination": "cabo-pulmo",
+      "concern": "remote"
+    },
+    {
+      "destination": "cabo-pulmo",
+      "concern": "non_diver"
+    },
+    {
+      "destination": "anilao",
+      "concern": "rules"
+    },
+    {
+      "destination": "anilao",
+      "concern": "photography"
+    },
+    {
+      "destination": "anilao",
+      "concern": "seasickness"
+    },
+    {
+      "destination": "anilao",
+      "concern": "visibility"
+    },
+    {
+      "destination": "anilao",
+      "concern": "current"
+    },
+    {
+      "destination": "malta",
+      "concern": "depth"
+    },
+    {
+      "destination": "malta",
+      "concern": "getting_there"
+    },
+    {
+      "destination": "malta",
+      "concern": "weather"
+    },
+    {
+      "destination": "malta",
+      "concern": "experience"
+    },
+    {
+      "destination": "malta",
+      "concern": "crowds"
+    },
+    {
+      "destination": "azores",
+      "concern": "cold"
+    },
+    {
+      "destination": "azores",
+      "concern": "remote"
+    },
+    {
+      "destination": "azores",
+      "concern": "non_diver"
+    },
+    {
+      "destination": "azores",
+      "concern": "rules"
+    },
+    {
+      "destination": "azores",
+      "concern": "photography"
+    },
+    {
+      "destination": "komodo",
+      "concern": "seasickness"
+    },
+    {
+      "destination": "komodo",
+      "concern": "visibility"
+    },
+    {
+      "destination": "komodo",
+      "concern": "current"
+    },
+    {
+      "destination": "komodo",
+      "concern": "depth"
+    },
+    {
+      "destination": "komodo",
+      "concern": "getting_there"
+    },
+    {
+      "destination": "cocos",
+      "concern": "weather"
+    },
+    {
+      "destination": "cocos",
+      "concern": "experience"
+    },
+    {
+      "destination": "cocos",
+      "concern": "crowds"
+    },
+    {
+      "destination": "cocos",
+      "concern": "cold"
+    },
+    {
+      "destination": "cocos",
+      "concern": "remote"
+    },
+    {
+      "destination": "palau",
+      "concern": "non_diver"
+    },
+    {
+      "destination": "palau",
+      "concern": "rules"
+    },
+    {
+      "destination": "palau",
+      "concern": "photography"
+    },
+    {
+      "destination": "palau",
+      "concern": "seasickness"
+    },
+    {
+      "destination": "palau",
+      "concern": "visibility"
+    },
+    {
+      "destination": "red-sea-brothers",
+      "concern": "current"
+    },
+    {
+      "destination": "red-sea-brothers",
+      "concern": "depth"
+    },
+    {
+      "destination": "red-sea-brothers",
+      "concern": "getting_there"
+    },
+    {
+      "destination": "red-sea-brothers",
+      "concern": "weather"
+    },
+    {
+      "destination": "red-sea-brothers",
+      "concern": "experience"
+    },
+    {
+      "destination": "baa-atoll",
+      "concern": "crowds"
+    },
+    {
+      "destination": "baa-atoll",
+      "concern": "cold"
+    },
+    {
+      "destination": "baa-atoll",
+      "concern": "remote"
+    },
+    {
+      "destination": "baa-atoll",
+      "concern": "non_diver"
+    },
+    {
+      "destination": "baa-atoll",
+      "concern": "rules"
+    },
+    {
+      "destination": "rangiroa",
+      "concern": "photography"
+    },
+    {
+      "destination": "rangiroa",
+      "concern": "seasickness"
+    },
+    {
+      "destination": "rangiroa",
+      "concern": "visibility"
+    },
+    {
+      "destination": "rangiroa",
+      "concern": "current"
+    },
+    {
+      "destination": "rangiroa",
+      "concern": "depth"
+    }
+  ]
+}
