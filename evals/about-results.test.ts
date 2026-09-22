@@ -17,6 +17,7 @@ import { SCENARIOS, type Scenario } from "./scenarios";
 import { scoreCatches, summarize as summarizeCatches } from "./catches";
 import { SPLIT, runMethod, score } from "./concern-metrics";
 import { HELDOUT_CASES } from "./understand.heldout";
+import { UNDERSTAND_CASES } from "./understand.gold";
 import { scoreCase, summarize as summarizeParse } from "./understand-metrics";
 import { ASK_CASES } from "./ask.gold";
 import { isDev, scoreAsk } from "./ask";
@@ -158,6 +159,13 @@ describe("Claude results match the recorded runs", () => {
     return { fetch: h.fetch, apiKey: "no-network" };
   };
   const report = (f: string) => JSON.parse(readFileSync(`evals/reports/${f}`, "utf8"));
+
+  test("test cases behind the Claude numbers", () => {
+    expect({
+      descriptions: HELDOUT_CASES.length + UNDERSTAND_CASES.length,
+      questions: ASK_CASES.length,
+    }).toEqual(RESULTS.claude.cases);
+  });
 
   test("describe your trip, held-out", async () => {
     const { understandWithClaude } = await import("@/lib/llm.server");

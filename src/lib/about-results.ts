@@ -6,10 +6,9 @@
  * evals/about-results.test.ts, so the page fails the test suite if it drifts
  * from the evals. The embedding figures need a model download and come from
  * `bun evals/concerns.ts --dense`. Source-check counts are read from the data
- * on the page itself. Nothing here comes from the Claude paths: their evals
- * haven't run.
+ * on the page itself. Claude's numbers are replayed from the recorded paid runs.
  */
-export const MEASURED_ON = "21 Sep 2026";
+export const MEASURED_ON = "22 Sep 2026";
 
 export const RESULTS = {
   /** Trip-fit scenario briefs fully correct (evals/scenarios.ts). */
@@ -44,6 +43,8 @@ export const RESULTS = {
     },
     adversarial: { violations: 0, trip: [26, 27] as const, ask: [17, 17] as const },
     verifier: { falseSupport: [0, 6] as const, contradictions: [4, 5] as const, accuracy: 59 },
+    /** Test cases behind the Claude numbers (both splits). */
+    cases: { descriptions: 74, questions: 73 },
   },
   /** Adversarial inputs on the keyword path (evals/adversarial.gold.ts). */
   adversarial: { cases: 44, violations: 0, trip: [24, 27] as const, ask: [16, 17] as const },
