@@ -1,11 +1,11 @@
 # Sightline: resume material
 
-Every number below is measured and reproducible from the repo (`bun run eval`,
-`bun run test`) as of 2026-09-22. Each one is pinned in `src/lib/about-results.ts`, so a
-change that moves it fails the test suite. None comes from the Claude paths: their evals
-are built and dry-run but not yet paid for. The results are test results, not usage
-figures. Update this file after the paid runs (`docs/paid-evals.md`). The work described
-here reaches the live site when this branch is merged.
+Every number below is measured and reproducible from the repo as of 2026-09-22. Rules-path
+numbers come from `bun run eval`. Claude numbers come from the paid evals, replayed free
+from `evals/cache/llm/`. Each one is pinned in `src/lib/about-results.ts`, so a change that
+moves it fails the test suite. They're test results, not usage figures. Where a Claude number
+comes after tuning, the untuned first run is given too. The work described here reaches the
+live site when this branch is merged.
 
 **Project line**
 Sightline: dive-trip planning reference · independent, live at sightline-dive-planner.lovable.app ·
@@ -18,54 +18,52 @@ TypeScript, TanStack Start, Supabase, Claude API
   deterministic ranking engine gets 29 of 29, with plain-language caveats and "close, but…"
   near misses instead of dead ends.
 - **Measured vector search, then left it out.** On destinations held out from tuning, a
-  curated vocabulary of diver worries finds relevant evidence for **93%** of them. Two
-  embedding models find **33–44%**, and keyword search (BM25) **33–55%**. The vocabulary
-  also correctly says "the record doesn't cover this" **85%** of the time. Shipping
-  embeddings would have added a ~25 MB model to the product for a measured loss.
-- **Checked the data before building on it.** Source-checked the 78 highest-stakes claims
-  against their cited pages. Five were contradicted, including the product's headline
-  example, which was corrected with verbatim evidence and dated before/after values.
-- **Scoped the language model to the one job rules couldn't do.** On held-out
-  descriptions, keyword rules got 97% of trip fields right but found only 65% of stated
-  worries ("she doesn't dive" → non-diving partner). Claude now does that reading, with
-  rules as the fallback. Every answer a diver reads is a verbatim sentence from the
-  record, never model-written text.
-- **Made the AI spend-safe and measurable before paying for it.** Built session, address
-  and daily spend caps, a kill switch and per-route opt-in. Logging never stores what a
-  visitor typed. Wrote the adoption criteria before any Claude result existed, and set up
-  record/replay so each paid eval run is paid for once.
-- **Planned how to measure the product, and flagged when a test would be underpowered.**
-  Designed the A/B for the trip-description feature: the primary metric divides by exposed
-  sessions, because the feature itself changes who creates a brief. Sample sizes showed a
-  five-diver usability study should come first at current traffic.
+  curated vocabulary of diver worries finds relevant evidence for **93%** of them. Embeddings
+  find **33–44%**, and BM25 **33–55%**. The vocabulary also correctly says "the record doesn't
+  cover this" **85%** of the time.
+- **Checked the data before building on it.** Source-checked the 78 highest-stakes claims.
+  Five were contradicted, including the product's headline example, which was corrected with
+  verbatim evidence.
+- **Put the language model only where rules measurably failed.** Keyword rules found 65% of
+  the worries divers stated in held-out trip descriptions. Claude found **87%** on its first,
+  untuned run and **100%** after one round of tuning on the dev set. Everything a diver reads
+  is still a verbatim sentence from the record.
+- **Let thresholds set before any results overrule an impressive headline.** Claude's
+  question answering found a relevant sentence **100%** of the time (rules: 61%) but missed
+  its precision bar (75% vs 80%). I traced that to its third sentence, relevant less than
+  half the time, and capped answers at two sentences: **89%**. The Claude fact-checker made
+  zero dangerous errors but missed its accuracy bar by one claim, so it wasn't adopted.
+- **Kept AI spend safe and small.** Built caps per session, per address and per day, a kill
+  switch and per-route opt-in. The full paid evaluation (four evals plus tuning) cost
+  **$7.63**, under a $15 budget the harness enforced by reserving each call's worst case.
 
 ## Bullets: AI and evaluation variant (AI engineer, applied AI roles)
 
-- **Built evidence retrieval over 1,095 sentences for 13 diver worries, labelled against
-  every sentence.** Compared a curated vocabulary, BM25, two dense embedding models and RRF
-  hybrids. On a held-out split, the vocabulary reached **93%** hit rate, **90%** precision
-  on the top sentence and **85%** correct abstention. The embedding models reached
+- **Built and evaluated evidence retrieval over 1,095 sentences for 13 diver worries,**
+  with every sentence labelled against every worry. Compared a curated vocabulary, BM25, two
+  embedding models and RRF hybrids. On held-out destinations the vocabulary reached **93%**
+  hit rate, **90%** top-sentence precision and **85%** correct abstention. Embeddings reached
   **33–44%**, and the hybrids **80–88%**.
-- **Kept model-selected answers grounded.** Claude picks sentence numbers with structured
-  output. A deterministic gate keeps at most three real sentences from that one record, and
-  trip parsing is validated against closed lists. A hostile-model test confirms that
-  injected IDs, out-of-range numbers and malformed output never reach the page.
-- **Ran an adversarial suite against both text inputs.** 44 cases covering prompt
-  injection, off-topic, abusive, overlong, other languages, made-up places and markup:
-  **0** safety-rule violations. The keyword fallback handled 24 of 27 and 16 of 17 as
-  expected, and each miss is documented in a threat model.
-- **Built production guardrails for the Claude routes.** Worst-case spend is reserved
-  under a database row lock and settled to actual token cost. Everything fails closed to
-  rules. Prompt caching, a server-side refusal fallback, and one telemetry event per call
-  (tokens, latency, cost, prompt version) with no stored user text.
-- **Built an eval harness for paid runs.** Record/replay caching means each response is
-  paid for once. A dry-run mode prints the exact prompts and a cost estimate. Adds smoke-run
-  limits, dev/test splits, a hard budget, and adoption thresholds written before the first
-  run.
-- **Guarded the published numbers with tests.** 195 automated tests, including gold sets,
-  held-out splits, contract tests against a local API stand-in, and a check that fails CI if
-  the About page's numbers drift from the evals. The quota migration is tested in embedded
-  Postgres.
+- **Measured Claude against rules on thresholds set in advance.** Trip parsing found **87%**
+  of worries on the first run (rules 65%) and **100%** after tuning on dev. Question answering
+  had **100%** hit rate (rules 61%), with precision going from 75% to **89%** after a
+  deterministic two-sentence cap. An LLM verifier had **0 of 6** false supports but **59%**
+  accuracy against a 60% bar, so it wasn't adopted.
+- **Caught a safety regression that an unchanged score hid.** After prompt tuning, the
+  44-case adversarial suite still read 25/27, but a certification-escalation injection had
+  started to succeed. Fixed with a deterministic gate (the model may lower the level the rules
+  read, never raise it). Claude now scores **26/27** and **17/17** (rules 24/27 and 16/17),
+  with **0** safety-rule violations.
+- **Kept answers grounded by construction.** Structured output, closed-list validation, and a
+  gate that keeps at most two real sentences of that one record. A hostile-model test shows
+  injected IDs, bogus sentence numbers and malformed output never reach the page.
+- **Built an eval harness for paid runs.** Record/replay caching means each response is paid
+  for once. It also has dry-run cost estimates, smoke-run limits, dev/test splits, and per-run
+  and total budgets enforced by worst-case reservation. Total spend: **$7.63**. CI replays the
+  committed responses to re-verify every published Claude number, with no key.
+- **Found and fixed a misleading metric.** The verifier's "hallucinated quote" rate read
+  17–19%. Error analysis showed **1** fabricated quote out of 376. The rest were real text
+  that broke the 25-word quoting rule. The report now separates the two. 208 automated tests.
 
 ## Skills, and where the evidence is
 
@@ -82,22 +80,26 @@ TypeScript, TanStack Start, Supabase, Claude API
 - Refusal fallback: `fallbacks: "default"` (server-side) plus a typed `LlmError("refusal")` → rules.
 - Prompt caching: a cached system prompt for Describe; the destination record as its own cached block for Ask (`docs/cost-model.md` has the break-even).
 - Cost and abuse controls: `src/lib/llm-guard.ts`, `supabase/migrations/20260921180000_llm_quota.sql`.
+- Safety gate on model output: `safestCert()` in `src/lib/understand.ts`.
+- Cost measurement: `docs/cost-model.md` (measured tokens and latency; ~$0.005 per cached Describe call).
 
 **Evaluation**
 - Gold sets: `evals/*.gold.*`, `evals/concerns.gold.json` (exhaustive: 1,095 sentences × 13 concerns).
 - Held-out splits: destination-level concern split, `evals/understand.heldout.ts`, ask dev/test halves.
 - Abstention metrics, precision@k: `evals/concern-metrics.ts`, `evals/ask.ts`.
-- Regression gates and CI: `.github/workflows/ci.yml`, 195 tests.
+- Regression gates and CI: `.github/workflows/ci.yml`, 208 tests.
 - Contract tests: `evals/llm-contract.test.ts`, `evals/llm-harness.test.ts` (local API stand-in behind the real SDK).
 - Pinned results: `evals/about-results.test.ts`.
 - Adversarial testing and threat model: `evals/adversarial*.ts`, `docs/threat-model.md`.
 - Inter-annotator agreement: blind labelling tool and Cohen's kappa with bootstrap intervals (`evals/label/`, `evals/agreement.ts`). *Built; the second labeller's labels and the kappa are still pending.*
-- Pre-registered decision rules and paid-eval harness: `docs/paid-evals.md`, `evals/harness/`.
+- Pre-registered decision rules, paid-eval harness and error analysis: `docs/paid-evals.md` (results and every post-hoc change disclosed), `evals/harness/`, `evals/reports/*.record.json`.
+- LLM-as-judge, measured: the Claude verifier against 78 human-reviewed claims (`evals/verifier.ts`), not adopted.
+- Replay-verified results: `evals/about-results.test.ts` recomputes Claude's numbers from `evals/cache/llm/` in CI.
 
 **Product**
 - User journeys and goldens-first: four journeys, scenario goldens written before the engine (`evals/scenarios.ts`).
 - Instrumentation: event design with no raw text, and one query per product question (`docs/metrics.sql`, tested against the schema).
-- Experiment design: `docs/experiment-describe.md` (unbiased denominator, power analysis, guardrails).
+- Experiment design: `docs/experiment-describe.md` (unbiased denominator, power analysis, guardrails; concludes a five-diver study should come first at current traffic).
 - Cost modelling: `docs/cost-model.md`.
 
 ## Deliberately not used

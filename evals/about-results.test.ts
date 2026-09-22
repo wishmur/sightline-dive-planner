@@ -17,10 +17,22 @@ import { SCENARIOS, type Scenario } from "./scenarios";
 import { scoreCatches, summarize as summarizeCatches } from "./catches";
 import { SPLIT, runMethod, score } from "./concern-metrics";
 import { HELDOUT_CASES } from "./understand.heldout";
+import { UNDERSTAND_CASES } from "./understand.gold";
 import { scoreCase, summarize as summarizeParse } from "./understand-metrics";
 import { ASK_CASES } from "./ask.gold";
 import { isDev, scoreAsk } from "./ask";
-import { runAskRules, runTripRules, summarizeRows } from "./adversarial";
+import {
+  askMet,
+  askViolations,
+  runAskRules,
+  runTripRules,
+  summarizeRows,
+  tripMisses,
+  tripViolations,
+} from "./adversarial";
+import { ASK_ADVERSARIAL, TRIP_ADVERSARIAL } from "./adversarial.gold";
+import { LlmHarness, PRIVATE_CACHE_DIR } from "./harness/llm-harness";
+import { existsSync, readFileSync } from "node:fs";
 
 const pct = (x: number) => Math.round(x * 100);
 
@@ -137,4 +149,129 @@ describe("About page results match the evals", () => {
       ask: [...RESULTS.adversarial.ask],
     });
   });
+});
+
+// Claude's numbers, recomputed by replaying the committed responses: no network,
+// no key, and any change to a prompt or gate that moves them fails here.
+describe("Claude results match the recorded runs", () => {
+  const replay = (name: string) => {
+    const h = new LlmHarness({ name, mode: "replay" });
+    return { fetch: h.fetch, apiKey: "no-network" };
+  };
+  const report = (f: string) => JSON.parse(readFileSync(`evals/reports/${f}`, "utf8"));
+
+  test("test cases behind the Claude numbers", () => {
+    expect({
+      descriptions: HELDOUT_CASES.length + UNDERSTAND_CASES.length,
+      questions: ASK_CASES.length,
+    }).toEqual(RESULTS.claude.cases);
+  });
+
+  test("describe your trip, held-out", async () => {
+    const { understandWithClaude } = await import("@/lib/llm.server");
+    const opts = replay("understand");
+    const results = [];
+    for (const c of HELDOUT_CASES)
+      results.push(scoreCase(c, (await understandWithClaude(c.text, opts)).trip));
+    const s = summarizeParse(results);
+    expect({
+      worries: pct(s.concernRecall),
+      worryPrecision: pct(s.concernPrecision),
+      fields: pct(s.fieldAccuracy),
+    }).toEqual(RESULTS.claude.parser.final);
+    const untuned = report("understand.record.json").sets.find(
+      (x: { split: string }) => x.split === "test",
+    );
+    expect(pct(untuned.summary.concernRecall)).toBe(RESULTS.claude.parser.untuned.worries);
+  });
+
+  test("ask, test half", async () => {
+    const { selectWithClaude } = await import("@/lib/llm.server");
+    const opts = replay("ask");
+    const results = [];
+    for (const c of ASK_CASES.filter((x) => !isDev(x))) {
+      const sel = await selectWithClaude(getDestination(c.destination)!, c.question, opts);
+      results.push({
+        c,
+        a: {
+          engine: "claude" as const,
+          status: sel.status,
+          passageIds: sel.passageIds,
+          concerns: [],
+        },
+      });
+    }
+    const s = scoreAsk(results);
+    expect({
+      testHit: pct(s.hit),
+      testPrecision: pct(s.precision),
+      abstain: pct(s.abstain),
+    }).toEqual(RESULTS.claude.ask.final);
+    const untuned = report("ask.record.json").halves.find(
+      (x: { split: string }) => x.split === "test",
+    );
+    expect(pct(untuned.byKind.all.precision)).toBe(RESULTS.claude.ask.untuned.testPrecision);
+  });
+
+  test("adversarial inputs", async () => {
+    const { selectWithClaude, understandWithClaude } = await import("@/lib/llm.server");
+    const opts = replay("adversarial");
+    let violations = 0;
+    let trip = 0;
+    let ask = 0;
+    for (const c of TRIP_ADVERSARIAL) {
+      const t = (await understandWithClaude(c.text, opts)).trip;
+      violations += tripViolations(t).length;
+      if (!tripMisses(c, t).length) trip++;
+    }
+    for (const c of ASK_ADVERSARIAL) {
+      const sel = await selectWithClaude(getDestination(c.destination)!, c.question, opts);
+      const a = {
+        engine: "claude" as const,
+        status: sel.status,
+        passageIds: sel.passageIds,
+        concerns: [],
+      };
+      violations += askViolations(c.destination, a).length;
+      if (askMet(c, a)) ask++;
+    }
+    expect({
+      violations,
+      trip: [trip, TRIP_ADVERSARIAL.length],
+      ask: [ask, ASK_ADVERSARIAL.length],
+    }).toEqual({
+      ...RESULTS.claude.adversarial,
+      trip: [...RESULTS.claude.adversarial.trip],
+      ask: [...RESULTS.claude.adversarial.ask],
+    });
+  });
+
+  // The verifier's responses quote source pages, so they're cached outside git:
+  // this runs where that cache exists, and is skipped in CI.
+  test.skipIf(!existsSync(PRIVATE_CACHE_DIR) || !existsSync("data/.source-cache"))(
+    "source verifier, all reviewed claims",
+    async () => {
+      const Anthropic = (await import("@anthropic-ai/sdk")).default;
+      const { goldCases, score } = await import("./verifier");
+      const { llmVerifier } = await import("../scripts/verify/verifiers");
+      const h = new LlmHarness({ name: "verifier", mode: "replay", cacheDir: PRIVATE_CACHE_DIR });
+      const v = llmVerifier(new Anthropic({ fetch: h.fetch, apiKey: "no-network", maxRetries: 0 }));
+      const s = await score(goldCases(), v);
+      const bad = s.rows.filter((r) => r.gold === "contradicted" || r.gold === "not_found");
+      const contra = s.rows.filter((r) => r.gold === "contradicted");
+      expect({
+        falseSupport: [bad.filter((r) => r.predicted === "supported").length, bad.length],
+        contradictions: [
+          contra.filter((r) => r.predicted === "contradicted").length,
+          contra.length,
+        ],
+        accuracy: pct(s.accuracy),
+      }).toEqual({
+        falseSupport: [...RESULTS.claude.verifier.falseSupport],
+        contradictions: [...RESULTS.claude.verifier.contradictions],
+        accuracy: RESULTS.claude.verifier.accuracy,
+      });
+    },
+    60_000,
+  );
 });

@@ -22,6 +22,13 @@ export type EventType =
   | "compare_toggle"
   | "compare_open";
 
+/**
+ * Shown under both free-text boxes, before anything is sent. True whether or not
+ * a Claude route is switched on (docs/threat-model.md, third-party processing).
+ */
+export const TEXT_PRIVACY_NOTE =
+  "Where Claude is switched on, what you type is sent to Anthropic to be read. Sightline doesn't keep it.";
+
 const KEY = "sightline_session_id";
 
 export function getSessionId(): string {

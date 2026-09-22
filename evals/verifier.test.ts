@@ -4,7 +4,12 @@
  * names; "supported" without surviving evidence is downgraded.
  */
 import { expect, test } from "bun:test";
-import { validateOutput, type Verifier, type VerifierInput } from "../scripts/verify/verifiers";
+import {
+  rejectionReason,
+  validateOutput,
+  type Verifier,
+  type VerifierInput,
+} from "../scripts/verify/verifiers";
 import { score } from "./verifier";
 
 const page = {
@@ -93,7 +98,36 @@ test("scoring: false support, contradiction recall and hallucination rate", asyn
   const s = await score(cases, credulous);
   // a and c lose their invented quotes and are downgraded; b stands.
   expect(s.falseSupportRate).toBe(0);
-  expect(s.hallucinatedQuoteRate).toBeCloseTo(2 / 3);
+  // Both rejected quotes are invented, not just too long: rejected = fabricated here.
+  expect(s.rejectedQuoteRate).toBeCloseTo(2 / 3);
+  expect(s.fabricatedQuoteRate).toBeCloseTo(2 / 3);
+  expect(s.rejections).toEqual({ not_in_page: 2 });
   expect(s.contradictionRecall).toBe(0);
   expect(s.confusion.supported.supported).toBe(1);
+});
+
+test("a rejected quote says why: fabricated is not the same as too long", () => {
+  const long = page.text.split(" ").slice(0, 22).join(" ");
+  expect(rejectionReason({ url: page.url, text: "the south is rough in winter" }, input)).toBe(
+    "not_in_page",
+  );
+  expect(rejectionReason({ url: "https://elsewhere.example", text: "Monsoon winds" }, input)).toBe(
+    "url_not_cited",
+  );
+  // Verbatim, but longer than the 25-word limit on quotes.
+  const over = {
+    url: page.url,
+    text: `${page.text} ${page.text}`.split(" ").slice(0, 30).join(" "),
+  };
+  expect(
+    rejectionReason(over, { ...input, pages: [{ ...page, text: `${page.text} ${page.text}` }] }),
+  ).toBe("over_25_words");
+  // Two verbatim fragments joined with an ellipsis.
+  expect(
+    rejectionReason(
+      { url: page.url, text: "Monsoon winds blow in June... can have rough seas" },
+      input,
+    ),
+  ).toBe("spliced");
+  expect(rejectionReason({ url: page.url, text: long }, input)).toBeNull();
 });

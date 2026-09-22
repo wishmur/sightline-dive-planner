@@ -14,7 +14,9 @@
  *  - false-support rate: P(verifier says supported | gold contradicted or not_found).
  *    This is the dangerous error, and it gates adoption.
  *  - contradiction recall.
- *  - hallucinated-quote rate: quotes not verbatim in the named page (rejected).
+ *  - quotes rejected by the verbatim gate, by reason. Only "not in page" and
+ *    "page not cited" are fabrication; over-length and spliced quotes are real
+ *    text that breaks the short-quote rule. Every rejected quote is withheld.
  *  - accuracy and the confusion matrix, for context.
  *
  * Needs the private source cache (`bun scripts/sources/fetch.ts`). The llm mode
@@ -33,14 +35,22 @@ import {
   VERDICTS,
   lexicalVerifier,
   llmVerifier,
+  rejectionReason,
   validateOutput,
   VERIFIER_MODEL,
   VERIFIER_PROMPT_VERSION,
+  type RejectionReason,
   type Verdict,
   type Verifier,
   type VerifierInput,
 } from "../scripts/verify/verifiers";
-import { LlmHarness, parseHarnessArgs, printDryRun } from "./harness/llm-harness";
+import {
+  ALL_CACHE_DIRS,
+  LlmHarness,
+  PRIVATE_CACHE_DIR,
+  parseHarnessArgs,
+  printDryRun,
+} from "./harness/llm-harness";
 import { attempt, banner, footer, pick, tally, type Outcome } from "./harness/run-llm";
 
 export type GoldCase = { input: VerifierInput; gold: Verdict };
@@ -71,7 +81,9 @@ export type Scored = {
   falseSupportDenominator: number;
   contradictionRecall: number;
   contradictions: number;
-  hallucinatedQuoteRate: number;
+  rejectedQuoteRate: number;
+  fabricatedQuoteRate: number;
+  rejections: Partial<Record<RejectionReason, number>>;
   confusion: Record<Verdict, Record<Verdict, number>>;
   rows: {
     claimId: string;
@@ -93,6 +105,7 @@ export async function score(
   const rows: Scored["rows"] = [];
   let quotes = 0;
   let rejected = 0;
+  const rejections: Partial<Record<RejectionReason, number>> = {};
   const queue = [...cases];
   await Promise.all(
     Array.from({ length: concurrency }, async () => {
@@ -101,6 +114,10 @@ export async function score(
         const { output, rejectedQuotes } = validateOutput(raw, c.input);
         quotes += raw.quotes.length + (raw.conflict ? 1 : 0);
         rejected += rejectedQuotes.length;
+        for (const q of rejectedQuotes) {
+          const why = rejectionReason(q, c.input) ?? "not_in_page";
+          rejections[why] = (rejections[why] ?? 0) + 1;
+        }
         confusion[c.gold][output.verdict]++;
         rows.push({
           claimId: c.input.claimId,
@@ -125,7 +142,11 @@ export async function score(
       ? contradictions.filter((r) => r.predicted === "contradicted").length / contradictions.length
       : 0,
     contradictions: contradictions.length,
-    hallucinatedQuoteRate: quotes ? rejected / quotes : 0,
+    rejectedQuoteRate: quotes ? rejected / quotes : 0,
+    fabricatedQuoteRate: quotes
+      ? ((rejections.not_in_page ?? 0) + (rejections.url_not_cited ?? 0)) / quotes
+      : 0,
+    rejections,
     confusion,
     rows: rows.sort((a, b) => a.claimId.localeCompare(b.claimId)),
   };
@@ -138,7 +159,13 @@ function print(name: string, s: Scored) {
     `false-support rate   ${pct(s.falseSupportRate)}  (of ${s.falseSupportDenominator} claims whose sources contradict or don't state them)`,
   );
   console.log(`contradiction recall ${pct(s.contradictionRecall)}  (of ${s.contradictions})`);
-  console.log(`hallucinated quotes  ${pct(s.hallucinatedQuoteRate)}`);
+  console.log(
+    `fabricated quotes    ${pct(s.fabricatedQuoteRate)}  · all rejected by the gate ${pct(s.rejectedQuoteRate)} (${
+      Object.entries(s.rejections)
+        .map(([k, v]) => `${k.replace(/_/g, " ")} ${v}`)
+        .join(", ") || "none"
+    })`,
+  );
   console.log(`accuracy             ${pct(s.accuracy)}`);
   console.log(`confusion (rows = gold, cols = predicted):`);
   console.log(`  ${"".padEnd(13)}${VERDICTS.map((v) => v.slice(0, 11).padStart(13)).join("")}`);
@@ -161,7 +188,15 @@ async function pool<T, R>(items: T[], n: number, fn: (t: T) => Promise<R>): Prom
 
 async function runLlm(cases: GoldCase[]) {
   const args = parseHarnessArgs(process.argv.slice(2), process.env);
-  const h = new LlmHarness({ name: "verifier", mode: args.mode, maxUsd: args.maxUsd });
+  const h = new LlmHarness({
+    name: "verifier",
+    mode: args.mode,
+    maxUsd: args.maxUsd,
+    totalUsd: args.totalUsd,
+    // Its responses can quote source pages beyond the 25-word limit: kept out of git.
+    cacheDir: PRIVATE_CACHE_DIR,
+    ledger: ALL_CACHE_DIRS,
+  });
   const client = new Anthropic({
     fetch: h.fetch,
     maxRetries: 1,

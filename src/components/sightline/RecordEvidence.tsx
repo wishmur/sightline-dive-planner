@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { ArrowRight, LoaderCircle, TriangleAlert } from "lucide-react";
 import { SourceCheck } from "@/components/sightline/SourceCheck";
-import { getSessionId, logEvent } from "@/lib/analytics";
+import { TEXT_PRIVACY_NOTE, getSessionId, logEvent } from "@/lib/analytics";
 import type { Destination } from "@/lib/destinations";
 import { getConcern, type ConcernId } from "@/lib/concerns";
 import { getPassage, type Passage } from "@/lib/passages";
@@ -222,6 +222,9 @@ export function AskRecord({ d }: { d: Destination }) {
             </button>
           ))}
         </div>
+      )}
+      {!answer && !busy && (
+        <p className="mt-2 text-[11px] text-muted-foreground/80">{TEXT_PRIVACY_NOTE}</p>
       )}
 
       {answer && !busy && (

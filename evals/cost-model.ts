@@ -1,13 +1,14 @@
 /**
  * Cost and latency model for the two Claude routes: `bun evals/cost-model.ts`
  *
- * Built from the real requests (the product's own request builders applied to
- * the eval inputs), not hand-typed sizes. Every figure is an ESTIMATE until the
- * paid runs measure it: input tokens are characters ÷ 3.5, output tokens are
- * assumptions (adaptive thinking at effort "low" included), and the usage mix
- * per visitor is an assumption to be replaced by docs/metrics.sql queries 8 and
- * 11 once the site has traffic. Prices are list prices (src/lib/llm-guard.ts).
+ * Token counts are MEASURED where the paid evals recorded them (evals/cache/llm:
+ * input, cached prefix and output tokens per call, adaptive thinking included),
+ * and fall back to characters ÷ 3.5 otherwise. The usage mix per visitor and the
+ * cache-hit model are still assumptions, to be replaced by docs/metrics.sql
+ * queries 8, 11 and 14 once the site has traffic. Prices are list prices
+ * (src/lib/llm-guard.ts).
  */
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { getDestination } from "@/lib/destinations";
 import { parseTripRules } from "@/lib/understand";
 import { askRules } from "@/lib/ask";
@@ -16,14 +17,48 @@ import { LLM_MODEL, MAX_TOKENS, selectParams, understandParams } from "@/lib/llm
 import { ASK_CASES } from "./ask.gold";
 import { UNDERSTAND_CASES } from "./understand.gold";
 import { HELDOUT_CASES } from "./understand.heldout";
-import { CHARS_PER_TOKEN, tokenSplit } from "./harness/llm-harness";
+import { CACHE_DIR, CHARS_PER_TOKEN, tokenSplit } from "./harness/llm-harness";
 
 const P = PRICES_PER_MTOK[LLM_MODEL]!;
+const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)]!;
+const p90 = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length * 0.9)]!;
 const TTL_MIN = 5;
 const DAYS = 30;
 
-// --- Assumptions (replace with measured values when they exist) -------------
-const OUTPUT = {
+// --- Measured usage from the paid evals, when recorded ------------------------
+type Measured = {
+  n: number;
+  total: number;
+  prefix: number;
+  out: { low: number; mid: number; high: number };
+};
+function measured(route: "understand" | "ask"): Measured | null {
+  if (!existsSync(CACHE_DIR)) return null;
+  const rows = readdirSync(CACHE_DIR)
+    .filter((f) => f.endsWith(".json"))
+    .map((f) => JSON.parse(readFileSync(`${CACHE_DIR}/${f}`, "utf8")))
+    .filter((r) => r.eval === route)
+    .map((r) => r.response.usage);
+  if (!rows.length) return null;
+  const prefix = rows.map(
+    (u) => (u.cache_creation_input_tokens ?? 0) + (u.cache_read_input_tokens ?? 0),
+  );
+  const total = rows.map((u, i) => u.input_tokens + prefix[i]!);
+  const out = rows.map((u) => u.output_tokens as number);
+  return {
+    n: rows.length,
+    total: median(total),
+    prefix: median(prefix),
+    out: {
+      low: median(out),
+      mid: out.reduce((a, b) => a + b, 0) / out.length,
+      high: Math.max(...out),
+    },
+  };
+}
+
+// --- Assumptions where nothing is measured -----------------------------------
+const ASSUMED_OUTPUT = {
   understand: { low: 150, mid: 400, high: 1000 },
   ask: { low: 100, mid: 300, high: 800 },
 };
@@ -37,8 +72,6 @@ const QUESTIONS_PER_PAGE = 2;
 const SCALES = [1_000, 10_000, 100_000];
 
 // --- Real request sizes -----------------------------------------------------
-const median = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length / 2)]!;
-const p90 = (xs: number[]) => [...xs].sort((a, b) => a - b)[Math.floor(xs.length * 0.9)]!;
 
 const u = [...UNDERSTAND_CASES, ...HELDOUT_CASES].map((c) => tokenSplit(understandParams(c.text)));
 const a = ASK_CASES.map((c) =>
@@ -56,8 +89,16 @@ const typical = (xs: Split[]): Split => ({
   prefix: median(xs.map((x) => x.prefix)),
   cacheable: xs.every((x) => x.cacheable),
 });
-const U = typical(u);
-const A = typical(a);
+const Um = measured("understand");
+const Am = measured("ask");
+const estU = typical(u);
+const estA = typical(a);
+const U: Split = Um ? { total: Um.total, prefix: Um.prefix, cacheable: true } : estU;
+const A: Split = Am ? { total: Am.total, prefix: Am.prefix, cacheable: true } : estA;
+const OUTPUT = {
+  understand: Um ? Um.out : ASSUMED_OUTPUT.understand,
+  ask: Am ? Am.out : ASSUMED_OUTPUT.ask,
+};
 
 /** Chance another Describe call lands within the cache TTL, if calls arrive at random. */
 function describeHitRate(users: number) {
@@ -103,22 +144,28 @@ const $ = (n: number) =>
 const k = (n: number) => `${(n / 1000).toFixed(1)}k`;
 
 console.log(
-  `\n# Cost and latency model (estimates) · ${LLM_MODEL} · effort low · max_tokens ${MAX_TOKENS}`,
+  `\n# Cost and latency model · ${LLM_MODEL} · effort low · max_tokens ${MAX_TOKENS}`,
 );
 console.log(
   `list prices per MTok: input $${P.input} · output $${P.output} · cache write $${P.cacheWrite} · cache read $${P.cacheRead}`,
 );
-console.log(`tokens ≈ characters ÷ ${CHARS_PER_TOKEN}\n`);
-
-console.log(`## Input per call, from the real requests`);
 console.log(
-  `describe  median ${k(U.total)} tokens (cached prefix ${k(U.prefix)}: system prompt + ID lists) · p90 ${k(p90(u.map((x) => x.total)))} · n=${u.length}`,
-);
-console.log(
-  `ask       median ${k(A.total)} tokens (cached prefix ${k(A.prefix)}: that destination's record) · p90 ${k(p90(a.map((x) => x.total)))} · n=${a.length}\n`,
+  Um && Am
+    ? `tokens: MEASURED from ${Um.n} describe and ${Am.n} ask calls in the paid evals\n`
+    : `tokens ≈ characters ÷ ${CHARS_PER_TOKEN} (not yet measured)\n`,
 );
 
-console.log(`## Cost per call (output assumed: low / mid / high)`);
+console.log(`## Input per call`);
+console.log(
+  `describe  median ${k(U.total)} tokens (cached prefix ${k(U.prefix)}: system prompt + ID lists)${Um ? ` · the characters ÷ ${CHARS_PER_TOKEN} estimate was ${k(estU.total)} (${(Um.total / estU.total).toFixed(1)}× under)` : ` · p90 ${k(p90(u.map((x) => x.total)))}`}`,
+);
+console.log(
+  `ask       median ${k(A.total)} tokens (cached prefix ${k(A.prefix)}: that destination's record)${Am ? ` · estimate was ${k(estA.total)} (${(Am.total / estA.total).toFixed(1)}× under)` : ` · p90 ${k(p90(a.map((x) => x.total)))}`}\n`,
+);
+
+console.log(
+  `## Cost per call (output ${Um && Am ? "measured: median / mean / max" : "assumed: low / mid / high"} = describe ${Math.round(OUTPUT.understand.low)}/${Math.round(OUTPUT.understand.mid)}/${Math.round(OUTPUT.understand.high)}, ask ${Math.round(OUTPUT.ask.low)}/${Math.round(OUTPUT.ask.mid)}/${Math.round(OUTPUT.ask.high)} tokens)`,
+);
 for (const [name, s, out] of [
   ["describe", U, OUTPUT.understand],
   ["ask", A, OUTPUT.ask],
@@ -173,6 +220,26 @@ console.log(`\n## Latency`);
 console.log(
   `rules engine, measured on this laptop: describe ${rulesParseMs.toFixed(2)} ms · ask ${rulesAskMs.toFixed(2)} ms per request`,
 );
-console.log(
-  `Claude: not measured. The harness records it on the first paid run; the decision rules require p95 ≤ 6 s.`,
-);
+function latency(route: string) {
+  if (!existsSync(CACHE_DIR)) return null;
+  const ms = readdirSync(CACHE_DIR)
+    .filter((f) => f.endsWith(".json"))
+    .map((f) => JSON.parse(readFileSync(`${CACHE_DIR}/${f}`, "utf8")))
+    .filter((r) => r.eval === route && typeof r.latency_ms === "number")
+    .map((r) => r.latency_ms as number)
+    .sort((x, y) => x - y);
+  return ms.length
+    ? { p50: ms[Math.floor(ms.length / 2)]!, p95: ms[Math.floor(ms.length * 0.95)]!, n: ms.length }
+    : null;
+}
+for (const [route, name] of [
+  ["understand", "describe"],
+  ["ask", "ask"],
+] as const) {
+  const l = latency(route);
+  console.log(
+    l
+      ? `Claude ${name}, measured in the evals from this laptop: p50 ${(l.p50 / 1000).toFixed(1)} s · p95 ${(l.p95 / 1000).toFixed(1)} s (n=${l.n}; the decision rules require p95 ≤ 6 s)`
+      : `Claude ${name}: not measured yet.`,
+  );
+}

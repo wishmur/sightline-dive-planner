@@ -148,7 +148,7 @@ const RESULT_CARDS = [
 const LIMITS = [
   "One person wrote every test and checked every source. No other divers have reviewed the results yet.",
   `${CHECKS.checked} of ${CLAIMS.length} claims have been checked so far. The rest are labelled “Not yet checked”.`,
-  `The AI-assisted parts aren't measured yet. Without them, keyword rules catch ${RESULTS.parser.worries}% of worries in a described trip and answer ${RESULTS.ask.specificHit}% of specific questions.`,
+  `The language model is measured on ${RESULTS.claude.cases.descriptions} test descriptions and ${RESULTS.claude.cases.questions} test questions, not yet on real visitors' words.`,
   `Seasickness is the hardest worry to find evidence for (${c.seasicknessHit}%): boat time is usually implied, not stated. Water temperatures are yearly ranges.`,
   "No prices, hotels, visas or operator ratings. There's no evidence here for them.",
 ];
@@ -287,9 +287,14 @@ function AboutPage() {
             </ul>
 
             <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-              <span className="font-semibold text-accent">Not yet measured: </span>
-              the language model's reading of trips and its answers to questions. Their tests are
-              written but haven't been run, so no result here comes from it. Measured {MEASURED_ON}.
+              <span className="font-semibold text-foreground">
+                The language model, on test cases:{" "}
+              </span>
+              reading described trips, it caught {RESULTS.claude.parser.untuned.worries}% of the
+              worries people stated on its first run, against {RESULTS.parser.worries}% for keyword
+              rules. Answering questions, it found a relevant sentence for every test question the
+              record could answer, against {RESULTS.ask.testHit}% for keyword search, and said so
+              when the record was silent. Measured {MEASURED_ON}.
             </p>
           </section>
 

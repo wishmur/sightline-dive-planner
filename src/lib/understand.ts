@@ -497,6 +497,24 @@ export function normalizeTrip(t: Partial<ParsedTrip>): ParsedTrip {
   };
 }
 
+const CERT_ORDER = ["open_water", "advanced", "advanced_plus_experience"] as const;
+
+/**
+ * Certification from two readers of the same text, resolved in the safe
+ * direction. A higher level shows sites beyond the diver's skill and no level
+ * skips the check, so the language model may lower what the rules read, or fill
+ * it in when the rules found none, but never raise it. (On all 74 labelled
+ * descriptions the rules' level is never above the truth.)
+ */
+export function safestCert(
+  model: ParsedTrip["cert"],
+  rules: ParsedTrip["cert"],
+): ParsedTrip["cert"] {
+  if (!rules) return model;
+  if (!model) return rules;
+  return CERT_ORDER.indexOf(model) <= CERT_ORDER.indexOf(rules) ? model : rules;
+}
+
 export function isEmptyTrip(t: ParsedTrip) {
   return (
     t.month === null &&

@@ -1,9 +1,9 @@
 # Demo script (about 2 min 45 s)
 
 Record on the live site once this branch is merged, or on `bun run dev` before that. The
-flow below was checked against the engine on 2026-09-22 with keyword rules reading the text
-(no API key). If Claude is switched on later, the page says "Read by Claude" instead;
-nothing else in the script changes. Screen at 1440 × 900, browser zoom 110%.
+flow below was checked against the engine on 2026-09-22 with keyword rules reading the text.
+With the Claude routes switched on, the page says "Read by Claude" instead, and Ask shows
+at most two sentences; nothing else in the script changes. Screen at 1440 × 900, browser zoom 110%.
 
 ---
 
@@ -52,7 +52,8 @@ nothing else in the script changes. Screen at 1440 × 900, browser zoom 110%.
 > "Everything here is tested. The search it replaced got 11 of 29 test trips right; this gets
 > 29. For worries, a curated vocabulary finds evidence 93% of the time; embedding search
 > managed 33 to 44, so it isn't in the product. The language model does the one job rules
-> can't, reading your words, behind validation gates and spend caps. Its evaluation was
-> designed, with pass marks written down, before a single paid run."
+> can't, reading your words: on its first run it caught 87% of the worries people stated,
+> against 65% for rules. Its pass marks were written down before a single paid run, and the
+> whole evaluation cost under eight dollars."
 
 **2:45 · End on the results page.**

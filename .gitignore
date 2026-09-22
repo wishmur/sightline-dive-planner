@@ -33,6 +33,8 @@ dist-ssr
 
 # Source snapshots for verification: private (copyrighted page text), never committed
 data/.source-cache/
+# Verifier responses may quote source pages at length (see evals/harness/llm-harness.ts)
+data/.llm-cache/
 
 # Regenerated eval output. Reports from paid Claude runs are kept: they cost
 # money to make. Dry-run request dumps (evals/reports/dry-run/) stay out: the

@@ -78,7 +78,12 @@ if (!args.llm || args.mode !== "dry-run")
 
 if (args.llm) {
   const llm = await import("@/lib/llm.server");
-  const h = new LlmHarness({ name: "understand", mode: args.mode, maxUsd: args.maxUsd });
+  const h = new LlmHarness({
+    name: "understand",
+    mode: args.mode,
+    maxUsd: args.maxUsd,
+    totalUsd: args.totalUsd,
+  });
   // Replay and dry runs never reach the API; the SDK still wants a key string.
   const opts = { fetch: h.fetch, apiKey: args.mode === "record" ? undefined : "no-network" };
   banner("Describe your trip", args);
