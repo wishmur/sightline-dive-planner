@@ -44,7 +44,7 @@ Sightline's curated dataset already knew most of these catches, but only as pros
 5. **For your trip.** On every destination page:
    - A verdict for each part of your brief.
    - The few notes in the record that bear on your trip, quoted verbatim: a median of 4 out of about 15.
-   - **Ask about this destination.** Any question, answered with at most three sentences from that record, verbatim, or "this record doesn't answer that".
+   - **Ask about this destination.** Any question, answered with the record's own sentences, verbatim (at most two when Claude chooses them, three from the keyword fallback), or "this record doesn't answer that".
 6. **Compare.** Shortlist two or three destinations and see them side by side against the same trip: each part of the brief, the catches, the facts, and what each record says about your worries. Month is switchable in place. Works at phone width.
 7. **Source checks.** Key claims show whether their cited sources support them:
    - The status, the verbatim passage, and the date of the check.
