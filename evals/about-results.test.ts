@@ -20,6 +20,7 @@ import { HELDOUT_CASES } from "./understand.heldout";
 import { scoreCase, summarize as summarizeParse } from "./understand-metrics";
 import { ASK_CASES } from "./ask.gold";
 import { isDev, scoreAsk } from "./ask";
+import { runAskRules, runTripRules, summarizeRows } from "./adversarial";
 
 const pct = (x: number) => Math.round(x * 100);
 
@@ -82,13 +83,27 @@ describe("About page results match the evals", () => {
     );
     expect(SPLIT.test.length).toBe(RESULTS.concerns.testDestinations);
     expect(pct(all.hit)).toBe(RESULTS.concerns.hit);
+    const top = score(
+      runMethod(
+        (d, c) =>
+          concernHits(d, c)
+            .slice(0, 1)
+            .map((h) => h.passage.id),
+        SPLIT.test,
+      ),
+    );
+    expect(pct(top.precision)).toBe(RESULTS.concerns.topSentence);
     expect(pct(all.abstain)).toBe(RESULTS.concerns.abstain);
     expect(pct(seasick.hit)).toBe(RESULTS.concerns.seasicknessHit);
   });
 
   test("keyword rules on held-out trip descriptions", () => {
     const s = summarizeParse(HELDOUT_CASES.map((c) => scoreCase(c, parseTripRules(c.text))));
-    expect({ worries: pct(s.concernRecall) }).toEqual(RESULTS.parser);
+    expect({
+      worries: pct(s.concernRecall),
+      worryPrecision: pct(s.concernPrecision),
+      fields: pct(s.fieldAccuracy),
+    }).toEqual(RESULTS.parser);
   });
 
   test("keyword fallback on specific questions, test half", () => {
@@ -97,5 +112,29 @@ describe("About page results match the evals", () => {
       a: askRules(getDestination(c.destination)!, c.question),
     }));
     expect(pct(scoreAsk(results).hit)).toBe(RESULTS.ask.specificHit);
+    expect(pct(scoreAsk(results).precision)).toBe(RESULTS.ask.specificPrecision);
+  });
+
+  test("keyword fallback on the whole test half", () => {
+    const results = ASK_CASES.filter((c) => !isDev(c)).map((c) => ({
+      c,
+      a: askRules(getDestination(c.destination)!, c.question),
+    }));
+    expect(pct(scoreAsk(results).hit)).toBe(RESULTS.ask.testHit);
+    expect(pct(scoreAsk(results).precision)).toBe(RESULTS.ask.testPrecision);
+  });
+
+  test("adversarial inputs on the keyword path", () => {
+    const s = summarizeRows(runTripRules(), runAskRules());
+    expect({
+      cases: s.trip.n + s.ask.n,
+      violations: s.invariantViolations,
+      trip: [s.trip.met, s.trip.n],
+      ask: [s.ask.met, s.ask.n],
+    }).toEqual({
+      ...RESULTS.adversarial,
+      trip: [...RESULTS.adversarial.trip],
+      ask: [...RESULTS.adversarial.ask],
+    });
   });
 });
