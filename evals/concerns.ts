@@ -124,8 +124,10 @@ function rankOnly(name: string, rank: Ranker, split: string[]) {
   const covered = runMethod((d, c) => rank(d, c).map((h) => h.id), split).filter(
     (p) => p.gold.length > 0,
   );
-  const hit = covered.filter((p) => p.shown.some((s) => p.gold.includes(s))).length / covered.length;
-  const p1 = covered.filter((p) => p.shown[0] && p.gold.includes(p.shown[0])).length / covered.length;
+  const hit =
+    covered.filter((p) => p.shown.some((s) => p.gold.includes(s))).length / covered.length;
+  const p1 =
+    covered.filter((p) => p.shown[0] && p.gold.includes(p.shown[0])).length / covered.length;
   return `${name.padEnd(30)} hit@3 ${(hit * 100).toFixed(0).padStart(3)}% · precision@1 ${(p1 * 100).toFixed(0).padStart(3)}% (${covered.length} covered pairs)`;
 }
 

@@ -60,9 +60,10 @@ function SpeciesPage() {
     logEvent("search_species", { species: group.slug, source: "species_page" });
   }, [group.slug]);
 
-  const matches = month === null
-    ? group.matches
-    : group.matches.filter((m) => m.species.months[month] !== "absent");
+  const matches =
+    month === null
+      ? group.matches
+      : group.matches.filter((m) => m.species.months[month] !== "absent");
 
   return (
     <div className="theme-light min-h-screen">
@@ -70,13 +71,14 @@ function SpeciesPage() {
 
       <header className="border-b border-border pt-36 pb-12">
         <div className="page-frame">
-          <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+          <Link
+            to="/"
+            className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+          >
             <ArrowLeft className="h-4 w-4" /> All destinations
           </Link>
           <p className="eyebrow">Species results</p>
-          <h1 className="mt-3 font-display text-4xl sm:text-5xl">
-            {group.name}
-          </h1>
+          <h1 className="mt-3 font-display text-4xl sm:text-5xl">{group.name}</h1>
           <p className="mt-2 italic text-muted-foreground">{group.scientific}</p>
           <p className="mt-6 max-w-2xl text-muted-foreground">
             {group.matches.length} destinations in the reference mention this species. Listed
@@ -90,7 +92,9 @@ function SpeciesPage() {
                 logEvent("filter_month", { species: group.slug, month: null });
               }}
               className={`rounded-full px-4 py-2 text-xs font-medium transition ${
-                month === null ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
+                month === null
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-secondary text-muted-foreground hover:text-foreground"
               }`}
             >
               Any month
@@ -103,7 +107,9 @@ function SpeciesPage() {
                   logEvent("filter_month", { species: group.slug, month: i + 1 });
                 }}
                 className={`rounded-full px-4 py-2 text-xs font-medium transition ${
-                  month === i ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
+                  month === i
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {m.slice(0, 3)}
@@ -118,14 +124,22 @@ function SpeciesPage() {
 
         <div className="mt-8 space-y-4">
           {matches.map(({ destination, species }) => (
-            <article key={destination.id} className="rounded-3xl bg-card shadow-sm ring-1 ring-inset ring-border p-6 lg:p-8">
+            <article
+              key={destination.id}
+              className="rounded-3xl bg-card shadow-sm ring-1 ring-inset ring-border p-6 lg:p-8"
+            >
               <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr]">
                 <div>
                   <div className="flex flex-wrap items-center gap-3">
                     <Link
                       to="/destinations/$slug"
                       params={{ slug: destination.id }}
-                      onClick={() => logEvent("view_destination", { destination: destination.id, from: "species_results" })}
+                      onClick={() =>
+                        logEvent("view_destination", {
+                          destination: destination.id,
+                          from: "species_results",
+                        })
+                      }
                       className="font-display text-2xl hover:text-primary"
                     >
                       {destination.name}
@@ -135,13 +149,23 @@ function SpeciesPage() {
                     </span>
                     <ConfidenceTag value={species.confidence} />
                   </div>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{species.note}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                    {species.note}
+                  </p>
                   <div className="mt-4 flex flex-wrap gap-2 text-[11px] uppercase tracking-wider text-muted-foreground">
-                    <span className="rounded-full bg-secondary px-3 py-1">{species.reliability}</span>
-                    <span className="rounded-full bg-secondary px-3 py-1">{species.encounter_type}</span>
+                    <span className="rounded-full bg-secondary px-3 py-1">
+                      {species.reliability}
+                    </span>
+                    <span className="rounded-full bg-secondary px-3 py-1">
+                      {species.encounter_type}
+                    </span>
                   </div>
                   <div className="mt-4">
-                    <Sources urls={species.sources} context="species_result" destinationId={destination.id} />
+                    <Sources
+                      urls={species.sources}
+                      context="species_result"
+                      destinationId={destination.id}
+                    />
                   </div>
                 </div>
 
@@ -151,7 +175,11 @@ function SpeciesPage() {
                     operating={destination.operating_months}
                     onMonthClick={(i) => {
                       setMonth(i);
-                      logEvent("filter_month", { species: group.slug, month: i + 1, destination: destination.id });
+                      logEvent("filter_month", {
+                        species: group.slug,
+                        month: i + 1,
+                        destination: destination.id,
+                      });
                     }}
                   />
                   <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
@@ -161,7 +189,12 @@ function SpeciesPage() {
                   <Link
                     to="/destinations/$slug"
                     params={{ slug: destination.id }}
-                    onClick={() => logEvent("view_destination", { destination: destination.id, from: "species_results" })}
+                    onClick={() =>
+                      logEvent("view_destination", {
+                        destination: destination.id,
+                        from: "species_results",
+                      })
+                    }
                     className="mt-4 inline-flex items-center gap-2 text-sm text-primary hover:gap-3"
                   >
                     Destination detail <ArrowRight className="h-4 w-4" />

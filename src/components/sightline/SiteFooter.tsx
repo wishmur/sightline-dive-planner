@@ -6,7 +6,10 @@ export function SiteFooter() {
     <footer className="theme-light border-t border-border py-12">
       <div className="page-frame grid gap-8 sm:grid-cols-2 sm:items-start">
         <div className="min-w-0">
-          <Link to="/" className="font-wordmark text-xl font-semibold tracking-[0.14em] text-foreground">
+          <Link
+            to="/"
+            className="font-wordmark text-xl font-semibold tracking-[0.14em] text-foreground"
+          >
             SIGHTLINE<span className="text-primary">.</span>
           </Link>
           <p className="mt-1.5 text-xs tracking-[0.18em] text-muted-foreground uppercase">

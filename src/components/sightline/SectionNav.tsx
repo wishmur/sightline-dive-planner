@@ -38,7 +38,9 @@ export function SectionNav({ sections }: { sections: SectionLink[] }) {
                 href={`#${s.id}`}
                 onClick={(e) => {
                   e.preventDefault();
-                  document.getElementById(s.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  document
+                    .getElementById(s.id)
+                    ?.scrollIntoView({ behavior: "smooth", block: "start" });
                   setActive(s.id);
                 }}
                 aria-current={active === s.id ? "true" : undefined}

@@ -80,7 +80,11 @@ export function DestinationCard({
                 : "bg-white/85 text-slate-900 ring-black/5 hover:bg-white"
             }`}
           >
-            {compared ? <Check className="h-3 w-3" aria-hidden /> : <Plus className="h-3 w-3" aria-hidden />}
+            {compared ? (
+              <Check className="h-3 w-3" aria-hidden />
+            ) : (
+              <Plus className="h-3 w-3" aria-hidden />
+            )}
             {compared ? "Comparing" : "Compare"}
           </button>
         )}
@@ -158,7 +162,9 @@ function FitLine({ fit }: { fit: DestinationFit }) {
           <TriangleAlert className="mt-px h-3.5 w-3.5 shrink-0 text-accent" aria-hidden />
           <span>
             {FLAG_LABEL[first]}
-            {rest.length > 0 && <span className="text-muted-foreground/70"> · +{rest.length} more</span>}
+            {rest.length > 0 && (
+              <span className="text-muted-foreground/70"> · +{rest.length} more</span>
+            )}
           </span>
         </li>
       )}

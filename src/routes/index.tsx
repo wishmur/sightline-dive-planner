@@ -112,7 +112,10 @@ function Home() {
       logEvent("fit_results", {
         brief: searchFromFilters(filters),
         results: run.results.map((r) => ({ id: r.destination.id, tier: r.tier })),
-        near_misses: run.nearMisses.map((r) => ({ id: r.destination.id, reason: r.violation?.reason })),
+        near_misses: run.nearMisses.map((r) => ({
+          id: r.destination.id,
+          reason: r.violation?.reason,
+        })),
       });
     }, 1500);
     return () => window.clearTimeout(timer);
@@ -239,9 +242,12 @@ function Home() {
               <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
                 {run.brief ? (
                   <>
-                    {shown.length} of {DESTINATIONS.length} destinations fit your trip. Best fits first,
-                    then fewest caveats — thin or conflicting evidence counts as a caveat
-                    {filters.concerns.length > 0 ? ", and so do your worries where the record is clear" : ""}.
+                    {shown.length} of {DESTINATIONS.length} destinations fit your trip. Best fits
+                    first, then fewest caveats — thin or conflicting evidence counts as a caveat
+                    {filters.concerns.length > 0
+                      ? ", and so do your worries where the record is clear"
+                      : ""}
+                    .
                   </>
                 ) : (
                   <>
@@ -255,10 +261,7 @@ function Home() {
           </div>
 
           <div className="mt-7 space-y-3">
-            <TripDescriber
-              onApply={setFilters}
-              onPatch={patch}
-            />
+            <TripDescriber onApply={setFilters} onPatch={patch} />
             <FilterBar filters={filters} onChange={patch} />
           </div>
 
@@ -361,7 +364,12 @@ function Home() {
         </div>
       </section>
 
-      <CompareBar ids={compared} brief={brief} onRemove={toggleCompare} onClear={() => setCompared([])} />
+      <CompareBar
+        ids={compared}
+        brief={brief}
+        onRemove={toggleCompare}
+        onClear={() => setCompared([])}
+      />
 
       <SiteFooter />
     </div>

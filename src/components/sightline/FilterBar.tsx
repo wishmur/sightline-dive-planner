@@ -57,7 +57,8 @@ export function FilterBar({
   filters: Filters;
   onChange: (patch: Partial<Filters>) => void;
 }) {
-  const whereLabel = filters.where === "all" ? "Anywhere" : (filters.where.split(":")[1] ?? "Anywhere");
+  const whereLabel =
+    filters.where === "all" ? "Anywhere" : (filters.where.split(":")[1] ?? "Anywhere");
   const speciesLabel =
     filters.species.length === 0
       ? "Any marine life"
@@ -69,7 +70,9 @@ export function FilterBar({
     filters.current !== "any"
       ? `Max ${CURRENT_OPTIONS.find((o) => o.value === filters.current)?.label.toLowerCase()} current`
       : null,
-    filters.entry !== "any" ? `${ENTRY_OPTIONS.find((o) => o.value === filters.entry)?.label} entry` : null,
+    filters.entry !== "any"
+      ? `${ENTRY_OPTIONS.find((o) => o.value === filters.entry)?.label} entry`
+      : null,
   ].filter(Boolean) as string[];
   const advanced =
     (filters.cert !== "any" ? 1 : 0) +
@@ -114,7 +117,9 @@ export function FilterBar({
                 <CommandEmpty>No place found.</CommandEmpty>
                 <CommandGroup>
                   <CommandItem value="Anywhere" onSelect={() => onChange({ where: "all" })}>
-                    <Check className={`mr-2 h-3.5 w-3.5 ${filters.where === "all" ? "opacity-100" : "opacity-0"}`} />
+                    <Check
+                      className={`mr-2 h-3.5 w-3.5 ${filters.where === "all" ? "opacity-100" : "opacity-0"}`}
+                    />
                     Anywhere
                   </CommandItem>
                 </CommandGroup>
@@ -210,12 +215,18 @@ export function FilterBar({
                 <CommandEmpty>No species found.</CommandEmpty>
                 <CommandGroup heading="Groups">
                   {TARGET_GROUPS.map((t) => (
-                    <CommandItem key={t.id} value={`${t.label} group`} onSelect={() => toggleSpecies(t.id)}>
+                    <CommandItem
+                      key={t.id}
+                      value={`${t.label} group`}
+                      onSelect={() => toggleSpecies(t.id)}
+                    >
                       <Check
                         className={`mr-2 h-3.5 w-3.5 ${filters.species.includes(t.id) ? "opacity-100" : "opacity-0"}`}
                       />
                       <span className="truncate">{t.label}</span>
-                      <span className="ml-auto pl-2 text-[10px] uppercase tracking-wide text-muted-foreground">all</span>
+                      <span className="ml-auto pl-2 text-[10px] uppercase tracking-wide text-muted-foreground">
+                        all
+                      </span>
                     </CommandItem>
                   ))}
                 </CommandGroup>

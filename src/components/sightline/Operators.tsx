@@ -96,10 +96,12 @@ function SuggestOperatorDialog({
       </DialogTrigger>
       <DialogContent className="theme-light sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-display text-2xl font-medium">Suggest an operator</DialogTitle>
+          <DialogTitle className="font-display text-2xl font-medium">
+            Suggest an operator
+          </DialogTitle>
           <DialogDescription>
-            Who should divers book with in {destinationName}? Submissions are reviewed before they go
-            live.
+            Who should divers book with in {destinationName}? Submissions are reviewed before they
+            go live.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} className="space-y-4">
@@ -182,10 +184,7 @@ export function Operators({
           <p className="text-sm text-muted-foreground">
             No crowd-suggested operators yet for {destinationName}.
           </p>
-          <SuggestOperatorDialog
-            destinationId={destinationId}
-            destinationName={destinationName}
-          />
+          <SuggestOperatorDialog destinationId={destinationId} destinationName={destinationName} />
         </div>
       )}
 
@@ -202,9 +201,7 @@ export function Operators({
                     <OperatorIcon blurb={o.blurb} />
                   </span>
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold leading-snug text-foreground">
-                      {o.name}
-                    </p>
+                    <p className="text-sm font-semibold leading-snug text-foreground">{o.name}</p>
                     {o.website && (
                       <a
                         href={o.website}
@@ -219,7 +216,9 @@ export function Operators({
                   </div>
                 </div>
                 {o.blurb && (
-                  <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">{o.blurb}</p>
+                  <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">
+                    {o.blurb}
+                  </p>
                 )}
                 {o.source_url && hostOf(o.source_url) !== hostOf(o.website ?? "") && (
                   <a
