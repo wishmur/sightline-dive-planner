@@ -13,7 +13,7 @@ The diver this is built for has 15–100 logged dives, one trip a year, a travel
 - **Wrong season.** They book the right place in the wrong month.
 - **Wrong format.** A day-boat package can't reach the site the destination is famous for.
 - **Beyond their skill.** The currents, depth or entries ask more than their experience covers.
-- **Wrong kind of encounter.** It turns out to be baited, or snorkel-only.
+- **Wrong kind of encounter.** It turns out to be baited, snorkel-only, or heard rather than met: Hawaii's humpbacks are "acoustic only for divers".
 
 Operator pages don't warn about any of this. Everything is "great year-round".
 
@@ -36,7 +36,7 @@ Sightline's curated dataset already knew most of these catches, but only as pros
 2. **Trip fit.** Ranks destinations for the brief:
    - Good fits first.
    - Then fits with caveats, fewest first. Thin or disputed evidence counts as a caveat, so it can demote a destination but never promote one.
-   - Each card shows the one catch that matters most, e.g. *Snorkel-only encounter*, *Limited access in Jan*, *Rough water*.
+   - Each card shows the one catch that matters most, e.g. *Not an in-water encounter*, *Snorkel-only encounter*, *Limited access in Jan*, *Rough water*.
 3. **Your worries count.** Thirteen diver concerns (seasickness, cold water, a non-diving partner, experience, currents, crowds, visibility, weather, permits and rules, remoteness, photography, depth, getting there):
    - Three change ranking, and only through facts that are exact in the data, as caveats: *Liveaboard only* and *Rough water in {month}* for seasickness, *Cold water in {month}* for the cold, *No snorkel option* for a non-diving partner. For example, for a seasick diver who wants mantas in September, Komodo and Raja Ampat are flagged for rough water that month and Nusa Penida isn't.
    - On every destination page, each concern gets the record's own sentences on it, quoted verbatim with their source check. When the record is silent, it says so.
@@ -59,7 +59,7 @@ Each decision below was made on evidence, and several reversed an earlier plan.
 
 | Decision | Evidence |
 |---|---|
-| **Fix the deterministic search before adding any AI.** | Against 26 scenario briefs (24 written before the engine; 2 added later, each with a dated reason in the file), the shipped filter was fully correct on 10. The new engine gets 26. The wrong answers came from logic bugs, not missing intelligence. |
+| **Fix the deterministic search before adding any AI.** | Against 29 scenario briefs (24 written before the engine; 5 added later, each with a dated reason in the file), the shipped filter was fully correct on 11. The new engine gets 29. The wrong answers came from logic bugs, not missing intelligence. |
 | **The next gap was worries, not more filters.** | The records address the 13 concerns far more than their vocabulary suggests: of 468 destination×concern pairs, 335 are covered by at least one sentence (845 relevant sentences). None of it was reachable: "seasick" appears in zero notes. |
 | **Answers are extractive. The model selects; it never writes a fact.** | This is a trust product. Every answer to a concern or question is the record's own sentences, with their source check, so a wrong answer is a wrong *choice of sentence* that the diver can see, not an invented fact. It also makes answers measurable against labelled sentences. |
 | **No vector search. A curated concern lexicon beats it by a wide margin.** | On the untouched test split (18 destinations): lexicon finds relevant evidence for **93%** of covered concerns vs **33–44%** for local embedding models (bge-small, MiniLM) and **55%** for BM25 with the concern's definition as query. Ranking only, with no thresholds: hit@3 **97%** vs 72–84%; precision@1 **92%** vs 46–64%. Fusing the lexicon with either embedding model makes it *worse*. |
@@ -131,7 +131,7 @@ bun evals/verifier.ts llm     # Claude verifier on the 78 reviewed claims (~$5�
 
 | Component | Result |
 |---|---|
-| Scenario goldens (26 briefs across four journeys) | trip fit 26/26 · shipped filter 10/26 |
+| Scenario goldens (29 briefs across four journeys) | trip fit 29/29 · shipped filter 11/29 |
 | Concern scenarios (15, written before the rules) | 15/15 |
 | Critical catches surfaced | 39/39, median panel 4 notes |
 | Concern evidence, test split (234 pairs) | lexicon: hit 93% · precision@3 81% (top sentence 90%) · abstains 85% |

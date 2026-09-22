@@ -12,7 +12,7 @@ export const MEASURED_ON = "21 Sep 2026";
 
 export const RESULTS = {
   /** Trip-fit scenario briefs fully correct (evals/scenarios.ts). */
-  scenarios: { passed: 26, total: 26, previousSearch: 10 },
+  scenarios: { passed: 29, total: 29, previousSearch: 11 },
   /** Must-read catches surfaced on the destination panel (evals/catches.gold.ts). */
   catches: { found: 39, total: 39, medianShown: 4 },
   /** Concern evidence on the 18 test-split destinations (evals/concerns.gold.json). */

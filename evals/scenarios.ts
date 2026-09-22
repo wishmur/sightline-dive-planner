@@ -15,6 +15,11 @@
  *   corrected the Komodo access window (data/verification/corrections.json).
  *   The originals encoded the dataset's own error: that southern access is
  *   limited Dec–Feb.
+ * - 2026-09-21: three "wrong kind of encounter" scenarios added (whales in
+ *   February, whales any month, dolphins), written BEFORE the not_in_water
+ *   rule existed. UI testing showed Kona, Oahu and Socorro as clean whale fits
+ *   although their own notes say the encounter is acoustic, surface-only or not
+ *   an in-water product. The originals are untouched.
  */
 import type { Filters } from "@/lib/filters";
 
@@ -28,7 +33,8 @@ export type FitFlag =
   | "snorkel_only"
   | "baited"
   | "required_cert"
-  | "current_variable";
+  | "current_variable"
+  | "not_in_water";
 
 export type Scenario = {
   id: string;
@@ -365,6 +371,52 @@ export const SCENARIOS: Scenario[] = [
     brief: { species: ["hammerheads"], query: "galapagos" },
     mustInclude: ["galapagos"],
     flags: { galapagos: ["contested"] },
+  },
+  {
+    id: "whales-february-kind-of-encounter",
+    journey: "J1",
+    why: "Humpbacks are present Jan–Mar in Hawaii and the Mexican Pacific, but those records say the whales are heard on dives or seen from the surface: 'an acoustic experience', 'acoustic only for divers', 'not an in-water product', 'not the basis for booking'. Still eligible, never a clean fit.",
+    brief: { species: ["whales"], month: "1" },
+    baselineSpecies: ["Humpback whale"],
+    mustInclude: ["kona", "oahu", "socorro", "cabo-pulmo"],
+    tiers: { kona: "caveats", oahu: "caveats", socorro: "caveats", "cabo-pulmo": "caveats" },
+    flags: {
+      kona: ["not_in_water"],
+      oahu: ["not_in_water"],
+      socorro: ["not_in_water"],
+      "cabo-pulmo": ["not_in_water"],
+    },
+  },
+  {
+    id: "whales-any-month-kind-of-encounter",
+    journey: "J3",
+    why: "The Ribbon Reefs minke swim is the one permitted in-water whale encounter in the data. Azores and Aliwal whales are whale-watching from a boat; Moorea and Ningaloo are surface snorkel swims.",
+    brief: { species: ["whales"] },
+    baselineSpecies: ["Humpback whale"],
+    mustInclude: ["gbr-ribbon-reefs", "azores", "aliwal-shoal", "moorea", "ningaloo"],
+    tiers: {
+      "gbr-ribbon-reefs": "good",
+      azores: "caveats",
+      kona: "caveats",
+      oahu: "caveats",
+      socorro: "caveats",
+    },
+    flags: {
+      azores: ["not_in_water"],
+      "aliwal-shoal": ["not_in_water"],
+      moorea: ["snorkel_only"],
+      ningaloo: ["snorkel_only"],
+    },
+  },
+  {
+    id: "dolphins-kind-of-encounter",
+    journey: "J3",
+    why: "Rangiroa and Socorro dolphins approach divers underwater; Kona's spinners are 'typically from the boat or in passing', with approach federally restricted.",
+    brief: { species: ["dolphins"] },
+    baselineSpecies: ["Bottlenose dolphin"],
+    mustInclude: ["rangiroa", "socorro", "kona"],
+    tiers: { rangiroa: "good", socorro: "good" },
+    flags: { kona: ["not_in_water"] },
   },
   {
     id: "july-no-target",

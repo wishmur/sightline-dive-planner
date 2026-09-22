@@ -22,7 +22,14 @@ import {
   type SpeciesEntry,
 } from "@/lib/destinations";
 import { aliasesFor, canonicalSpeciesId, getGroupDef } from "@/lib/taxonomy";
-import { claimId, getClaim, isContested, isSnorkelOnly, type Claim } from "@/lib/claims";
+import {
+  claimId,
+  getClaim,
+  isContested,
+  isNotInWater,
+  isSnorkelOnly,
+  type Claim,
+} from "@/lib/claims";
 import { certLabel } from "@/lib/cards";
 import { hasDiscoveredConflict } from "@/lib/verification";
 import { passesScope, targetLabel, type Filters } from "@/lib/filters";
@@ -38,6 +45,7 @@ export type Flag =
   | "low_confidence"
   | "contested"
   | "snorkel_only"
+  | "not_in_water"
   | "baited"
   | "required_cert"
   | "current_variable"
@@ -84,6 +92,7 @@ export const FLAG_LABEL: Record<Flag, string> = {
   low_confidence: "Thinly sourced",
   contested: "Sources disagree",
   snorkel_only: "Snorkel-only encounter",
+  not_in_water: "Not an in-water encounter",
   baited: "Baited encounter",
   required_cert: "Extra cert required",
   current_variable: "Variable current",
@@ -95,6 +104,7 @@ export const FLAG_LABEL: Record<Flag, string> = {
 
 /** Most decision-relevant caveat first: what a card shows when space allows one. */
 export const FLAG_PRIORITY: Flag[] = [
+  "not_in_water",
   "snorkel_only",
   "contested",
   "limited",
@@ -257,6 +267,8 @@ function targetVerdict(d: Destination, target: Target, month: number | null): Ve
   }
   const snorkel = highlights.filter((h) => isSnorkelOnly(h.note));
   if (snorkel.length) flags.push("snorkel_only");
+  // The species claim is already cited, so the panel quotes the note that says so.
+  if (isNotInWater(s.note)) flags.push("not_in_water");
   if (s.encounter_type !== "natural") flags.push("baited");
   for (const h of [...contestedHighlights, ...snorkel]) {
     const id = claimId.highlight(d, h.rank);
