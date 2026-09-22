@@ -99,7 +99,7 @@ CI re-verifies every Claude number by replaying the recorded responses.
 
 ## Next steps
 
-Switch on the two routes that passed and watch them with the live queries. Have a second
+Both routes that passed are now live, watched by the production queries. Have a second
 reviewer adjudicate the verifier's 25 supported-versus-partial disagreements, which a packet
 now makes a 20-minute job. Put the product in front of five divers before any A/B test, which at current
 traffic would take months.
