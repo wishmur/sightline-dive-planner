@@ -48,13 +48,16 @@ where event_type = 'verification_open' and created_at > now() - interval '90 day
 group by 1 order by opens desc;
 
 -- 6. Qualified shortlist rate (primary success metric): sessions with a brief that
---    opened at least one "For your trip" panel AND followed the evidence
---    (a source link, a source check, or an operator).
+--    opened at least one "For your trip" panel AND followed the evidence (a
+--    source link, a source check, a concern's evidence, or an operator link;
+--    operator links log click_source since 2026-09-22, and concern evidence was
+--    added here to match query 12). For an experiment, divide by exposed
+--    sessions instead: see docs/experiment-describe.md.
 with s as (
   select session_id,
          bool_or(event_type = 'fit_results') as briefed,
          bool_or(event_type = 'fit_panel_view') as panel,
-         bool_or(event_type in ('click_source', 'verification_open')) as evidence
+         bool_or(event_type in ('click_source', 'verification_open', 'concern_evidence_open')) as evidence
   from events
   where created_at > now() - interval '30 days'
   group by session_id
@@ -186,3 +189,48 @@ from events
 where event_type = 'llm_call' and payload->>'engine' = 'claude'
   and created_at > now() - interval '30 days'
 group by 1;
+
+-- ---------------------------------------------------------------------------
+-- Experiment readout (added 2026-09-22): "Describe your trip" vs filters only.
+-- Plan, sample size and guardrails: docs/experiment-describe.md. Assignment is
+-- logged as 'experiment_exposure' {experiment, arm}; sessions that saw both
+-- arms are dropped (and counted in 18).
+
+-- 17. Primary metric and guardrails by arm. The denominator is EXPOSED sessions,
+--     not briefed ones: the treatment itself changes who makes a brief.
+with exposure as (
+  select session_id, min(payload->>'arm') as arm, count(distinct payload->>'arm') as arms
+  from events
+  where event_type = 'experiment_exposure' and payload->>'experiment' = 'describe-v1'
+  group by session_id
+), s as (
+  select e.session_id, x.arm,
+         bool_or(e.event_type = 'fit_results') as briefed,
+         bool_or(e.event_type = 'fit_panel_view') as panel,
+         bool_or(e.event_type in ('click_source', 'verification_open', 'concern_evidence_open')) as evidence,
+         bool_or(e.event_type = 'fit_results' and jsonb_array_length(e.payload->'results') = 0) as empty_result,
+         bool_or(e.event_type = 'fit_feedback' and not (e.payload->>'helpful')::boolean) as something_off
+  from events e join exposure x using (session_id)
+  where x.arms = 1
+  group by e.session_id, x.arm
+)
+select arm,
+       count(*) as exposed_sessions,
+       avg((briefed and panel and evidence)::int) as qualified_shortlist_rate,
+       avg(briefed::int) as brief_rate,
+       avg(empty_result::int) filter (where briefed) as empty_result_rate,
+       avg(something_off::int) as something_off_rate
+from s group by arm order by arm;
+
+-- 18. Sample-ratio check: exposed sessions per arm (expect 50/50), and sessions
+--     that saw both arms (should be ~0; assignment is per visitor).
+select payload->>'arm' as arm, count(distinct session_id) as sessions
+from events
+where event_type = 'experiment_exposure' and payload->>'experiment' = 'describe-v1'
+group by 1
+union all
+select 'both', count(*) from (
+  select session_id from events
+  where event_type = 'experiment_exposure' and payload->>'experiment' = 'describe-v1'
+  group by session_id having count(distinct payload->>'arm') > 1
+) x;

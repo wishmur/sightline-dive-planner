@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { getSessionId } from "@/lib/analytics";
+import { getSessionId, logEvent } from "@/lib/analytics";
 
 type OperatorRow = {
   id: string;
@@ -207,6 +207,13 @@ export function Operators({
                         href={o.website}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() =>
+                          logEvent("click_source", {
+                            url: o.website,
+                            context: "operator",
+                            destination: destinationId,
+                          })
+                        }
                         className="mt-0.5 inline-flex items-center gap-1.5 text-[11px] font-medium text-primary underline decoration-dotted underline-offset-4"
                       >
                         {hostOf(o.website)}
@@ -225,6 +232,13 @@ export function Operators({
                     href={o.source_url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() =>
+                      logEvent("click_source", {
+                        url: o.source_url,
+                        context: "operator_source",
+                        destination: destinationId,
+                      })
+                    }
                     className="mt-auto inline-flex w-fit items-center gap-1.5 pt-2.5 text-[11px] font-medium text-muted-foreground underline decoration-dotted underline-offset-4 transition hover:text-foreground"
                   >
                     {hostOf(o.source_url)}
