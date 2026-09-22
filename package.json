@@ -12,9 +12,9 @@
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "test": "bun test evals",
-    "eval": "bun evals/report.ts && bun evals/concerns.ts && bun evals/understand.ts && bun evals/ask.ts",
-    "eval:llm:dry": "bun evals/understand.ts llm --dry-run && bun evals/ask.ts llm --dry-run && bun evals/verifier.ts llm --dry-run",
-    "eval:llm:replay": "bun evals/understand.ts llm --replay && bun evals/ask.ts llm --replay && bun evals/verifier.ts llm --replay"
+    "eval": "bun evals/report.ts && bun evals/concerns.ts && bun evals/understand.ts && bun evals/ask.ts && bun evals/adversarial.ts",
+    "eval:llm:dry": "bun evals/understand.ts llm --dry-run && bun evals/ask.ts llm --dry-run && bun evals/verifier.ts llm --dry-run && bun evals/adversarial.ts llm --dry-run",
+    "eval:llm:replay": "bun evals/understand.ts llm --replay && bun evals/ask.ts llm --replay && bun evals/verifier.ts llm --replay && bun evals/adversarial.ts llm --replay"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.127.0",

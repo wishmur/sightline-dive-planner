@@ -8,7 +8,7 @@ Dry runs and replays never touch the network. The decision rules below were writ
 ## Before spending anything (free)
 
 ```bash
-bun run eval:llm:dry          # all three: exact prompts, token and cost estimates, nothing sent
+bun run eval:llm:dry          # all four: exact prompts, token and cost estimates, nothing sent
 ```
 
 Dry-run estimates, 2026-09-22 (characters ÷ 3.5 for tokens; output tokens assumed, not measured):
@@ -18,7 +18,8 @@ Dry-run estimates, 2026-09-22 (characters ÷ 3.5 for tokens; output tokens assum
 | Describe your trip (`understand`) | 74 | $0.57–$2.14 | $8.51 |
 | Ask about this destination (`ask`) | 73 | $0.55–$1.83 | $7.84 |
 | Source verifier (`verifier`) | 78 | $4.89–$12.69 | $34.14 |
-| **All three** | 225 | **≈ $6–17** | $50.49 |
+| Adversarial inputs (`adversarial`) | 44 | $0.34–$1.20 | $4.94 |
+| **All four** | 269 | **≈ $6.3–17.9** | $55.43 |
 
 \*No cache hits and every allowed output token used. Each run also has a hard budget
 (`--max-usd`, default $5): once it's spent, no further paid calls are made.
@@ -43,7 +44,10 @@ bun evals/ask.ts llm --max-usd 3
 bun evals/verifier.ts llm --limit 2 --max-usd 1
 bun evals/verifier.ts llm --max-usd 15
 
-# 5. Re-score everything from the cache, free, as often as needed
+# 5. Adversarial inputs through Claude, as shipped (≈ $0.3–1.2)
+bun evals/adversarial.ts llm --max-usd 2 --errors
+
+# 6. Re-score everything from the cache, free, as often as needed
 bun run eval:llm:replay
 bun evals/understand.ts llm --replay --errors
 bun evals/ask.ts llm --replay --errors
@@ -82,6 +86,16 @@ Test half: 36 questions (28 answerable, 8 the record can't answer). Rules baseli
 | Failed calls | ≤ 1 of 36 |
 | p95 latency, as recorded | ≤ 6 s |
 
+### Adversarial inputs → required for either route
+44 cases, written before any engine ran on them (`evals/adversarial.gold.ts`). Rules
+baseline: 0 invariant violations, expected behaviour 24/27 (describe) and 16/17 (ask).
+
+| | Threshold |
+|---|---|
+| Hard gate: invariant violations (guaranteed by the gates; checked anyway) | **0** |
+| Expected behaviour, describe | ≥ 24 of 27 (no worse than rules) |
+| Expected behaviour, ask | ≥ 16 of 17 (no worse than rules) |
+
 ### Source verifier → curator triage (never in the request path)
 All 78 reviewed claims (5 contradicted, 1 not found). Lexical baseline: accuracy 35%,
 contradiction recall 0/5.
@@ -114,9 +128,11 @@ reviewer still confirms every verdict before anything changes in the data.
 Order matters: without the quota table every Claude call fails closed to the rules.
 
 1. Apply `supabase/migrations/20260921180000_llm_quota.sql` (owner approval needed).
-2. Add Lovable project secrets: `ANTHROPIC_API_KEY`, `SIGHTLINE_LLM_ROUTES` (only the
+2. Add one line under each text box saying the text is read by Claude (Anthropic) when
+   that route is on: the threat model's open item.
+3. Add Lovable project secrets: `ANTHROPIC_API_KEY`, `SIGHTLINE_LLM_ROUTES` (only the
    routes that passed), and optionally `SIGHTLINE_HASH_SALT` and the limits
    (`SIGHTLINE_LLM_DAILY_USD`, default $5).
-3. Watch `docs/metrics.sql` queries 13–16: who answered and why, latency, spend against
+4. Watch `docs/metrics.sql` queries 13–16: who answered and why, latency, spend against
    the cap, and discarded output.
-4. To switch Claude off at once, without a deploy: `SIGHTLINE_LLM_KILL_SWITCH=1`.
+5. To switch Claude off at once, without a deploy: `SIGHTLINE_LLM_KILL_SWITCH=1`.

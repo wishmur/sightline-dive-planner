@@ -20,8 +20,29 @@ afterAll(async () => {
 
 describe("schema", () => {
   test("every migration applies, in order", async () => {
-    for (const f of readdirSync("supabase/migrations").filter((f) => f.endsWith(".sql")).sort())
+    for (const f of readdirSync("supabase/migrations")
+      .filter((f) => f.endsWith(".sql"))
+      .sort())
       await pg.exec(readFileSync(`supabase/migrations/${f}`, "utf8"));
+  });
+
+  test("browsers can log events, but not forge the server's llm_call events", async () => {
+    const insert = async (type: string) => {
+      await pg.exec("set role anon");
+      try {
+        await pg.query(
+          "insert into public.events (session_id, event_type, payload) values ('s', $1, '{}')",
+          [type],
+        );
+        return "ok";
+      } catch (e) {
+        return String(e);
+      } finally {
+        await pg.exec("reset role");
+      }
+    };
+    expect(await insert("view_destination")).toBe("ok");
+    expect(await insert("llm_call")).toMatch(/row-level security/i);
   });
 
   test("every query in docs/metrics.sql runs", async () => {

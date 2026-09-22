@@ -132,6 +132,7 @@ if (args.llm) {
     h.writeReport({ ...meta, estimate });
   } else {
     footer(h, all);
-    if (h.stats.cacheHits + h.stats.recorded) console.log(`report: ${h.writeReport({ ...meta, sets })}`);
+    if (h.stats.cacheHits + h.stats.recorded)
+      console.log(`report: ${h.writeReport({ ...meta, sets })}`);
   }
 }

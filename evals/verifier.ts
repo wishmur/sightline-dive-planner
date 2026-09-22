@@ -206,7 +206,8 @@ async function runLlm(cases: GoldCase[]) {
     h.writeReport({ ...meta, estimate });
   } else {
     footer(h, all);
-    if (h.stats.cacheHits + h.stats.recorded) console.log(`report: ${h.writeReport({ ...meta, sets: results })}`);
+    if (h.stats.cacheHits + h.stats.recorded)
+      console.log(`report: ${h.writeReport({ ...meta, sets: results })}`);
   }
 }
 

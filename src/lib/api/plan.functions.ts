@@ -1,11 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 
 import { getDestination } from "@/lib/destinations";
 import { askRules, type AskAnswer } from "@/lib/ask";
 import { parseTripRules, type ParsedTrip } from "@/lib/understand";
 import type { FallbackReason } from "@/lib/llm-guard";
 import type { Engine } from "@/lib/llm-route";
+import { AskInput, UnderstandInput } from "@/lib/api/plan.schemas";
 
 export type { Engine };
 
@@ -16,16 +16,13 @@ export type Understood = {
   fallback?: FallbackReason;
 };
 
-/** The browser's per-tab session id; used for rate limiting and joining events. */
-const session = z.string().max(64).optional();
-
 /**
  * Free text → brief. Claude when a key is configured and the guard allows it;
  * the rules parser otherwise, or on any failure. The raw text is not stored or
  * logged: the event records its length, tokens, timing and versions.
  */
 export const understandTrip = createServerFn({ method: "POST" })
-  .inputValidator(z.object({ text: z.string().trim().min(1).max(1000), session }))
+  .inputValidator(UnderstandInput)
   .handler(async ({ data }): Promise<Understood> => {
     const { routeLlm } = await import("@/lib/llm-route");
     const { llmRuntime } = await import("@/lib/llm-runtime.server");
@@ -52,13 +49,7 @@ export const understandTrip = createServerFn({ method: "POST" })
 
 /** A question about one destination → the record's own sentences that answer it. */
 export const askDestination = createServerFn({ method: "POST" })
-  .inputValidator(
-    z.object({
-      destination: z.string().min(1).max(80),
-      question: z.string().trim().min(2).max(500),
-      session,
-    }),
-  )
+  .inputValidator(AskInput)
   .handler(async ({ data }): Promise<AskAnswer & { fallback?: FallbackReason }> => {
     const d = getDestination(data.destination);
     if (!d) throw new Error("unknown destination");

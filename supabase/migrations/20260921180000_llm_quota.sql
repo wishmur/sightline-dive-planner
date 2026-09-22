@@ -90,3 +90,11 @@ REVOKE ALL ON FUNCTION public.llm_settle(date, numeric) FROM PUBLIC, anon, authe
 GRANT EXECUTE ON FUNCTION public.llm_reserve(date, text, text, text, numeric, integer, integer, integer, numeric)
   TO service_role;
 GRANT EXECUTE ON FUNCTION public.llm_settle(date, numeric) TO service_role;
+
+-- 'llm_call' events (cost, latency, tokens) are written by the server with the
+-- service role. Browsers may still log every other event, but can no longer
+-- forge these and skew the spend and latency queries in docs/metrics.sql.
+DROP POLICY IF EXISTS "Anyone can log events" ON public.events;
+CREATE POLICY "Anyone can log events" ON public.events
+  FOR INSERT TO anon, authenticated
+  WITH CHECK (event_type <> 'llm_call');
