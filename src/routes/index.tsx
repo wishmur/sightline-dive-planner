@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDown, ArrowLeft, ArrowRight, MapPin } from "lucide-react";
 import { SightlineNav } from "@/components/sightline/Nav";
 import { DiscoveryCards } from "@/components/sightline/DiscoveryCards";
@@ -8,15 +8,40 @@ import { WorldMap } from "@/components/sightline/WorldMap";
 import { DestinationCard } from "@/components/sightline/DestinationCard";
 import { FilterBar, ClearFiltersButton } from "@/components/sightline/FilterBar";
 import { ActiveFilterChips } from "@/components/sightline/ActiveFilterChips";
+import { NearMisses } from "@/components/sightline/NearMisses";
+import { TripDescriber } from "@/components/sightline/TripDescriber";
+import { CompareBar } from "@/components/sightline/CompareBar";
 import { SiteFooter } from "@/components/sightline/SiteFooter";
 import { logEvent } from "@/lib/analytics";
 import { DESTINATIONS, MONTHS, SPECIES_GROUPS, type Destination } from "@/lib/destinations";
-import { EMPTY_FILTERS, applyFilters, countActive, type Filters } from "@/lib/filters";
+import {
+  EMPTY_FILTERS,
+  briefSearch,
+  countActive,
+  filtersFromSearch,
+  searchFromFilters,
+  validateFilterSearch,
+  type FilterSearch,
+  type Filters,
+} from "@/lib/filters";
+import { runFit } from "@/lib/fit";
 import { HERO_IMAGE } from "@/lib/imagery";
 
 const PAGE_SIZE = 6;
+export const MAX_COMPARE = 3;
+
+type HomeSearch = FilterSearch & { cmp?: string };
+
+function validateHomeSearch(search: Record<string, unknown>): HomeSearch {
+  const out: HomeSearch = validateFilterSearch(search);
+  const ids = typeof search.cmp === "string" ? search.cmp.split(",") : [];
+  const valid = [...new Set(ids)].filter((id) => DESTINATIONS.some((d) => d.id === id));
+  if (valid.length) out.cmp = valid.slice(0, MAX_COMPARE).join(",");
+  return out;
+}
 
 export const Route = createFileRoute("/")({
+  validateSearch: validateHomeSearch,
   head: () => {
     const title = "Sightline — Independent dive destination reference";
     const description =
@@ -36,14 +61,62 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const navigate = useNavigate();
-  const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
+  const navigate = useNavigate({ from: "/" });
+  // The brief lives in the URL: it survives back-navigation, can be shared, and
+  // reaches the destination page.
+  const search = Route.useSearch();
+  const filters = useMemo(() => filtersFromSearch(search), [search]);
   const [hovered, setHovered] = useState<string | null>(null);
   const [hoveredPin, setHoveredPin] = useState<string | null>(null);
   const [page, setPage] = useState(0);
 
-  const shown = useMemo(() => applyFilters(filters), [filters]);
+  const run = useMemo(() => runFit(filters), [filters]);
+  const shown = useMemo(() => run.results.map((r) => r.destination), [run]);
+  const fitById = useMemo(() => new Map(run.results.map((r) => [r.destination.id, r])), [run]);
+  const brief = briefSearch(filters);
   const active = countActive(filters);
+  const compared = useMemo(() => (search.cmp ? search.cmp.split(",") : []), [search.cmp]);
+
+  function setFilters(next: Filters | ((f: Filters) => Filters)) {
+    const value = typeof next === "function" ? next(filters) : next;
+    navigate({
+      search: { ...searchFromFilters(value), cmp: search.cmp },
+      replace: true,
+      resetScroll: false,
+    });
+  }
+
+  function setCompared(ids: string[]) {
+    navigate({
+      search: (prev) => ({ ...prev, cmp: ids.length ? ids.join(",") : undefined }),
+      replace: true,
+      resetScroll: false,
+    });
+  }
+
+  function toggleCompare(id: string) {
+    const on = compared.includes(id);
+    if (!on && compared.length >= MAX_COMPARE) return;
+    logEvent("compare_toggle", { destination: id, on: !on });
+    setCompared(on ? compared.filter((x) => x !== id) : [...compared, id]);
+  }
+
+  // What was asked and what was shown, once the brief settles.
+  const lastLogged = useRef("");
+  useEffect(() => {
+    if (!run.brief) return;
+    const key = JSON.stringify(searchFromFilters(filters));
+    const timer = window.setTimeout(() => {
+      if (key === lastLogged.current) return;
+      lastLogged.current = key;
+      logEvent("fit_results", {
+        brief: searchFromFilters(filters),
+        results: run.results.map((r) => ({ id: r.destination.id, tier: r.tier })),
+        near_misses: run.nearMisses.map((r) => ({ id: r.destination.id, reason: r.violation?.reason })),
+      });
+    }, 1500);
+    return () => window.clearTimeout(timer);
+  }, [run, filters]);
 
   const pageCount = Math.max(1, Math.ceil(shown.length / PAGE_SIZE));
   const current = Math.min(page, pageCount - 1);
@@ -73,7 +146,7 @@ function Home() {
 
   function openDestination(d: Destination) {
     logEvent("click_map_pin", { destination: d.id });
-    navigate({ to: "/destinations/$slug", params: { slug: d.id } });
+    navigate({ to: "/destinations/$slug", params: { slug: d.id }, search: brief });
   }
 
   function applyTag(next: Partial<Filters>) {
@@ -163,15 +236,29 @@ function Home() {
               <h2 className="font-display text-3xl text-foreground sm:text-4xl">
                 Explore destinations
               </h2>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {shown.length} of {DESTINATIONS.length} destinations match
-                {active > 0 ? " your filters" : ""}.
+              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                {run.brief ? (
+                  <>
+                    {shown.length} of {DESTINATIONS.length} destinations fit your trip. Best fits first,
+                    then fewest caveats — thin or conflicting evidence counts as a caveat
+                    {filters.concerns.length > 0 ? ", and so do your worries where the record is clear" : ""}.
+                  </>
+                ) : (
+                  <>
+                    {shown.length} of {DESTINATIONS.length} destinations match
+                    {active > 0 ? " your filters" : ""}.
+                  </>
+                )}
               </p>
             </div>
             {active > 0 && <ClearFiltersButton onClick={() => setFilters(EMPTY_FILTERS)} />}
           </div>
 
-          <div className="mt-7">
+          <div className="mt-7 space-y-3">
+            <TripDescriber
+              onApply={setFilters}
+              onPatch={patch}
+            />
             <FilterBar filters={filters} onChange={patch} />
           </div>
 
@@ -200,7 +287,7 @@ function Home() {
           </div>
 
           {/* RESULT GRID */}
-          {shown.length === 0 ? (
+          {shown.length === 0 && run.nearMisses.length > 0 ? null : shown.length === 0 ? (
             <div className="mt-10 rounded-2xl bg-card p-10 text-center ring-1 ring-inset ring-border">
               <MapPin className="mx-auto h-5 w-5 text-muted-foreground" />
               <p className="mt-3 text-sm font-medium">No destination matches every filter.</p>
@@ -218,6 +305,11 @@ function Home() {
                       onHover={setHovered}
                       onTag={applyTag}
                       highlighted={hoveredPin === d.id}
+                      fit={run.brief ? fitById.get(d.id) : undefined}
+                      brief={brief}
+                      compared={compared.includes(d.id)}
+                      compareFull={compared.length >= MAX_COMPARE}
+                      onCompare={toggleCompare}
                     />
                   </li>
                 ))}
@@ -264,8 +356,12 @@ function Home() {
               )}
             </>
           )}
+
+          <NearMisses misses={run.nearMisses} brief={brief} emptyResults={shown.length === 0} />
         </div>
       </section>
+
+      <CompareBar ids={compared} brief={brief} onRemove={toggleCompare} onClear={() => setCompared([])} />
 
       <SiteFooter />
     </div>

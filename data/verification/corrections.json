@@ -1,0 +1,170 @@
+[
+  {
+    "claimId": "komodo/operating",
+    "field": "operating_months",
+    "before": [
+      "limited",
+      "limited",
+      "open",
+      "open",
+      "open",
+      "open",
+      "open",
+      "open",
+      "open",
+      "open",
+      "open",
+      "limited"
+    ],
+    "after": [
+      "open",
+      "open",
+      "open",
+      "open",
+      "open",
+      "limited",
+      "limited",
+      "limited",
+      "open",
+      "open",
+      "open",
+      "open"
+    ],
+    "reason": "All three cited sources place the difficult southern window around mid-May to early September, and the south at its best around mid-November to March. The record had the southern access window backwards.",
+    "evidence": [
+      {
+        "url": "https://www.zubludiving.com/destination/indonesia/nusa-tenggara/komodo",
+        "text": "monsoon winds blowing in June, July and into August. During this period the southern areas of the park can have rough seas"
+      },
+      {
+        "url": "https://www.bluewaterdivetravel.com/destination/komodo-diving",
+        "text": "From around mid-November through January, northern sites may be more exposed, while South Komodo can be at its best"
+      }
+    ]
+  },
+  {
+    "claimId": "komodo/operating",
+    "field": "operating_note",
+    "before": "The park stays open and the northern sites are diveable year-round from Labuan Bajo. The 'limited' months reflect the south: Dec-Feb monsoon swell makes the southern sites and the crossing to them unreliable, and liveaboard itineraries shift or shorten. Confusingly, Dec-Feb is also when the southern manta aggregation is strongest, so the best manta window and the worst access window overlap.",
+    "after": "The park is open year-round, but its two halves trade places. From roughly mid-May to early September, south-east winds make the southern sites and the crossing to them rough and hard to reach, while the sheltered north is at its best. From about mid-November to March the south is at its best, which is also the Manta Alley season, and some northern sites are more exposed. Day boats from Labuan Bajo work the north and central park year-round.",
+    "reason": "Rewritten to match the cited sources (see the operating_months correction).",
+    "evidence": [
+      {
+        "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-komodo-indonesia",
+        "text": "If your focus is on manta rays, visit Manta Alley between January and March, when they arrive in large numbers in the cooler southern waters."
+      }
+    ]
+  },
+  {
+    "claimId": "komodo/operating",
+    "field": "operating_confidence",
+    "before": "medium",
+    "after": "high",
+    "reason": "Three independent cited sources agree on the corrected window.",
+    "evidence": []
+  },
+  {
+    "claimId": "komodo/species/reef-manta-ray",
+    "field": "species[Reef manta ray].months",
+    "before": [
+      "peak",
+      "peak",
+      "shoulder",
+      "shoulder",
+      "shoulder",
+      "shoulder",
+      "shoulder",
+      "shoulder",
+      "shoulder",
+      "shoulder",
+      "shoulder",
+      "peak"
+    ],
+    "after": [
+      "peak",
+      "peak",
+      "peak",
+      "shoulder",
+      "shoulder",
+      "shoulder",
+      "shoulder",
+      "peak",
+      "peak",
+      "peak",
+      "shoulder",
+      "peak"
+    ],
+    "reason": "Sources give two site-dependent peaks: Manta Alley in the south around Dec–Mar, and the central sites (Karang Makassar, Manta Point) Aug–Oct. The record only had the southern peak, and ended it in February.",
+    "evidence": [
+      {
+        "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-komodo-indonesia",
+        "text": "Manta sightings are possible year-round, but Manta Point and Karang Makassar are at their most active from August to October."
+      }
+    ]
+  },
+  {
+    "claimId": "komodo/species/reef-manta-ray",
+    "field": "species[Reef manta ray].note",
+    "before": "Present year-round in the park; concentrations reported strongest Dec-Feb in the south when plankton density peaks. That is also the roughest time to reach the southern sites, which is the trade nobody mentions.",
+    "after": "Present year-round. The southern aggregation at Manta Alley peaks roughly December to March in cold, plankton-rich water, which is also when the south is easiest to reach. The central sites (Karang Makassar, Manta Point) are most active August to October and are within day-boat range of Labuan Bajo.",
+    "reason": "The claimed 'trade nobody mentions' (best manta window = roughest southern access) is contradicted by all three cited sources.",
+    "evidence": [
+      {
+        "url": "https://www.liveaboard.com/diving/season-calendar/best-time-to-dive-in-komodo-indonesia",
+        "text": "If your focus is on manta rays, visit Manta Alley between January and March, when they arrive in large numbers in the cooler southern waters."
+      }
+    ]
+  },
+  {
+    "claimId": "coral-sea/operating",
+    "field": "operating_note",
+    "before": "Trips run year-round but the crossing is the constraint: 20 hours of open ocean each way means the Coral Sea leg is dropped or rerouted in weather far more often than the sheltered Ribbon Reefs are. Dec-Feb is cyclone season in the region, hence 'limited'.",
+    "after": "Trips run year-round but the crossing is the constraint: Osprey Reef is about 350km from Cairns and around 20 hours of cruising in total, there and back, so the Coral Sea leg is dropped or rerouted in weather far more often than the sheltered Ribbon Reefs are. Dec-Feb is cyclone season in the region, hence 'limited'.",
+    "reason": "The source gives about 20 hours combined, not 20 hours each way.",
+    "evidence": [
+      {
+        "url": "https://cairnsdiveadventures.com.au/liveaboard-diving-cairns/osprey-reef-coral-sea-liveaboard-diving/",
+        "text": "liveaboard boats have to cruise a combined total of around 20 hours to get there"
+      }
+    ]
+  },
+  {
+    "claimId": "cozumel/operating",
+    "field": "operating_note",
+    "before": "Year-round diving. Both sources put the best window at roughly November to May, with February singled out for 82F water and 30m+ visibility. Aug-Oct is the peak of Caribbean hurricane season and individual days or whole weeks get cancelled, which is why those read 'limited'.",
+    "after": "Year-round diving. The sources disagree on the best window: DiveIn recommends November to May and reports 82F water and 30m+ visibility in February; Bluewater prefers May to July for fewer crowds, warm water and staying ahead of hurricane season. Aug-Oct is the peak of Caribbean hurricane season and individual days or whole weeks get cancelled, which is why those read 'limited'.",
+    "reason": "The record said both sources agree on Nov–May. Bluewater names May–July instead, an undeclared disagreement that is now stated.",
+    "evidence": [
+      {
+        "url": "https://www.bluewaterdivetravel.com/destination/cozumel-diving",
+        "text": "we consider May - July the best time to dive Cozumel, with fewer crowds, good weather, warm water, and it is outside of hurricane season"
+      }
+    ]
+  },
+  {
+    "claimId": "nusa-penida/species/ocean-sunfish",
+    "field": "species[Ocean sunfish].note",
+    "before": "Best odds are roughly one sighting in three dives with an experienced guide during peak season, so budget multiple days. Crystal Bay is the most reliable site, typically at 20-30m. The Bali Ocean Sunfish Research Project cautions that the apparent seasonal peak partly tracks diver numbers rather than fish abundance, and that molas are also recorded outside the cold window.",
+    "after": "Realistic odds are about one sighting in ten dives, improving to roughly one in three over a full day of three dives when tide and moon line up, so budget several days. Crystal Bay is the most reliable site, typically at 20-30m. The Bali Ocean Sunfish Research Project cautions that the apparent seasonal peak partly tracks diver numbers rather than fish abundance, and that molas are also recorded outside the cold window.",
+    "reason": "The record overstated the odds about threefold: the source gives about one in ten dives, and about one in three per day only in good conditions.",
+    "evidence": [
+      {
+        "url": "https://nusapenida.org/bali-nusa-penida-diving-guide/mola-mola-ocean-sunfish/",
+        "text": "Realistically, the odds are about one dive in ten."
+      }
+    ]
+  },
+  {
+    "claimId": "malapascua/operating",
+    "field": "operating_note",
+    "before": "No formal closure. Typhoon risk runs roughly May-Oct and sources disagree on how badly it bites: DAN says avoid Jun-Sep, Divernet calls Mar-Sep the most stable window, and one field account calls the Jul-Dec rainy season mild. Encoded 'limited' across the contested span rather than picking a side.",
+    "after": "No formal closure. Typhoon risk runs roughly May-Oct and sources disagree on how badly it bites: DAN recommends November to April and notes typhoons are possible May to October, Divernet calls Mar-Sep the most stable window, and one field account calls the Jul-Dec rainy season mild. Encoded 'limited' across the contested span rather than picking a side.",
+    "reason": "DAN was misquoted: it recommends Nov–Apr and notes typhoon risk May–Oct, but does not say to avoid Jun–Sep.",
+    "evidence": [
+      {
+        "url": "https://dan.org/alert-diver/article/malapascua/",
+        "text": "Typhoons are possible between May and October."
+      }
+    ]
+  }
+]

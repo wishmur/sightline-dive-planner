@@ -2,11 +2,13 @@ import { X } from "lucide-react";
 import { MONTHS } from "@/lib/destinations";
 import { certLabel, diveTypeLabel } from "@/lib/cards";
 import { getCollection } from "@/lib/collections";
+import { getConcern } from "@/lib/concerns";
 import {
   CURRENT_OPTIONS,
   ENTRY_OPTIONS,
   FORMAT_OPTIONS,
   TEMP_OPTIONS,
+  targetLabel,
   type Filters,
 } from "@/lib/filters";
 
@@ -30,20 +32,24 @@ export function activeChips(f: Filters): Chip[] {
     chips.push({ key: "query", label: `“${f.query.trim()}”`, clear: { query: "" } });
   }
   if (f.where !== "all") {
-    chips.push({ key: "where", label: f.where.split(":")[1] ?? "Anywhere", clear: { where: "all" } });
+    chips.push({
+      key: "where",
+      label: f.where.split(":")[1] ?? "Anywhere",
+      clear: { where: "all" },
+    });
   }
   if (f.month !== "any") {
     chips.push({ key: "month", label: MONTHS[Number(f.month)]!, clear: { month: "any" } });
   }
-  for (const name of f.species) {
+  for (const id of f.species) {
     chips.push({
-      key: `species:${name}`,
-      label: name,
-      clear: { species: f.species.filter((s) => s !== name) },
+      key: `species:${id}`,
+      label: targetLabel(id),
+      clear: { species: f.species.filter((s) => s !== id) },
     });
   }
   if (f.cert !== "any") {
-    chips.push({ key: "cert", label: certLabel(f.cert), clear: { cert: "any" } });
+    chips.push({ key: "cert", label: `My cert: ${certLabel(f.cert)}`, clear: { cert: "any" } });
   }
   if (f.diveType !== "any") {
     chips.push({ key: "diveType", label: diveTypeLabel(f.diveType), clear: { diveType: "any" } });
@@ -51,7 +57,7 @@ export function activeChips(f: Filters): Chip[] {
   if (f.current !== "any") {
     chips.push({
       key: "current",
-      label: `${optionLabel(CURRENT_OPTIONS, f.current)} current`,
+      label: `Max ${optionLabel(CURRENT_OPTIONS, f.current).toLowerCase()} current`,
       clear: { current: "any" },
     });
   }
@@ -74,6 +80,13 @@ export function activeChips(f: Filters): Chip[] {
   }
   if (f.operatingOnly) {
     chips.push({ key: "operating", label: "Fully operating", clear: { operatingOnly: false } });
+  }
+  for (const id of f.concerns) {
+    chips.push({
+      key: `concern:${id}`,
+      label: getConcern(id)?.label ?? id,
+      clear: { concerns: f.concerns.filter((c) => c !== id) },
+    });
   }
   return chips;
 }

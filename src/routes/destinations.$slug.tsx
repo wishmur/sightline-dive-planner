@@ -1,5 +1,5 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -22,19 +22,36 @@ import { FeedbackDialog } from "@/components/sightline/FeedbackDialog";
 import { Operators } from "@/components/sightline/Operators";
 import { LocatorMap } from "@/components/sightline/LocatorMap";
 import { SiteFooter } from "@/components/sightline/SiteFooter";
+import { TripFit } from "@/components/sightline/TripFit";
+import { SourceCheck } from "@/components/sightline/SourceCheck";
 import { logEvent } from "@/lib/analytics";
 import {
   MONTHS,
   bestMonthsLabel,
   formatFormat,
   getDestination,
-  speciesSlug,
   type Destination,
 } from "@/lib/destinations";
+import {
+  briefSearch,
+  filtersFromSearch,
+  searchFromFilters,
+  validateFilterSearch,
+  type BriefSearch,
+  type Filters,
+} from "@/lib/filters";
+import { canonicalSpeciesId } from "@/lib/taxonomy";
+import { claimId } from "@/lib/claims";
+import { REVIEWED_AT, destinationChecks, formatCheckDate } from "@/lib/verification";
 import { certLabel, destinationTags } from "@/lib/cards";
 import { destinationImage, destinationImageAlt, highlightSubjectImage } from "@/lib/imagery";
 
 export const Route = createFileRoute("/destinations/$slug")({
+  // Only the brief travels here: when, what, and the diver's limits.
+  validateSearch: (search: Record<string, unknown>): BriefSearch => {
+    const { m, sp, cert, cur, cn } = validateFilterSearch(search);
+    return { m, sp, cert, cur, cn };
+  },
   head: ({ params }) => {
     const d = getDestination(params.slug);
     const title = d ? `${d.name}, ${d.country} — dive guide | Sightline` : "Destination — Sightline";
@@ -105,6 +122,7 @@ function Fallback({ text }: { text: string }) {
 
 const SECTIONS: SectionLink[] = [
   { id: "overview", label: "Overview" },
+  { id: "for-your-trip", label: "For your trip" },
   { id: "season", label: "Season" },
   { id: "why", label: "Why dive here" },
   { id: "marine-life", label: "Marine life" },
@@ -116,7 +134,21 @@ const SECTIONS: SectionLink[] = [
 
 function DestinationPage() {
   const d = Route.useLoaderData() as Destination;
-  const [month, setMonth] = useState<number | null>(null);
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: "/destinations/$slug" });
+  const filters = useMemo(() => filtersFromSearch(search), [search]);
+  const briefMonth = filters.month === "any" ? null : Number(filters.month);
+  const [month, setMonth] = useState<number | null>(briefMonth);
+
+  // Marine life follows the trip month when the diver sets one.
+  useEffect(() => {
+    if (briefMonth !== null) setMonth(briefMonth);
+  }, [briefMonth]);
+
+  function patchBrief(patch: Partial<Filters>) {
+    const next = briefSearch({ ...filters, ...patch });
+    navigate({ search: next, replace: true, resetScroll: false });
+  }
   const [allHighlights, setAllHighlights] = useState(false);
   const [allSpecies, setAllSpecies] = useState(false);
 
@@ -154,6 +186,7 @@ function DestinationPage() {
         <div className="mx-auto w-full max-w-6xl px-6 pt-32 pb-10 lg:px-10">
           <Link
             to="/"
+            search={searchFromFilters(filters)}
             className="inline-flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" /> All destinations
@@ -200,6 +233,11 @@ function DestinationPage() {
 
       <div className="theme-light">
         <div className="mx-auto max-w-6xl space-y-16 px-6 pt-16 pb-11 lg:px-10 lg:pt-20 lg:pb-14">
+          {/* FOR YOUR TRIP */}
+          <Section id="for-your-trip" eyebrow="For your trip" title={`How ${d.name} fits your trip`}>
+            <TripFit destination={d} filters={filters} onChange={patchBrief} />
+          </Section>
+
           {/* SEASON */}
           <Section id="season" eyebrow="Season" title="When this place works">
             <div className="grid gap-4 lg:grid-cols-[1fr_19rem]">
@@ -216,6 +254,9 @@ function DestinationPage() {
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <ConfidenceTag value={d.operating_confidence} label="operating" />
                 <Sources urls={d.operating_sources} context="operating_months" destinationId={d.id} />
+              </div>
+              <div className="mt-2">
+                <SourceCheck claimId={claimId.operating(d)} destinationId={d.id} />
               </div>
               <div className="mt-7 border-t border-border pt-6">
                 <MonthStripLegend />
@@ -262,8 +303,9 @@ function DestinationPage() {
                   {h.seasonality && (
                     <p className="mt-3 text-sm font-medium text-accent">Seasonality — {h.seasonality}</p>
                   )}
-                  <div className="mt-5 border-t border-border pt-3">
+                  <div className="mt-5 space-y-2 border-t border-border pt-3">
                     <Sources urls={h.sources} context="highlight" destinationId={d.id} />
+                    <SourceCheck claimId={claimId.highlight(d, h.rank)} destinationId={d.id} />
                   </div>
                   </div>
                 </li>
@@ -316,10 +358,10 @@ function DestinationPage() {
                     <div className="flex flex-wrap items-center gap-3">
                       <Link
                         to="/species/$slug"
-                        params={{ slug: speciesSlug(s.name) }}
+                        params={{ slug: canonicalSpeciesId(s) }}
                         onClick={() =>
                           logEvent("search_species", {
-                            species: speciesSlug(s.name),
+                            species: canonicalSpeciesId(s),
                             from: "destination",
                           })
                         }
@@ -337,8 +379,9 @@ function DestinationPage() {
                       <span className="rounded-full bg-secondary px-2.5 py-1">{s.reliability}</span>
                       <span className="rounded-full bg-secondary px-2.5 py-1">{s.encounter_type}</span>
                     </div>
-                    <div className="mt-3">
+                    <div className="mt-3 space-y-2">
                       <Sources urls={s.sources} context="species" destinationId={d.id} />
+                      <SourceCheck claimId={claimId.species(d, s)} destinationId={d.id} />
                     </div>
                   </div>
                   <MonthStrip
@@ -350,7 +393,7 @@ function DestinationPage() {
                       logEvent("filter_month", {
                         destination: d.id,
                         month: i + 1,
-                        species: speciesSlug(s.name),
+                        species: canonicalSpeciesId(s),
                       });
                     }}
                   />
@@ -450,8 +493,9 @@ function DestinationPage() {
                   </div>
                 )}
               </div>
-              <div className="mt-6">
+              <div className="mt-6 space-y-2">
                 <Sources urls={d.conditions.sources} context="conditions" destinationId={d.id} />
+                <SourceCheck claimId={claimId.experience(d)} destinationId={d.id} />
               </div>
             </div>
           </Section>
@@ -542,7 +586,7 @@ function DestinationPage() {
                 <span className="text-muted-foreground/60" aria-hidden>
                   ·
                 </span>
-                <span>Last reviewed {d.last_verified}</span>
+                <VerificationSummary destinationId={d.id} />
                 <span className="hidden text-muted-foreground/60 sm:inline" aria-hidden>
                   ·
                 </span>
@@ -689,5 +733,24 @@ function Stat({
         </div>
       )}
     </div>
+  );
+}
+
+/** Honest freshness: what was actually checked against sources, and when. */
+function VerificationSummary({ destinationId }: { destinationId: string }) {
+  const c = destinationChecks(destinationId);
+  if (c.checked === 0) return <span>Not yet checked against sources</span>;
+  const parts = [
+    `${c.confirmed} confirmed`,
+    c.partial ? `${c.partial} partly` : null,
+    c.corrected ? `${c.corrected} corrected` : null,
+    c.unconfirmed ? `${c.unconfirmed} not found` : null,
+    c.stale ? `${c.stale} due for recheck` : null,
+  ].filter(Boolean);
+  return (
+    <span>
+      {c.checked} key claim{c.checked === 1 ? "" : "s"} checked against sources {formatCheckDate(REVIEWED_AT)} ·{" "}
+      {parts.join(", ")}
+    </span>
   );
 }

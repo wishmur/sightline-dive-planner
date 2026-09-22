@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as CompareRouteImport } from './routes/compare'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SpeciesSlugRouteImport } from './routes/species.$slug'
@@ -18,6 +19,11 @@ import { Route as DestinationsSlugRouteImport } from './routes/destinations.$slu
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompareRoute = CompareRouteImport.update({
+  id: '/compare',
+  path: '/compare',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -44,6 +50,7 @@ const DestinationsSlugRoute = DestinationsSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/compare': typeof CompareRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/species/$slug': typeof SpeciesSlugRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/compare': typeof CompareRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/species/$slug': typeof SpeciesSlugRoute
@@ -59,6 +67,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/compare': typeof CompareRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/destinations/$slug': typeof DestinationsSlugRoute
   '/species/$slug': typeof SpeciesSlugRoute
@@ -68,15 +77,23 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/compare'
     | '/sitemap.xml'
     | '/destinations/$slug'
     | '/species/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/sitemap.xml' | '/destinations/$slug' | '/species/$slug'
+  to:
+    | '/'
+    | '/about'
+    | '/compare'
+    | '/sitemap.xml'
+    | '/destinations/$slug'
+    | '/species/$slug'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/compare'
     | '/sitemap.xml'
     | '/destinations/$slug'
     | '/species/$slug'
@@ -85,6 +102,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  CompareRoute: typeof CompareRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   DestinationsSlugRoute: typeof DestinationsSlugRoute
   SpeciesSlugRoute: typeof SpeciesSlugRoute
@@ -97,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compare': {
+      id: '/compare'
+      path: '/compare'
+      fullPath: '/compare'
+      preLoaderRoute: typeof CompareRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -133,6 +158,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  CompareRoute: CompareRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   DestinationsSlugRoute: DestinationsSlugRoute,
   SpeciesSlugRoute: SpeciesSlugRoute,
