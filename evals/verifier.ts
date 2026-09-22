@@ -30,6 +30,7 @@ import { getDestination } from "@/lib/destinations";
 import { claimsFor } from "@/lib/claims";
 import { cachePath } from "../scripts/sources/fetch";
 import { REVIEWS, type ReviewFile } from "../scripts/verify/merge-reviews";
+import { adjudicatedVerdict, preAdjudicationVerdict } from "./adjudication";
 import { asReviewedText } from "./as-reviewed";
 import {
   VERDICTS,
@@ -53,7 +54,13 @@ import {
 } from "./harness/llm-harness";
 import { attempt, banner, footer, pick, tally, type Outcome } from "./harness/run-llm";
 
-export type GoldCase = { input: VerifierInput; gold: Verdict };
+/**
+ * `gold` is the label as reviewed and as published; `adjudicatedGold` is the
+ * same label after a second reviewer settled a disagreement (evals/adjudicate.ts),
+ * and is identical until one does. Scoring against the two separately is what
+ * keeps a post-adjudication number from quietly replacing a published one.
+ */
+export type GoldCase = { input: VerifierInput; gold: Verdict; adjudicatedGold: Verdict };
 
 export function goldCases(): GoldCase[] {
   if (!existsSync(REVIEWS)) return [];
@@ -67,9 +74,14 @@ export function goldCases(): GoldCase[] {
       .filter((u) => existsSync(cachePath(u)))
       .map((u) => ({ url: u, text: readFileSync(cachePath(u), "utf8") }));
     if (!pages.length) continue;
-    const gold = (review.correction?.previousVerdict ?? review.verdict) as Verdict;
+    const gold = preAdjudicationVerdict(review);
     if (!VERDICTS.includes(gold)) continue;
-    cases.push({ input: { claimId: id, label: claim.label, text, pages }, gold });
+    const adjudicatedGold = adjudicatedVerdict(review);
+    cases.push({
+      input: { claimId: id, label: claim.label, text, pages },
+      gold,
+      adjudicatedGold: VERDICTS.includes(adjudicatedGold) ? adjudicatedGold : gold,
+    });
   }
   return cases;
 }
