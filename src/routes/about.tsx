@@ -104,7 +104,7 @@ const STEPS = [
     icon: <SlidersHorizontal className="h-5 w-5" />,
     tag: "AI-assisted",
     title: "Tell it your trip",
-    body: "Pick filters, or describe the trip in a sentence and it becomes the same editable filters: month, animals, certification, current, and what's on your mind. Reading your words is the one job a language model does here. Where it isn't switched on, keyword rules do the reading, and the page says which did.",
+    body: "Pick filters, or describe the trip in a sentence and it becomes the same editable filters: month, animals, certification, current, and what's on your mind. Reading your words is the one job a language model does here. Where it isn't switched on, keyword rules do the reading, and the page says which did. Sightline doesn't keep what you type.",
   },
   {
     icon: <Scale className="h-5 w-5" />,
@@ -212,7 +212,8 @@ function AboutPage() {
               <p>
                 Sightline is built to catch the expensive mistakes before you book: the right place
                 in the wrong month, a day boat that can't reach the famous site, diving beyond your
-                experience, an encounter that turns out to be baited or snorkel-only.
+                experience, an encounter that turns out to be baited, snorkel-only, or heard rather
+                than seen.
               </p>
             </SectionHeader>
 

@@ -62,7 +62,7 @@ TypeScript, TanStack Start, Supabase, Claude API
   paid for once. A dry-run mode prints the exact prompts and a cost estimate. Adds smoke-run
   limits, dev/test splits, a hard budget, and adoption thresholds written before the first
   run.
-- **Guarded the published numbers with tests.** 193 automated tests, including gold sets,
+- **Guarded the published numbers with tests.** 195 automated tests, including gold sets,
   held-out splits, contract tests against a local API stand-in, and a check that fails CI if
   the About page's numbers drift from the evals. The quota migration is tested in embedded
   Postgres.
@@ -87,7 +87,7 @@ TypeScript, TanStack Start, Supabase, Claude API
 - Gold sets: `evals/*.gold.*`, `evals/concerns.gold.json` (exhaustive: 1,095 sentences × 13 concerns).
 - Held-out splits: destination-level concern split, `evals/understand.heldout.ts`, ask dev/test halves.
 - Abstention metrics, precision@k: `evals/concern-metrics.ts`, `evals/ask.ts`.
-- Regression gates and CI: `.github/workflows/ci.yml`, 193 tests.
+- Regression gates and CI: `.github/workflows/ci.yml`, 195 tests.
 - Contract tests: `evals/llm-contract.test.ts`, `evals/llm-harness.test.ts` (local API stand-in behind the real SDK).
 - Pinned results: `evals/about-results.test.ts`.
 - Adversarial testing and threat model: `evals/adversarial*.ts`, `docs/threat-model.md`.
