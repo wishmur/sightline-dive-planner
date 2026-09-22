@@ -31,7 +31,8 @@ TypeScript, TanStack Start, Supabase, Claude API
 - **Let thresholds set before any results overrule an impressive headline.** Claude's
   question answering found a relevant sentence **100%** of the time (rules: 61%) but missed
   its precision bar (75% vs 80%). I traced that to its third sentence, relevant less than
-  half the time, and capped answers at two sentences: **89%**. The Claude fact-checker made
+  half the time, capped answers at two sentences (**89%**), then confirmed the fix on 30 fresh
+  questions labelled before the run (**82%** precision, every question answered). The Claude fact-checker made
   zero dangerous errors but missed its accuracy bar by one claim, so it wasn't adopted.
 - **Kept AI spend safe and small.** Built caps per session, per address and per day, a kill
   switch and per-route opt-in. The full paid evaluation (four evals plus tuning) cost
@@ -47,7 +48,7 @@ TypeScript, TanStack Start, Supabase, Claude API
 - **Measured Claude against rules on thresholds set in advance.** Trip parsing found **87%**
   of worries on the first run (rules 65%) and **100%** after tuning on dev. Question answering
   had **100%** hit rate (rules 61%), with precision going from 75% to **89%** after a
-  deterministic two-sentence cap. An LLM verifier had **0 of 6** false supports but **59%**
+  deterministic two-sentence cap, confirmed prospectively at **82%** on a fresh labelled set. An LLM verifier had **0 of 6** false supports but **59%**
   accuracy against a 60% bar, so it wasn't adopted.
 - **Caught a safety regression that an unchanged score hid.** After prompt tuning, the
   44-case adversarial suite still read 25/27, but a certification-escalation injection had
@@ -59,11 +60,11 @@ TypeScript, TanStack Start, Supabase, Claude API
   injected IDs, bogus sentence numbers and malformed output never reach the page.
 - **Built an eval harness for paid runs.** Record/replay caching means each response is paid
   for once. It also has dry-run cost estimates, smoke-run limits, dev/test splits, and per-run
-  and total budgets enforced by worst-case reservation. Total spend: **$7.63**. CI replays the
+  and total budgets enforced by worst-case reservation. Total spend: **$7.78**. CI replays the
   committed responses to re-verify every published Claude number, with no key.
 - **Found and fixed a misleading metric.** The verifier's "hallucinated quote" rate read
   17–19%. Error analysis showed **1** fabricated quote out of 376. The rest were real text
-  that broke the 25-word quoting rule. The report now separates the two. 208 automated tests.
+  that broke the 25-word quoting rule. The report now separates the two. 209 automated tests.
 
 ## Skills, and where the evidence is
 
@@ -87,7 +88,7 @@ TypeScript, TanStack Start, Supabase, Claude API
 - Gold sets: `evals/*.gold.*`, `evals/concerns.gold.json` (exhaustive: 1,095 sentences × 13 concerns).
 - Held-out splits: destination-level concern split, `evals/understand.heldout.ts`, ask dev/test halves.
 - Abstention metrics, precision@k: `evals/concern-metrics.ts`, `evals/ask.ts`.
-- Regression gates and CI: `.github/workflows/ci.yml`, 208 tests.
+- Regression gates and CI: `.github/workflows/ci.yml`, 209 tests.
 - Contract tests: `evals/llm-contract.test.ts`, `evals/llm-harness.test.ts` (local API stand-in behind the real SDK).
 - Pinned results: `evals/about-results.test.ts`.
 - Adversarial testing and threat model: `evals/adversarial*.ts`, `docs/threat-model.md`.

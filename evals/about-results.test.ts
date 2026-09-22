@@ -213,6 +213,36 @@ describe("Claude results match the recorded runs", () => {
     expect(pct(untuned.byKind.all.precision)).toBe(RESULTS.claude.ask.untuned.testPrecision);
   });
 
+  test("ask, confirmation set (fresh questions, labelled before the run)", async () => {
+    const { selectWithClaude } = await import("@/lib/llm.server");
+    const { CONFIRM_CASES } = await import("./ask.confirm");
+    const opts = replay("ask-confirm");
+    const results = [];
+    for (const c of CONFIRM_CASES) {
+      const sel = await selectWithClaude(getDestination(c.destination)!, c.question, opts);
+      results.push({
+        c,
+        a: {
+          engine: "claude" as const,
+          status: sel.status,
+          passageIds: sel.passageIds,
+          concerns: [],
+        },
+      });
+    }
+    const s = scoreAsk(results);
+    const rules = scoreAsk(
+      CONFIRM_CASES.map((c) => ({ c, a: askRules(getDestination(c.destination)!, c.question) })),
+    );
+    expect({
+      cases: results.length,
+      hit: pct(s.hit),
+      precision: pct(s.precision),
+      abstain: pct(s.abstain),
+      rulesHit: pct(rules.hit),
+    }).toEqual(RESULTS.claude.ask.confirmed);
+  });
+
   test("adversarial inputs", async () => {
     const { selectWithClaude, understandWithClaude } = await import("@/lib/llm.server");
     const opts = replay("adversarial");
