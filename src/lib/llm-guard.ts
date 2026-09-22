@@ -23,8 +23,13 @@ export type GuardDenial =
 export type ClaudeFailure = "refusal" | "invalid_output" | "timeout" | "api_error";
 export type FallbackReason = GuardDenial | ClaudeFailure;
 
+export type LlmRouteId = "understand" | "ask";
+export const LLM_ROUTES: LlmRouteId[] = ["understand", "ask"];
+
 export type GuardConfig = {
   killSwitch: boolean;
+  /** Routes Claude may answer. Opt-in: a route goes on only after it passes its eval. */
+  routes: LlmRouteId[];
   sessionPerHour: number;
   ipPerDay: number;
   dailyCalls: number;
@@ -37,6 +42,7 @@ export type GuardConfig = {
  */
 export const GUARD_DEFAULTS: GuardConfig = {
   killSwitch: false,
+  routes: [],
   sessionPerHour: 20,
   ipPerDay: 60,
   dailyCalls: 500,
@@ -45,6 +51,7 @@ export const GUARD_DEFAULTS: GuardConfig = {
 
 export const GUARD_ENV = {
   killSwitch: "SIGHTLINE_LLM_KILL_SWITCH",
+  routes: "SIGHTLINE_LLM_ROUTES",
   sessionPerHour: "SIGHTLINE_LLM_SESSION_PER_HOUR",
   ipPerDay: "SIGHTLINE_LLM_IP_PER_DAY",
   dailyCalls: "SIGHTLINE_LLM_DAILY_CALLS",
@@ -60,6 +67,12 @@ export function readGuardConfig(env: Record<string, string | undefined>): GuardC
   };
   return {
     killSwitch: /^(1|true|on|yes)$/i.test(env[GUARD_ENV.killSwitch]?.trim() ?? ""),
+    routes: LLM_ROUTES.filter((r) =>
+      (env[GUARD_ENV.routes] ?? "")
+        .split(",")
+        .map((x) => x.trim())
+        .includes(r),
+    ),
     sessionPerHour: num(GUARD_ENV.sessionPerHour, GUARD_DEFAULTS.sessionPerHour),
     ipPerDay: num(GUARD_ENV.ipPerDay, GUARD_DEFAULTS.ipPerDay),
     dailyCalls: num(GUARD_ENV.dailyCalls, GUARD_DEFAULTS.dailyCalls),

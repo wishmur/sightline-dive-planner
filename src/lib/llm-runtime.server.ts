@@ -3,8 +3,10 @@
  * who's asking (session id + keyed hash of the address), and the event log.
  *
  * Env (all optional; read per request, as Workers bind env at request time):
- *   ANTHROPIC_API_KEY                turns Claude on
- *   SIGHTLINE_LLM_KILL_SWITCH=1      turns it off again, no deploy needed
+ *   ANTHROPIC_API_KEY                makes Claude available
+ *   SIGHTLINE_LLM_ROUTES=understand,ask  routes it may answer (opt-in; default none:
+ *                                    a route is switched on once it passes its eval)
+ *   SIGHTLINE_LLM_KILL_SWITCH=1      turns every route off, no deploy needed
  *   SIGHTLINE_LLM_SESSION_PER_HOUR   default 20
  *   SIGHTLINE_LLM_IP_PER_DAY         default 60
  *   SIGHTLINE_LLM_DAILY_CALLS        default 500

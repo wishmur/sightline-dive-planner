@@ -10,6 +10,7 @@ import { routeLlm, type LlmEvent, type RouteDeps } from "@/lib/llm-route";
 const SECRET = "I get seasick and my partner snorkels (sentinel-7f3a)";
 const OPEN: GuardConfig = {
   killSwitch: false,
+  routes: ["understand", "ask"],
   sessionPerHour: 100,
   ipPerDay: 100,
   dailyCalls: 100,
@@ -76,6 +77,15 @@ describe("routeLlm", () => {
     expect(out).toEqual({ value: `rules:${SECRET}`, engine: "rules" });
     expect(t.claudeCalls()).toBe(0);
     expect(t.events[0]).toMatchObject({ engine: "rules", attempted: false, reason: "no_key" });
+  });
+
+  test("a route not switched on: rules, Claude and store untouched", async () => {
+    const t = deps({ config: { ...OPEN, routes: ["ask"] } });
+    const out = await routeLlm(t.d);
+    expect(out).toEqual({ value: `rules:${SECRET}`, engine: "rules" });
+    expect(t.claudeCalls()).toBe(0);
+    expect(t.spy.reserved).toBe(0);
+    expect(t.events[0]).toMatchObject({ attempted: false, reason: "route_off" });
   });
 
   test("kill switch: rules, store untouched", async () => {

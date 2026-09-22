@@ -25,6 +25,7 @@ import {
 
 const LIMITS: GuardConfig = {
   killSwitch: false,
+  routes: ["understand", "ask"],
   sessionPerHour: 3,
   ipPerDay: 5,
   dailyCalls: 8,
@@ -55,6 +56,15 @@ describe("config", () => {
 
   test("zero is a valid limit: it switches that path off", () => {
     expect(readGuardConfig({ SIGHTLINE_LLM_DAILY_USD: "0" }).dailyUsd).toBe(0);
+  });
+
+  test("routes are opt-in: none by default, then only the ones listed", () => {
+    expect(readGuardConfig({}).routes).toEqual([]);
+    expect(readGuardConfig({ SIGHTLINE_LLM_ROUTES: "ask" }).routes).toEqual(["ask"]);
+    expect(readGuardConfig({ SIGHTLINE_LLM_ROUTES: " understand , ask,bogus" }).routes).toEqual([
+      "understand",
+      "ask",
+    ]);
   });
 
   test("kill switch accepts the usual truthy spellings only", () => {

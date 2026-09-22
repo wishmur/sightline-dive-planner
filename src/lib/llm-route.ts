@@ -1,7 +1,7 @@
 /**
  * The request path around one Claude call, shared by both server functions:
  *
- *   key? → kill switch → quota reservation → Claude → settle spend → log
+ *   key? → route on? → kill switch → quota reservation → Claude → settle spend → log
  *
  * Every exit that isn't a validated Claude answer is the rules engine's answer,
  * with the reason recorded. Logging and settling are best-effort and can never
@@ -19,12 +19,13 @@ import {
   type FallbackReason,
   type GuardConfig,
   type Identity,
+  type LlmRouteId,
   type QuotaStore,
   type Usage,
 } from "@/lib/llm-guard";
 
 export type Engine = "claude" | "rules";
-export type LlmRoute = "understand" | "ask";
+export type LlmRoute = LlmRouteId;
 
 export type ClaudeResult<T> = {
   value: T;
@@ -57,7 +58,7 @@ export type LlmEvent = {
   /** Whether a Claude request was actually sent. */
   attempted: boolean;
   /** Why rules answered; null when Claude did. */
-  reason: FallbackReason | "no_key" | null;
+  reason: FallbackReason | "no_key" | "route_off" | null;
   prompt_version: string;
   model: string | null;
   latency_ms: number | null;
@@ -116,6 +117,13 @@ export async function routeLlm<T>(d: RouteDeps<T>): Promise<Routed<T>> {
   if (!d.hasKey) {
     const value = d.rules();
     await emit({ ...base, ...blank, engine: "rules", attempted: false, reason: "no_key" });
+    return { value, engine: "rules" };
+  }
+
+  // Not switched on for this route (yet): the rules engine is the product here.
+  if (!d.config.routes.includes(d.route)) {
+    const value = d.rules();
+    await emit({ ...base, ...blank, engine: "rules", attempted: false, reason: "route_off" });
     return { value, engine: "rules" };
   }
 
