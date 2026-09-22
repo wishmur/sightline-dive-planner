@@ -264,6 +264,16 @@ function segments(body: Record<string, unknown>): Segment[] {
   return out;
 }
 
+/** Estimated input tokens of one request, and how many sit before its last cache breakpoint. */
+export function tokenSplit(body: Record<string, unknown>) {
+  const segs = segments(body);
+  const tokens = (s: string) => s.length / CHARS_PER_TOKEN;
+  const total = segs.reduce((n, s) => n + tokens(s.text), 0);
+  const last = segs.map((s) => s.breakpoint).lastIndexOf(true);
+  const prefix = last >= 0 ? segs.slice(0, last + 1).reduce((n, s) => n + tokens(s.text), 0) : 0;
+  return { total, prefix, cacheable: prefix >= MIN_CACHEABLE_TOKENS };
+}
+
 export type RunEstimate = {
   requests: number;
   inputTokens: number;
