@@ -178,7 +178,10 @@ recomputed in CI by replaying the committed responses (`evals/about-results.test
 
 ## Turning it on in production
 
-Order matters: without the quota table every Claude call fails closed to the rules.
+**Done 2026-09-22. Both routes are live.** Kept as the record and the rollback path. Order
+matters: without the quota table every Claude call fails closed to the rules, which is what
+the live site did between the deploy and the migration (one `llm_call` event with
+`reason: guard_unavailable`).
 
 1. Apply `supabase/migrations/20260921180000_llm_quota.sql` (owner approval needed).
 2. Keep the line under each text box saying the text is read by Claude (Anthropic) when
@@ -189,3 +192,15 @@ Order matters: without the quota table every Claude call fails closed to the rul
 4. Watch `docs/metrics.sql` queries 13–16: who answered and why, latency, spend against
    the cap, and discarded output.
 5. To switch Claude off at once, without a deploy: `SIGHTLINE_LLM_KILL_SWITCH=1`.
+
+## Live verification (2026-09-22)
+
+After applying the migration to the Lovable-managed database:
+
+- Quota counters move: one call, $0.03363 reserved and settled to the real cost, with the
+  session and address buckets counted separately.
+- Telemetry lands: `engine: claude`, 3,042 ms, 4,976 cache-write tokens, 93 output tokens,
+  `chars: 68`, prompt version. No request text.
+- The parse was right on an indirect brief: "I've never dived dry and my wife doesn't dive"
+  became cold water, experience and non-diving partner.
+- The first call pays the cache write ($0.034); later calls within the TTL cost about $0.005.

@@ -173,7 +173,7 @@ bun evals/understand.ts llm --limit 3 --max-usd 0.5
 - Every number quoted here, on the About page and in `portfolio/` is pinned by `evals/about-results.test.ts`.
 
 **Known limitations of the evidence:**
-- **Claude is measured on test cases, not on visitors.** The Describe and Ask test sets are small (30 descriptions, 36 questions). The tuned Describe numbers come after held-out errors had been viewed, so its untuned first run is the clean number; Ask's cap was confirmed prospectively on a fresh labelled set. Both routes stay off until switched on in production (`docs/paid-evals.md`), and their live behaviour is watched with `docs/metrics.sql` queries 13–16.
+- **Claude is measured on test cases, not on visitors.** The Describe and Ask test sets are small (30 descriptions, 36 questions). The tuned Describe numbers come after held-out errors had been viewed, so its untuned first run is the clean number; Ask's cap was confirmed prospectively on a fresh labelled set. Both routes went live on 2026-09-22 after passing; their behaviour is watched with `docs/metrics.sql` queries 13–16, and no live-traffic number is claimed here.
 - **One regression is left in the tuned Describe prompt.** An example I added ("reef fish is not dive_type reef") made it drop a real "easy reef" request on held-out data. It isn't patched, because fixing an error seen on held-out data would contaminate that set.
 - **One labeller, with AI assistance, who also wrote the lexicon.** The concern gold and the lexicon share a notion of relevance. The dev/test split guards against tuning, not against that. A blind second-labeller tool is built (`bun run label`); its agreement number waits on the labels.
 - **Two surface swims aren't marked.** Fakarava's humpbacks and the Ribbon Reefs minkes are snorkel encounters whose records carry no SNORKEL ONLY marker, so they aren't flagged as snorkel-only.
@@ -190,7 +190,7 @@ bun evals/understand.ts llm --limit 3 --max-usd 0.5
 
 ## What's next
 
-1. **Switch on the two routes that passed** (`docs/paid-evals.md`, "Turning it on"): apply the quota migration, then add the key and `SIGHTLINE_LLM_ROUTES=understand,ask` to the Lovable secrets. Have a second reviewer adjudicate the verifier's 25 supported-vs-partial disagreements.
+1. **Watch the two live routes.** Both went on 2026-09-22 (quota migration applied; key and `SIGHTLINE_LLM_ROUTES=understand,ask` set). The first production call read "I've never dived dry and my wife doesn't dive" as cold, experience and non-diver in 3.0 s for $0.034 including the cache write. Read queries 13–16 weekly: who answered and why, latency, spend against the cap. Have a second reviewer adjudicate the verifier's 25 supported-vs-partial disagreements (`data/verification/adjudication-supported-vs-partial.md`).
 2. **Second labeller**, then **external-diver review.** Label the 60 blind pairs and report kappa. Then 3–5 divers who fit the target profile try the product in a task-based session: at current traffic this answers the A/B's question months sooner (`docs/experiment-describe.md`).
 3. **Promote the curator's markers to schema fields.** "SNORKEL ONLY", "BAITED", not-in-water encounters, format reach ("only liveaboards reach the south"), and monthly water temperature.
 4. **Extend verification** beyond 78/495 claims, prioritising the sentences most often shown as concern evidence.

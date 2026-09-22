@@ -4,8 +4,9 @@ Every number below is measured and reproducible from the repo as of 2026-09-22. 
 numbers come from `bun run eval`. Claude numbers come from the paid evals, replayed free
 from `evals/cache/llm/`. Each one is pinned in `src/lib/about-results.ts`, so a change that
 moves it fails the test suite. They're test results, not usage figures. Where a Claude number
-comes after tuning, the untuned first run is given too. The work described here reaches the
-live site when this branch is merged.
+comes after tuning, the untuned first run is given too. All of it is live: both Claude
+routes went on in production on 2026-09-22, behind the guardrails below. No live-traffic
+number is claimed.
 
 **Project line**
 Sightline: dive-trip planning reference · independent, live at sightline-dive-planner.lovable.app ·
