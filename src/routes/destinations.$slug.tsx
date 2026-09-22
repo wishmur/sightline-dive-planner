@@ -54,7 +54,9 @@ export const Route = createFileRoute("/destinations/$slug")({
   },
   head: ({ params }) => {
     const d = getDestination(params.slug);
-    const title = d ? `${d.name}, ${d.country} — dive guide | Sightline` : "Destination — Sightline";
+    const title = d
+      ? `${d.name}, ${d.country} — dive guide | Sightline`
+      : "Destination — Sightline";
     const description = d ? d.summary.slice(0, 155) : "Dive destination reference.";
     return {
       meta: [
@@ -218,7 +220,10 @@ function DestinationPage() {
           </motion.div>
 
           <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <HeroStat label="Best season" value={bestMonthsLabel(d.best_months_overall) ?? "Varies"} />
+            <HeroStat
+              label="Best season"
+              value={bestMonthsLabel(d.best_months_overall) ?? "Varies"}
+            />
             <HeroStat label="Minimum cert" value={certLabel(d.conditions.min_cert)} />
             <HeroStat
               label="Water"
@@ -234,34 +239,42 @@ function DestinationPage() {
       <div className="theme-light">
         <div className="page-frame space-y-16 pt-16 pb-11 lg:pt-20 lg:pb-14">
           {/* FOR YOUR TRIP */}
-          <Section id="for-your-trip" eyebrow="For your trip" title={`How ${d.name} fits your trip`}>
+          <Section
+            id="for-your-trip"
+            eyebrow="For your trip"
+            title={`How ${d.name} fits your trip`}
+          >
             <TripFit destination={d} filters={filters} onChange={patchBrief} />
           </Section>
 
           {/* SEASON */}
           <Section id="season" eyebrow="Season" title="When this place works">
             <div className="grid gap-4 lg:grid-cols-[1fr_19rem]">
-            <div className="rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-8">
-              <MonthStrip
-                months={d.best_months_overall}
-                operating={d.operating_months}
-                selectedMonth={month}
-                height={36}
-              />
-              <div className="mt-6 max-w-3xl">
-                <ReadMore text={d.operating_note} />
+              <div className="rounded-3xl bg-card p-6 shadow-sm ring-1 ring-inset ring-border lg:p-8">
+                <MonthStrip
+                  months={d.best_months_overall}
+                  operating={d.operating_months}
+                  selectedMonth={month}
+                  height={36}
+                />
+                <div className="mt-6 max-w-3xl">
+                  <ReadMore text={d.operating_note} />
+                </div>
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <ConfidenceTag value={d.operating_confidence} label="operating" />
+                  <Sources
+                    urls={d.operating_sources}
+                    context="operating_months"
+                    destinationId={d.id}
+                  />
+                </div>
+                <div className="mt-2">
+                  <SourceCheck claimId={claimId.operating(d)} destinationId={d.id} />
+                </div>
+                <div className="mt-7 border-t border-border pt-6">
+                  <MonthStripLegend />
+                </div>
               </div>
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-                <ConfidenceTag value={d.operating_confidence} label="operating" />
-                <Sources urls={d.operating_sources} context="operating_months" destinationId={d.id} />
-              </div>
-              <div className="mt-2">
-                <SourceCheck claimId={claimId.operating(d)} destinationId={d.id} />
-              </div>
-              <div className="mt-7 border-t border-border pt-6">
-                <MonthStripLegend />
-              </div>
-            </div>
               <aside className="rounded-3xl bg-card p-4 shadow-sm ring-1 ring-inset ring-border">
                 <LocatorMap lat={d.coordinates.lat} lng={d.coordinates.lng} label={d.name} />
                 <p className="eyebrow mt-4">Where this is</p>
@@ -287,26 +300,30 @@ function DestinationPage() {
                     className="h-40 w-full shrink-0 object-cover sm:h-auto sm:w-[30%] sm:self-stretch"
                   />
                   <div className="flex min-w-0 flex-1 flex-col p-6 lg:p-7">
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/12 text-[11px] font-bold text-primary">
-                      {String(h.rank).padStart(2, "0")}
-                    </span>
-                    <span className="rounded-full bg-secondary px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                      {h.type.replace(/_/g, " ")}
-                    </span>
-                    <ConfidenceTag value={h.confidence} />
-                  </div>
-                  <h3 className="mt-3 font-display text-xl text-foreground sm:text-2xl">{h.label}</h3>
-                  <div className="mt-2 max-w-3xl">
-                    <ReadMore text={h.note} limit={260} block />
-                  </div>
-                  {h.seasonality && (
-                    <p className="mt-3 text-sm font-medium text-accent">Seasonality — {h.seasonality}</p>
-                  )}
-                  <div className="mt-5 space-y-2 border-t border-border pt-3">
-                    <Sources urls={h.sources} context="highlight" destinationId={d.id} />
-                    <SourceCheck claimId={claimId.highlight(d, h.rank)} destinationId={d.id} />
-                  </div>
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/12 text-[11px] font-bold text-primary">
+                        {String(h.rank).padStart(2, "0")}
+                      </span>
+                      <span className="rounded-full bg-secondary px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                        {h.type.replace(/_/g, " ")}
+                      </span>
+                      <ConfidenceTag value={h.confidence} />
+                    </div>
+                    <h3 className="mt-3 font-display text-xl text-foreground sm:text-2xl">
+                      {h.label}
+                    </h3>
+                    <div className="mt-2 max-w-3xl">
+                      <ReadMore text={h.note} limit={260} block />
+                    </div>
+                    {h.seasonality && (
+                      <p className="mt-3 text-sm font-medium text-accent">
+                        Seasonality — {h.seasonality}
+                      </p>
+                    )}
+                    <div className="mt-5 space-y-2 border-t border-border pt-3">
+                      <Sources urls={h.sources} context="highlight" destinationId={d.id} />
+                      <SourceCheck claimId={claimId.highlight(d, h.rank)} destinationId={d.id} />
+                    </div>
                   </div>
                 </li>
               ))}
@@ -377,7 +394,9 @@ function DestinationPage() {
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
                       <span className="rounded-full bg-secondary px-2.5 py-1">{s.reliability}</span>
-                      <span className="rounded-full bg-secondary px-2.5 py-1">{s.encounter_type}</span>
+                      <span className="rounded-full bg-secondary px-2.5 py-1">
+                        {s.encounter_type}
+                      </span>
                     </div>
                     <div className="mt-3 space-y-2">
                       <Sources urls={s.sources} context="species" destinationId={d.id} />
@@ -445,7 +464,11 @@ function DestinationPage() {
                 icon={<Waves className="h-5 w-5" />}
                 label="Current"
                 value={d.conditions.current}
-                steps={{ active: currentStep(d.conditions.current), total: 4, scale: "mild — strong" }}
+                steps={{
+                  active: currentStep(d.conditions.current),
+                  total: 4,
+                  scale: "mild — strong",
+                }}
               />
               <Stat
                 icon={<Droplets className="h-5 w-5" />}
@@ -518,7 +541,11 @@ function DestinationPage() {
                     <div
                       className={`flex items-center gap-2 ${boat ? "text-primary" : "text-accent"}`}
                     >
-                      {boat ? <Ship className="h-4 w-4 shrink-0" /> : <HomeIcon className="h-4 w-4 shrink-0" />}
+                      {boat ? (
+                        <Ship className="h-4 w-4 shrink-0" />
+                      ) : (
+                        <HomeIcon className="h-4 w-4 shrink-0" />
+                      )}
                       <span className="text-[0.65rem] font-bold uppercase tracking-[0.14em]">
                         {formatFormat(t.format)}
                       </span>
@@ -711,7 +738,10 @@ function Stat({
           <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-foreground/[0.07]">
             <span
               className="absolute inset-y-0 rounded-full bg-primary"
-              style={{ left: `${pct(gauge.from)}%`, width: `${Math.max(3, pct(gauge.to) - pct(gauge.from))}%` }}
+              style={{
+                left: `${pct(gauge.from)}%`,
+                width: `${Math.max(3, pct(gauge.to) - pct(gauge.from))}%`,
+              }}
             />
           </div>
           <p className="mt-1.5 text-[10px] font-medium text-muted-foreground">{gauge.scale}</p>
@@ -749,8 +779,8 @@ function VerificationSummary({ destinationId }: { destinationId: string }) {
   ].filter(Boolean);
   return (
     <span>
-      {c.checked} key claim{c.checked === 1 ? "" : "s"} checked against sources {formatCheckDate(REVIEWED_AT)} ·{" "}
-      {parts.join(", ")}
+      {c.checked} key claim{c.checked === 1 ? "" : "s"} checked against sources{" "}
+      {formatCheckDate(REVIEWED_AT)} · {parts.join(", ")}
     </span>
   );
 }

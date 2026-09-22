@@ -79,14 +79,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Sightline — Independent dive destination reference" },
-      { name: "description", content: "Compare dive destinations and species by season, conditions, and experience level. Independently researched, with sources behind every claim." },
+      {
+        name: "description",
+        content:
+          "Compare dive destinations and species by season, conditions, and experience level. Independently researched, with sources behind every claim.",
+      },
       { name: "author", content: "Shailvi" },
       { property: "og:title", content: "Sightline — Independent dive destination reference" },
-      { property: "og:description", content: "Compare dive destinations and species by season, conditions, and experience level. Independently researched, with sources behind every claim." },
+      {
+        property: "og:description",
+        content:
+          "Compare dive destinations and species by season, conditions, and experience level. Independently researched, with sources behind every claim.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Sightline — Independent dive destination reference" },
-      { name: "twitter:description", content: "Compare dive destinations and species by season, conditions, and experience level. Independently researched, with sources behind every claim." },
+      {
+        name: "twitter:description",
+        content:
+          "Compare dive destinations and species by season, conditions, and experience level. Independently researched, with sources behind every claim.",
+      },
       {
         property: "og:image",
         content:

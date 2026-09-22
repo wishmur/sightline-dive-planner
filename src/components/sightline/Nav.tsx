@@ -16,7 +16,7 @@ export function SightlineNav() {
           to="/about"
           className="text-[0.8125rem] font-medium tracking-wide text-foreground/90 transition hover:text-foreground hover:underline underline-offset-4"
         >
-          About the diver
+          About
         </Link>
       </div>
     </header>

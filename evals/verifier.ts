@@ -1,5 +1,10 @@
 /**
- * Verifier eval: `bun evals/verifier.ts [lexical|llm] [--limit N]`
+ * Verifier eval:
+ *   bun evals/verifier.ts                     lexical baseline (free)
+ *   bun evals/verifier.ts llm --dry-run       Claude: estimate cost, send nothing
+ *   bun evals/verifier.ts llm --limit 5       Claude: smoke run, first 5 of each split
+ *   bun evals/verifier.ts llm                 Claude: full run (records once; replays free after)
+ *   … --split dev | test   --replay   --max-usd N   --show-prompts
  *
  * Gold: the reviewed claims in data/verification/reviews.json. Claims corrected
  * after review are evaluated on their ORIGINAL text with their ORIGINAL verdict:
@@ -13,7 +18,9 @@
  *  - accuracy and the confusion matrix, for context.
  *
  * Needs the private source cache (`bun scripts/sources/fetch.ts`). The llm mode
- * calls the Claude API and costs money; it runs only when you ask for it.
+ * calls the Claude API and costs money; it runs only when you ask for it, and
+ * through the eval harness: each response is paid for once and replayed free.
+ * Split for any prompt tuning: claims sorted by ID, even positions dev, odd test.
  */
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import Anthropic from "@anthropic-ai/sdk";
@@ -27,10 +34,14 @@ import {
   lexicalVerifier,
   llmVerifier,
   validateOutput,
+  VERIFIER_MODEL,
+  VERIFIER_PROMPT_VERSION,
   type Verdict,
   type Verifier,
   type VerifierInput,
 } from "../scripts/verify/verifiers";
+import { LlmHarness, parseHarnessArgs, printDryRun } from "./harness/llm-harness";
+import { attempt, banner, footer, pick, tally, type Outcome } from "./harness/run-llm";
 
 export type GoldCase = { input: VerifierInput; gold: Verdict };
 
@@ -137,44 +148,90 @@ function print(name: string, s: Scored) {
     );
 }
 
+async function pool<T, R>(items: T[], n: number, fn: (t: T) => Promise<R>): Promise<R[]> {
+  const out: R[] = new Array(items.length);
+  let next = 0;
+  await Promise.all(
+    Array.from({ length: n }, async () => {
+      for (let i = next++; i < items.length; i = next++) out[i] = await fn(items[i]!);
+    }),
+  );
+  return out;
+}
+
+async function runLlm(cases: GoldCase[]) {
+  const args = parseHarnessArgs(process.argv.slice(2), process.env);
+  const h = new LlmHarness({ name: "verifier", mode: args.mode, maxUsd: args.maxUsd });
+  const client = new Anthropic({
+    fetch: h.fetch,
+    maxRetries: 1,
+    ...(args.mode === "record" ? {} : { apiKey: "no-network" }),
+  });
+  const verifier = llmVerifier(client);
+  banner("Source verifier", args);
+  const sorted = [...cases].sort((a, b) => a.input.claimId.localeCompare(b.input.claimId));
+  const sets = [
+    { name: "dev", split: "dev" as const, cases: sorted.filter((_, i) => i % 2 === 0) },
+    { name: "test", split: "test" as const, cases: sorted.filter((_, i) => i % 2 === 1) },
+  ];
+  const all: Outcome<unknown>[] = [];
+  const results: Record<string, unknown>[] = [];
+  for (const set of pick(sets, args)) {
+    const outcomes = await pool(set.cases, 4, (c) => attempt(() => verifier(c.input)));
+    all.push(...outcomes);
+    if (args.mode === "dry-run") continue;
+    const ran = set.cases.filter((_, i) => outcomes[i]!.ok);
+    const outputs = new Map(
+      ran.map((c) => {
+        const o = outcomes[set.cases.indexOf(c)]!;
+        return [c.input.claimId, o.ok ? o.value : null] as const;
+      }),
+    );
+    // The verifier turns a refusal into a "no verdict" not_found; count those apart.
+    const noVerdict = [...outputs.values()].filter((o) => o?.note.startsWith("no verdict")).length;
+    const s = await score(ran, async (input) => outputs.get(input.claimId)!);
+    print(`LLM verifier (${VERIFIER_MODEL}, whole cited pages) · ${set.name}`, s);
+    console.log(`no verdict (refusal or unparseable): ${noVerdict}`);
+    results.push({ set: set.name, outcomes: tally(outcomes), noVerdict, ...s });
+  }
+  const meta = {
+    model: VERIFIER_MODEL,
+    prompt_version: VERIFIER_PROMPT_VERSION,
+    split: args.split,
+  };
+  if (args.mode === "dry-run") {
+    const estimate = printDryRun(h, { low: 1000, high: 5000 }, args.showPrompts, {
+      privatePrompts: true,
+    });
+    h.writeReport({ ...meta, estimate });
+  } else {
+    footer(h, all);
+    if (h.stats.cacheHits + h.stats.recorded)
+      console.log(`report: ${h.writeReport({ ...meta, sets: results })}`);
+  }
+}
+
 if (import.meta.main) {
-  const mode = process.argv[2] ?? "lexical";
-  const limitArg = process.argv.indexOf("--limit");
-  const limit = limitArg > 0 ? Number(process.argv[limitArg + 1]) : Infinity;
-  const cases = goldCases().slice(0, limit);
+  const llm = process.argv.includes("llm") || process.argv.includes("--dry-run");
+  const cases = goldCases();
   if (!cases.length) {
     console.log(
       "No gold cases: run `bun scripts/sources/fetch.ts` first (the source cache is private).",
     );
     process.exit(0);
   }
-  let verifier: Verifier;
-  if (mode === "llm") {
-    if (!process.env.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_AUTH_TOKEN) {
-      console.log(
-        "The llm verifier needs Claude API credentials (ANTHROPIC_API_KEY). It was not run.",
-      );
-      process.exit(0);
-    }
-    verifier = llmVerifier(new Anthropic());
+  if (llm) {
+    await runLlm(cases);
   } else {
-    verifier = lexicalVerifier;
-  }
-  const s = await score(cases, verifier, mode === "llm" ? 4 : 1);
-  print(
-    mode === "llm"
-      ? "LLM verifier (claude-opus-5, whole cited pages)"
-      : "Lexical baseline (token overlap, a-priori thresholds)",
-    s,
-  );
-  if (mode === "lexical") {
+    const s = await score(cases, lexicalVerifier);
+    print("Lexical baseline (token overlap, a-priori thresholds)", s);
     const contradictedPredictions = s.rows
       .filter((r) => r.gold === "contradicted")
       .map((r) => `${r.claimId} → ${r.predicted}`);
     console.log(
       `\ncontradicted claims, as the baseline saw them:\n  ${contradictedPredictions.join("\n  ")}`,
     );
+    mkdirSync("evals/reports", { recursive: true });
+    writeFileSync("evals/reports/verifier-lexical.json", JSON.stringify(s, null, 2) + "\n");
   }
-  mkdirSync("evals/reports", { recursive: true });
-  writeFileSync(`evals/reports/verifier-${mode}.json`, JSON.stringify(s, null, 2) + "\n");
 }

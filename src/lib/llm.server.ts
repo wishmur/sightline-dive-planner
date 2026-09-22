@@ -11,6 +11,7 @@
  *   question. Claude chooses sentence numbers; the product shows those sentences
  *   verbatim. It never writes a fact the diver sees.
  */
+import { createHash } from "node:crypto";
 import process from "node:process";
 import Anthropic from "@anthropic-ai/sdk";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
@@ -27,16 +28,37 @@ import {
 } from "@/lib/filters";
 import { passagesFor, type Passage } from "@/lib/passages";
 import { normalizeTrip, type ParsedTrip } from "@/lib/understand";
+import { LlmError, worstCaseUsd, type Usage } from "@/lib/llm-guard";
 
 export const LLM_MODEL = "claude-opus-5";
 export const PROMPT_VERSION = "2026-09-21";
+/** Output ceiling per call, adaptive thinking included. Also the spend reservation's bound. */
+export const MAX_TOKENS = 4000;
 
 export function hasClaude() {
   return Boolean(process.env.ANTHROPIC_API_KEY);
 }
 
-function client() {
-  return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY, timeout: 25_000, maxRetries: 1 });
+/** Evals inject a recording/replaying fetch and, for dry runs, a placeholder key. */
+export type LlmOptions = { fetch?: typeof fetch; apiKey?: string };
+
+function client(opts: LlmOptions = {}) {
+  return new Anthropic({
+    apiKey: opts.apiKey ?? process.env.ANTHROPIC_API_KEY,
+    timeout: 25_000,
+    maxRetries: 1,
+    ...(opts.fetch ? { fetch: opts.fetch } : {}),
+  });
+}
+
+/** Parse, turning anything that isn't an API/transport error into a typed failure. */
+async function parseOrFail<T>(call: () => Promise<T>): Promise<T> {
+  try {
+    return await call();
+  } catch (error) {
+    if (error instanceof Anthropic.APIError) throw error;
+    throw new LlmError("invalid_output");
+  }
 }
 
 // The SDK sends enums to the API as descriptions, not hard constraints, and then
@@ -102,20 +124,36 @@ ${[...TARGET_GROUPS, ...TARGET_SPECIES].map((t) => `${t.id}: ${t.label}`).join("
 Destinations (id: name, country):
 ${DESTINATIONS.map((d) => `${d.id}: ${d.name}, ${d.country}`).join("\n")}`;
 
+export function understandParams(text: string) {
+  return {
+    model: LLM_MODEL,
+    max_tokens: MAX_TOKENS,
+    betas: ["server-side-fallback-2026-07-01"],
+    fallbacks: "default" as const,
+    system: [
+      {
+        type: "text" as const,
+        text: UNDERSTAND_SYSTEM,
+        cache_control: { type: "ephemeral" as const },
+      },
+    ],
+    messages: [{ role: "user" as const, content: `<trip>\n${text}\n</trip>` }],
+    output_config: { effort: "low" as const, format: betaZodOutputFormat(TripSchema) },
+  };
+}
+
 export async function understandWithClaude(
   text: string,
-): Promise<{ trip: ParsedTrip; model: string; dropped: string[] }> {
-  const response = await client().beta.messages.parse({
-    model: LLM_MODEL,
-    max_tokens: 4000,
-    betas: ["server-side-fallback-2026-07-01"],
-    fallbacks: "default",
-    system: [{ type: "text", text: UNDERSTAND_SYSTEM, cache_control: { type: "ephemeral" } }],
-    messages: [{ role: "user", content: `<trip>\n${text}\n</trip>` }],
-    output_config: { effort: "low", format: betaZodOutputFormat(TripSchema) },
-  });
-  if (response.stop_reason === "refusal" || !response.parsed_output) {
-    throw new Error(`no parse (stop_reason ${response.stop_reason})`);
+  opts: LlmOptions = {},
+): Promise<{ trip: ParsedTrip; model: string; dropped: string[]; usage: Usage }> {
+  const response = await parseOrFail(() =>
+    client(opts).beta.messages.parse(understandParams(text)),
+  );
+  if (response.stop_reason === "refusal") {
+    throw new LlmError("refusal", response.usage, response.model);
+  }
+  if (!response.parsed_output) {
+    throw new LlmError("invalid_output", response.usage, response.model);
   }
   const p = response.parsed_output;
   const monthIndex = (m: string) =>
@@ -145,7 +183,7 @@ export async function understandWithClaude(
         .map((v) => `${k}:${v}`),
     ),
   ];
-  return { model: response.model, trip, dropped };
+  return { model: response.model, trip, dropped, usage: response.usage };
 }
 
 // ---------------------------------------------------------------------------
@@ -170,31 +208,85 @@ export type Selection = {
   /** Sentence numbers Claude returned that don't exist in the record. */
   rejected: number[];
   model: string;
+  usage?: Usage;
 };
 
-export async function selectWithClaude(d: Destination, question: string): Promise<Selection> {
-  const passages = passagesFor(d);
-  const response = await client().beta.messages.parse({
+/**
+ * The record is its own block with a cache breakpoint (Opus 5 caches prefixes
+ * from 512 tokens), so follow-up questions on the same destination read it
+ * from cache. The question comes after the breakpoint.
+ */
+export function selectParams(d: Destination, question: string) {
+  return {
     model: LLM_MODEL,
-    max_tokens: 4000,
+    max_tokens: MAX_TOKENS,
     betas: ["server-side-fallback-2026-07-01"],
-    fallbacks: "default",
+    fallbacks: "default" as const,
     system: SELECT_SYSTEM,
     messages: [
       {
-        role: "user",
-        content: `<record destination="${d.name}, ${d.country}">\n${numbered(passages)}\n</record>\n\n<question>\n${question}\n</question>`,
+        role: "user" as const,
+        content: [
+          {
+            type: "text" as const,
+            text: `<record destination="${d.name}, ${d.country}">\n${numbered(passagesFor(d))}\n</record>`,
+            cache_control: { type: "ephemeral" as const },
+          },
+          { type: "text" as const, text: `<question>\n${question}\n</question>` },
+        ],
       },
     ],
-    output_config: { effort: "low", format: betaZodOutputFormat(SelectSchema) },
-  });
-  if (response.stop_reason === "refusal" || !response.parsed_output) {
-    throw new Error(`no selection (stop_reason ${response.stop_reason})`);
+    output_config: { effort: "low" as const, format: betaZodOutputFormat(SelectSchema) },
+  };
+}
+
+export async function selectWithClaude(
+  d: Destination,
+  question: string,
+  opts: LlmOptions = {},
+): Promise<Selection> {
+  const passages = passagesFor(d);
+  const response = await parseOrFail(() =>
+    client(opts).beta.messages.parse(selectParams(d, question)),
+  );
+  if (response.stop_reason === "refusal") {
+    throw new LlmError("refusal", response.usage, response.model);
+  }
+  if (!response.parsed_output) {
+    throw new LlmError("invalid_output", response.usage, response.model);
   }
   const out = response.parsed_output;
   const status =
     (["answered", "partly", "not_covered"] as const).find((x) => x === out.status) ?? "answered";
-  return validateSelection({ sentences: out.sentences, status }, passages, response.model);
+  return {
+    ...validateSelection({ sentences: out.sentences, status }, passages, response.model),
+    usage: response.usage,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Versions and spend bounds
+
+const hash8 = (s: string) => createHash("sha256").update(s).digest("hex").slice(0, 8);
+
+/**
+ * Date version plus a hash of the system prompt, so an edited prompt is a new
+ * version in the logs and the eval cache even if nobody bumps the date.
+ */
+export function promptVersion(route: "understand" | "ask") {
+  return `${PROMPT_VERSION}.${hash8(route === "understand" ? UNDERSTAND_SYSTEM : SELECT_SYSTEM)}`;
+}
+
+/**
+ * Deliberately generous input estimate (≈3 characters a token; the lists of IDs
+ * tokenize worse than prose), used only to bound the spend reservation.
+ */
+export function roughInputTokens(params: { system: unknown; messages: unknown }) {
+  return Math.ceil(JSON.stringify([params.system, params.messages]).length / 3);
+}
+
+export function reservationUsd(params: { system: unknown; messages: unknown }) {
+  return worstCaseUsd(roughInputTokens(params), MAX_TOKENS, LLM_MODEL);
 }
 
 /** Deterministic gate: only real sentence numbers survive, at most three, no repeats. */

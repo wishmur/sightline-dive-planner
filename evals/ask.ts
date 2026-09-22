@@ -1,10 +1,17 @@
 /**
- * "Ask about this destination" report: `bun evals/ask.ts [llm] [--errors]`
+ * "Ask about this destination" report:
+ *   bun evals/ask.ts [--errors]              rules path only (free)
+ *   bun evals/ask.ts llm --dry-run           Claude: print requests, estimate cost, send nothing
+ *   bun evals/ask.ts llm --limit 5           Claude: smoke run, first 5 of each half
+ *   bun evals/ask.ts llm                     Claude: full run (records once; replays free after)
+ *   … --split dev | test   --replay   --max-usd N
  *
- * Scores the rules path (concern routing → lexicon, else BM25) and, with `llm`,
- * Claude's sentence selection (needs ANTHROPIC_API_KEY; ~100 short calls), on
- * evals/ask.gold.ts. The BM25 threshold is tuned on the dev half (even case
- * numbers) and reported on the test half.
+ * Scores the rules path (concern routing → lexicon, else BM25) and Claude's
+ * sentence selection on evals/ask.gold.ts. The BM25 threshold is tuned on the
+ * dev half (even case numbers) and reported on the test half; Claude prompt
+ * tuning, if any, is held to the same split. Claude results are scored as
+ * shipped: a failed call counts as the rules answer. Reports go to
+ * evals/reports/ask.<mode>.json.
  */
 import { DESTINATIONS, getDestination } from "@/lib/destinations";
 import { passagesFor } from "@/lib/passages";
@@ -12,6 +19,8 @@ import { askRules, type AskAnswer } from "@/lib/ask";
 import { contextual } from "@/lib/retrieve";
 import { ASK_CASES, type AskCase } from "./ask.gold";
 import { GOLD } from "./concern-metrics";
+import { LlmHarness, parseHarnessArgs, printDryRun } from "./harness/llm-harness";
+import { attempt, banner, footer, pick, tally, type Outcome } from "./harness/run-llm";
 
 const pct = (n: number) => `${(n * 100).toFixed(0)}%`;
 
@@ -72,42 +81,101 @@ function report(name: string, results: { c: AskCase; a: AskAnswer }[]) {
 }
 
 if (import.meta.main) {
-  console.log(
-    `\n=== Ask about this destination (${ASK_CASES.length} questions, ${DESTINATIONS.length} records) ===\n`,
-  );
-  const rules = ASK_CASES.map((c) => ({
-    c,
-    a: askRules(getDestination(c.destination)!, c.question),
-  }));
-  console.log("dev half:");
-  report(
-    "rules",
-    rules.filter((r) => isDev(r.c)),
-  );
-  console.log("\ntest half:");
-  report(
-    "rules",
-    rules.filter((r) => !isDev(r.c)),
-  );
+  const args = parseHarnessArgs(process.argv.slice(2), process.env);
+  const byHalf = (cases: AskCase[]) => [
+    { name: "dev half", split: "dev" as const, cases: cases.filter(isDev) },
+    { name: "test half", split: "test" as const, cases: cases.filter((c) => !isDev(c)) },
+  ];
 
-  if (process.argv.includes("llm")) {
-    const { hasClaude, selectWithClaude } = await import("@/lib/llm.server");
-    if (!hasClaude()) console.log("\nllm: skipped (ANTHROPIC_API_KEY not set)");
-    else {
-      const claude: { c: AskCase; a: AskAnswer }[] = [];
-      let rejected = 0;
-      for (const c of ASK_CASES) {
-        const s = await selectWithClaude(getDestination(c.destination)!, c.question);
-        rejected += s.rejected.length;
-        claude.push({
-          c,
-          a: { engine: "claude", status: s.status, passageIds: s.passageIds, concerns: [] },
-        });
-      }
-      console.log(
-        `\nclaude (all ${ASK_CASES.length}; nothing was tuned on it) · invalid sentence numbers rejected: ${rejected}`,
+  if (!args.llm || args.mode !== "dry-run") {
+    console.log(
+      `\n=== Ask about this destination (${ASK_CASES.length} questions, ${DESTINATIONS.length} records) ===`,
+    );
+    for (const half of byHalf(ASK_CASES)) {
+      console.log(`\n${half.name}:`);
+      report(
+        "rules",
+        half.cases.map((c) => ({ c, a: askRules(getDestination(c.destination)!, c.question) })),
       );
-      report("claude", claude);
+    }
+  }
+
+  if (args.llm) {
+    const llm = await import("@/lib/llm.server");
+    const h = new LlmHarness({ name: "ask", mode: args.mode, maxUsd: args.maxUsd });
+    const opts = { fetch: h.fetch, apiKey: args.mode === "record" ? undefined : "no-network" };
+    banner("Ask about this destination", args);
+    const all: Outcome<unknown>[] = [];
+    const halves: Record<string, unknown>[] = [];
+    for (const half of pick(byHalf(ASK_CASES), args)) {
+      const outcomes = [];
+      for (const c of half.cases)
+        outcomes.push(
+          await attempt(() =>
+            llm.selectWithClaude(getDestination(c.destination)!, c.question, opts),
+          ),
+        );
+      all.push(...outcomes);
+      if (args.mode === "dry-run") continue;
+      const scored = half.cases.flatMap((c, i) => {
+        const o = outcomes[i]!;
+        const d = getDestination(c.destination)!;
+        if (o.ok)
+          return [
+            {
+              c,
+              a: {
+                engine: "claude" as const,
+                status: o.value.status,
+                passageIds: o.value.passageIds,
+                concerns: [],
+              },
+            },
+          ];
+        if (["cache_miss", "budget"].includes(o.reason)) return [];
+        return [{ c, a: askRules(d, c.question) }];
+      });
+      const rejected = outcomes.reduce((n, o) => n + (o.ok ? o.value.rejected.length : 0), 0);
+      console.log(
+        `\n${half.name} · ${scored.length} of ${half.cases.length} scored · invalid sentence numbers rejected: ${rejected}`,
+      );
+      report("claude", scored);
+      halves.push({
+        half: half.name,
+        split: half.split,
+        cases: half.cases.length,
+        scored: scored.length,
+        outcomes: tally(outcomes),
+        rejected,
+        byKind: Object.fromEntries(
+          (["specific", "off_record", "paraphrase", "all"] as const).map((k) => [
+            k,
+            scoreAsk(k === "all" ? scored : scored.filter((r) => r.c.kind === k)),
+          ]),
+        ),
+        rows: scored.map((r) => ({
+          id: r.c.id,
+          kind: r.c.kind,
+          engine: r.a.engine,
+          status: r.a.status,
+          shown: r.a.passageIds,
+          relevant: relevantIds(r.c),
+        })),
+      });
+    }
+    const meta = {
+      model: llm.LLM_MODEL,
+      prompt_version: llm.promptVersion("ask"),
+      split: args.split,
+      limit: args.limit === Infinity ? null : args.limit,
+    };
+    if (args.mode === "dry-run") {
+      const estimate = printDryRun(h, { low: 100, high: 800 }, args.showPrompts);
+      h.writeReport({ ...meta, estimate });
+    } else {
+      footer(h, all);
+      if (h.stats.cacheHits + h.stats.recorded)
+        console.log(`report: ${h.writeReport({ ...meta, halves })}`);
     }
   }
 }

@@ -34,5 +34,9 @@ dist-ssr
 # Source snapshots for verification: private (copyrighted page text), never committed
 data/.source-cache/
 
-# Regenerated eval output
-evals/reports/
+# Regenerated eval output. Reports from paid Claude runs are kept: they cost
+# money to make. Dry-run request dumps (evals/reports/dry-run/) stay out: the
+# verifier's hold private source pages.
+evals/reports/*
+!evals/reports/*.record.json
+!evals/reports/agreement.json

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, LoaderCircle, Sparkles } from "lucide-react";
-import { logEvent } from "@/lib/analytics";
+import { getSessionId, logEvent } from "@/lib/analytics";
 import { MONTHS, getDestination } from "@/lib/destinations";
 import { UNSUPPORTED, getConcern } from "@/lib/concerns";
 import { briefSearch, type Filters } from "@/lib/filters";
@@ -34,7 +34,7 @@ export function TripDescriber({
     let trip: ParsedTrip;
     let engine: Engine;
     try {
-      const r = await understandTrip({ data: { text: value } });
+      const r = await understandTrip({ data: { text: value, session: getSessionId() } });
       trip = r.trip;
       engine = r.engine;
     } catch {

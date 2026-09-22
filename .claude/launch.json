@@ -4,8 +4,19 @@
     {
       "name": "sightline-dev",
       "runtimeExecutable": "bun",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 8080
+    },
+    {
+      "name": "second-labeller",
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "evals/label/server.ts"
+      ],
+      "port": 4321
     }
   ]
 }

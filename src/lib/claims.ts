@@ -139,6 +139,18 @@ export function isSnorkelOnly(text: string) {
   return /\bsnorkel[- ]only\b/i.test(text);
 }
 
+/**
+ * The animal is heard or watched, not met in the water: "acoustic only for
+ * divers", "surface encounters only", "not an in-water product", "typically
+ * from the boat". Read from species notes only. Surface snorkel swims ("surface
+ * interaction only" at Moorea) are in the water and use the snorkel marker.
+ */
+export function isNotInWater(text: string) {
+  return /\b(acoustic|not an in-water|whale[- ]watching|surface(?: encounters)? only|from the boat|not the basis for booking)\b/i.test(
+    text,
+  );
+}
+
 /** Internal research-log markers that leak into user-facing notes. */
 export function hasResearchLogMarker(text: string) {
   return /\bOQ-\d+\b|RESOLVED BY TIER|CORROBORATION IMPROVED|SHIPPING CONTESTED/.test(text);

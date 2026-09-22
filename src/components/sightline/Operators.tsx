@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { getSessionId } from "@/lib/analytics";
+import { getSessionId, logEvent } from "@/lib/analytics";
 
 type OperatorRow = {
   id: string;
@@ -96,10 +96,12 @@ function SuggestOperatorDialog({
       </DialogTrigger>
       <DialogContent className="theme-light sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-display text-2xl font-medium">Suggest an operator</DialogTitle>
+          <DialogTitle className="font-display text-2xl font-medium">
+            Suggest an operator
+          </DialogTitle>
           <DialogDescription>
-            Who should divers book with in {destinationName}? Submissions are reviewed before they go
-            live.
+            Who should divers book with in {destinationName}? Submissions are reviewed before they
+            go live.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={submit} className="space-y-4">
@@ -182,10 +184,7 @@ export function Operators({
           <p className="text-sm text-muted-foreground">
             No crowd-suggested operators yet for {destinationName}.
           </p>
-          <SuggestOperatorDialog
-            destinationId={destinationId}
-            destinationName={destinationName}
-          />
+          <SuggestOperatorDialog destinationId={destinationId} destinationName={destinationName} />
         </div>
       )}
 
@@ -202,14 +201,19 @@ export function Operators({
                     <OperatorIcon blurb={o.blurb} />
                   </span>
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold leading-snug text-foreground">
-                      {o.name}
-                    </p>
+                    <p className="text-sm font-semibold leading-snug text-foreground">{o.name}</p>
                     {o.website && (
                       <a
                         href={o.website}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() =>
+                          logEvent("click_source", {
+                            url: o.website,
+                            context: "operator",
+                            destination: destinationId,
+                          })
+                        }
                         className="mt-0.5 inline-flex items-center gap-1.5 text-[11px] font-medium text-primary underline decoration-dotted underline-offset-4"
                       >
                         {hostOf(o.website)}
@@ -219,13 +223,22 @@ export function Operators({
                   </div>
                 </div>
                 {o.blurb && (
-                  <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">{o.blurb}</p>
+                  <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">
+                    {o.blurb}
+                  </p>
                 )}
                 {o.source_url && hostOf(o.source_url) !== hostOf(o.website ?? "") && (
                   <a
                     href={o.source_url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() =>
+                      logEvent("click_source", {
+                        url: o.source_url,
+                        context: "operator_source",
+                        destination: destinationId,
+                      })
+                    }
                     className="mt-auto inline-flex w-fit items-center gap-1.5 pt-2.5 text-[11px] font-medium text-muted-foreground underline decoration-dotted underline-offset-4 transition hover:text-foreground"
                   >
                     {hostOf(o.source_url)}

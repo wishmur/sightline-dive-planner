@@ -48,7 +48,8 @@ export function destinationTagChips(d: Destination): DestinationTag[] {
   for (const s of d.species) {
     if (tags.length >= 2) break;
     const reliable = s.reliability === "resident" || s.reliability === "seasonal";
-    if (reliable && HEADLINE_SPECIES.test(s.name)) tags.push({ label: s.name, patch: { species: [canonicalSpeciesId(s)] } });
+    if (reliable && HEADLINE_SPECIES.test(s.name))
+      tags.push({ label: s.name, patch: { species: [canonicalSpeciesId(s)] } });
   }
 
   for (const h of [...d.highlights].sort((a, b) => a.rank - b.rank)) {
@@ -58,7 +59,8 @@ export function destinationTagChips(d: Destination): DestinationTag[] {
   }
 
   const current = CURRENT_TAG[d.conditions.current];
-  if (current && tags.length < 4) tags.push({ label: current, patch: { current: d.conditions.current } });
+  if (current && tags.length < 4)
+    tags.push({ label: current, patch: { current: d.conditions.current } });
 
   if (tags.length < 4 && d.trip_formats.some((t) => t.format === "liveaboard")) {
     tags.push({ label: "Liveaboard", patch: { format: "liveaboard" } });

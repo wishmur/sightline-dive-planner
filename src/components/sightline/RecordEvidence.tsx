@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { ArrowRight, LoaderCircle, TriangleAlert } from "lucide-react";
 import { SourceCheck } from "@/components/sightline/SourceCheck";
-import { logEvent } from "@/lib/analytics";
+import { getSessionId, logEvent } from "@/lib/analytics";
 import type { Destination } from "@/lib/destinations";
 import { getConcern, type ConcernId } from "@/lib/concerns";
 import { getPassage, type Passage } from "@/lib/passages";
@@ -151,7 +151,9 @@ export function AskRecord({ d }: { d: Destination }) {
     setAsked(value);
     let a: AskAnswer;
     try {
-      a = await askDestination({ data: { destination: d.id, question: value } });
+      a = await askDestination({
+        data: { destination: d.id, question: value, session: getSessionId() },
+      });
     } catch {
       a = askRules(d, value);
     }

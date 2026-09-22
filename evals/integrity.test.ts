@@ -1,7 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import { DESTINATIONS, SPECIES_GROUPS } from "@/lib/destinations";
 import { GROUP_DEFS, canonicalSpeciesId } from "@/lib/taxonomy";
-import { claimId, claimsFor, hasResearchLogMarker, isContested, isSnorkelOnly } from "@/lib/claims";
+import {
+  claimId,
+  claimsFor,
+  hasResearchLogMarker,
+  isContested,
+  isNotInWater,
+  isSnorkelOnly,
+} from "@/lib/claims";
 import { CERT_LADDER, CURRENT_LADDER } from "@/lib/fit";
 import { EMPTY_SPECIES_NOTES, NEVER_PRESENT, RESEARCH_LOG_MARKERS } from "./known-issues";
 
@@ -127,6 +134,25 @@ describe("curator markers the engine reads (pinned)", () => {
       "ningaloo/highlight/1",
       "ningaloo/highlight/4",
       "palau/highlight/4",
+    ]);
+  });
+
+  test("not-in-water species notes", () => {
+    // Heard or watched, not met underwater. Moorea's "surface interaction only"
+    // is a snorkel swim and must not match; its highlight carries SNORKEL ONLY.
+    expect(
+      DESTINATIONS.flatMap((d) =>
+        d.species.filter((s) => isNotInWater(s.note)).map((s) => claimId.species(d, s)),
+      ).sort(),
+    ).toEqual([
+      "aliwal-shoal/species/humpback-whale",
+      "azores/species/blue-whale",
+      "azores/species/sperm-whale",
+      "cabo-pulmo/species/humpback-whale",
+      "kona/species/humpback-whale",
+      "kona/species/spinner-dolphin",
+      "oahu/species/humpback-whale",
+      "socorro/species/humpback-whale",
     ]);
   });
 

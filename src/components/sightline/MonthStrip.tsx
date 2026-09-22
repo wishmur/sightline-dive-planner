@@ -48,9 +48,7 @@ export function MonthStrip({
           >
             <div
               className={`relative w-full overflow-hidden rounded-md transition group-hover:brightness-110 ${FILL[state]} ${
-                selected
-                  ? "scale-y-110 ring-2 ring-accent ring-offset-1 ring-offset-card"
-                  : ""
+                selected ? "scale-y-110 ring-2 ring-accent ring-offset-1 ring-offset-card" : ""
               }`}
               style={{ height }}
             >
