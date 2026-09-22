@@ -51,7 +51,7 @@ The rules engine answers in 0.14 ms (Describe) and 0.19 ms (Ask) per request.
   day and the rules answer (`SIGHTLINE_LLM_DAILY_USD`).
 - **The whole paid evaluation cost $7.63.** That covers first runs of all four evals, one
   Describe and one Ask tuning iteration on dev, one held-out re-run, and one adversarial
-  re-run. The verifier was $5.32 of that: it reads whole source pages at default effort.
+  re-run. The verifier was $5.59 of that (smoke run included): it reads whole source pages at default effort.
 
 ## Levers not pulled (each needs its own eval before adoption)
 

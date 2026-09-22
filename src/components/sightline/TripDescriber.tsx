@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, LoaderCircle, Sparkles } from "lucide-react";
-import { getSessionId, logEvent } from "@/lib/analytics";
+import { TEXT_PRIVACY_NOTE, getSessionId, logEvent } from "@/lib/analytics";
 import { MONTHS, getDestination } from "@/lib/destinations";
 import { UNSUPPORTED, getConcern } from "@/lib/concerns";
 import { briefSearch, type Filters } from "@/lib/filters";
@@ -106,6 +106,8 @@ export function TripDescriber({
           {busy ? "Reading" : "Plan it"}
         </button>
       </div>
+
+      {!trip && <p className="mt-2 text-[11px] text-muted-foreground/80">{TEXT_PRIVACY_NOTE}</p>}
 
       {trip && (
         <div
