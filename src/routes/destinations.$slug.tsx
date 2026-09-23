@@ -27,6 +27,7 @@ import { SourceCheck } from "@/components/sightline/SourceCheck";
 import { logEvent } from "@/lib/analytics";
 import {
   MONTHS,
+  MONTH_INITIALS,
   bestMonthsLabel,
   formatFormat,
   getDestination,
@@ -218,21 +219,43 @@ function DestinationPage() {
               ))}
             </ul>
           </motion.div>
+        </div>
+      </header>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <HeroStat
-              label="Best season"
-              value={bestMonthsLabel(d.best_months_overall) ?? "Varies"}
-            />
-            <HeroStat label="Minimum cert" value={certLabel(d.conditions.min_cert)} />
-            <HeroStat
+      {/*
+        The go/no-go facts, on the page rather than over the photograph. They sat
+        in the hero as four translucent chips on the image, which cost legibility
+        and rendered the season as a phrase ("Best Apr–Oct") about data the page
+        already holds in full. Here the season is the twelve months themselves.
+      */}
+      <div className="theme-light border-b border-border">
+        <div className="page-frame grid gap-x-8 gap-y-5 py-6 lg:grid-cols-[minmax(0,22rem)_1fr] lg:items-center">
+          <div>
+            <p className="eyebrow">Season</p>
+            <div className="mt-2">
+              <MonthStrip
+                months={d.best_months_overall}
+                operating={d.operating_months}
+                selectedMonth={month}
+                onMonthClick={(i) => {
+                  setMonth(i);
+                  logEvent("filter_month", { destination: d.id, month: i + 1 });
+                }}
+                height={18}
+              />
+            </div>
+          </div>
+          <dl className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-4 lg:justify-items-end">
+            <Fact label="Best months" value={bestMonthsLabel(d.best_months_overall) ?? "Varies"} />
+            <Fact label="Minimum cert" value={certLabel(d.conditions.min_cert)} />
+            <Fact
               label="Water"
               value={`${d.conditions.water_temp_c[0]}–${d.conditions.water_temp_c[1]}°C`}
             />
-            <HeroStat label="Current" value={d.conditions.current} />
-          </div>
+            <Fact label="Current" value={d.conditions.current} />
+          </dl>
         </div>
-      </header>
+      </div>
 
       <SectionNav sections={SECTIONS} />
 
@@ -369,6 +392,22 @@ function DestinationPage() {
             }
           >
             <div className="divide-y divide-border overflow-hidden rounded-3xl bg-card shadow-sm ring-1 ring-inset ring-border">
+              {/* One header for all the rows: the month letters used to repeat under
+                  every species, twelve labels a row, which is what stopped the
+                  timelines reading as a single chart you can scan down a column. */}
+              <div className="hidden gap-6 px-6 pt-6 lg:grid lg:grid-cols-[1.05fr_1fr] lg:px-8">
+                <MonthStripLegend />
+                <div
+                  aria-hidden
+                  className="flex gap-[3px] text-center text-[10px] font-medium text-muted-foreground"
+                >
+                  {MONTH_INITIALS.map((m, i) => (
+                    <span key={i} className="flex-1">
+                      {m}
+                    </span>
+                  ))}
+                </div>
+              </div>
               {shownSpecies.map((s) => (
                 <div key={s.name} className="grid gap-6 p-6 lg:grid-cols-[1.05fr_1fr] lg:p-8">
                   <div>
@@ -407,6 +446,7 @@ function DestinationPage() {
                     months={s.months}
                     operating={d.operating_months}
                     selectedMonth={month}
+                    labelClassName="lg:hidden"
                     onMonthClick={(i) => {
                       setMonth(i);
                       logEvent("filter_month", {
@@ -658,13 +698,13 @@ function MoreButton({
   );
 }
 
-function HeroStat({ label, value }: { label: string; value: string }) {
+function Fact({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl bg-white/[0.07] px-4 py-3 ring-1 ring-inset ring-white/15 backdrop-blur-md">
-      <p className="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+    <div>
+      <dt className="text-[0.65rem] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
         {label}
-      </p>
-      <p className="mt-1 text-sm font-semibold capitalize text-foreground">{value}</p>
+      </dt>
+      <dd className="mt-1 text-sm font-semibold capitalize text-foreground">{value}</dd>
     </div>
   );
 }

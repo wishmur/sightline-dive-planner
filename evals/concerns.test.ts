@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { DESTINATIONS } from "@/lib/destinations";
-import { CONCERNS } from "@/lib/concerns";
+import { CONCERNS, type ConcernId } from "@/lib/concerns";
 import { getPassage, passagesFor } from "@/lib/passages";
-import { concernHits, MAX_EVIDENCE } from "@/lib/retrieve";
+import { CONCERN_PHRASES, CONCERN_TERMS, concernHits, MAX_EVIDENCE } from "@/lib/retrieve";
 import { GOLD, GOLD_PASSAGE_COUNTS, SPLIT, runMethod, score } from "./concern-metrics";
 
 describe("concern gold integrity", () => {
@@ -60,5 +60,27 @@ describe("retrieval invariants", () => {
       for (const c of CONCERNS)
         for (const h of concernHits(d, c.id).slice(0, MAX_EVIDENCE))
           expect(h.passage.claim.text.includes(h.passage.text)).toBe(true);
+  });
+});
+
+// The About page illustrates the vocabulary idea by showing, for a few worries,
+// the words the notes actually use instead. An illustration that drifts from the
+// lexicon it illustrates is worse than no illustration, so each phrase shown has
+// to still be a phrase that concern actually matches on.
+describe("the worked example on the About page matches the real lexicon", () => {
+  test("every phrase shown scores for the concern it is shown under", () => {
+    for (const [concern, phrases] of Object.entries(CONCERN_PHRASES)) {
+      for (const phrase of phrases) {
+        const hit = CONCERN_TERMS[concern as ConcernId].some((t) => t.re.test(phrase));
+        expect({ concern, phrase, matches: hit }).toEqual({ concern, phrase, matches: true });
+      }
+    }
+  });
+
+  test("it shows real concerns, and enough of them to make the point", () => {
+    const ids = new Set(CONCERNS.map((c) => c.id));
+    for (const concern of Object.keys(CONCERN_PHRASES))
+      expect({ concern, real: ids.has(concern as ConcernId) }).toEqual({ concern, real: true });
+    expect(Object.keys(CONCERN_PHRASES).length).toBeGreaterThanOrEqual(3);
   });
 });
