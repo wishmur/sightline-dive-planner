@@ -1,8 +1,12 @@
 import { Link } from "@tanstack/react-router";
+import { FeedbackDialog } from "@/components/sightline/FeedbackDialog";
+
+const ITEM =
+  "text-[0.8125rem] font-medium tracking-wide text-foreground/90 transition hover:text-foreground hover:underline underline-offset-4";
 
 export function SightlineNav() {
   return (
-    <header className="absolute top-0 left-0 right-0 z-50 backdrop-blur-sm">
+    <header className="absolute top-0 right-0 left-0 z-50 backdrop-blur-sm">
       <div className="page-frame flex items-center justify-between py-6">
         <Link to="/" className="group flex flex-col leading-none">
           <span className="font-wordmark text-2xl font-semibold tracking-[0.14em] text-foreground">
@@ -12,12 +16,15 @@ export function SightlineNav() {
             The world, from below.
           </span>
         </Link>
-        <Link
-          to="/about"
-          className="text-[0.8125rem] font-medium tracking-wide text-foreground/90 transition hover:text-foreground hover:underline underline-offset-4"
-        >
-          About
-        </Link>
+        <nav className="flex items-center gap-3 sm:gap-4">
+          <Link to="/" className={ITEM}>
+            Home
+          </Link>
+          <Link to="/about" className={ITEM}>
+            About
+          </Link>
+          <FeedbackDialog kind="edit" triggerClassName={ITEM} trigger="Feedback" />
+        </nav>
       </div>
     </header>
   );
