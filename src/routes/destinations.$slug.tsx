@@ -578,14 +578,10 @@ function DestinationPage() {
           </Section>
 
           {/* SOURCES */}
-          <Section id="sources" eyebrow="Sources & verification" title="Check the evidence.">
+          <Section id="sources" eyebrow="Sources" title="Where this comes from.">
             <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
               <div>
-                <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
-                  Every destination is independently researched and major claims link back to their
-                  sources.
-                </p>
-                <div className="mt-3.5">
+                <div>
                   <Sources
                     urls={d.sources}
                     context="sources_section"
@@ -598,9 +594,6 @@ function DestinationPage() {
                 <p className="eyebrow">Know this place?</p>
                 <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
                   Spot something outdated, have local knowledge, or think something is missing?
-                </p>
-                <p className="mt-3 max-w-xl text-xs leading-relaxed text-muted-foreground">
-                  Submissions are reviewed and verified before the dataset is updated.
                 </p>
               </div>
             </div>
@@ -766,21 +759,14 @@ function Stat({
   );
 }
 
-/** Honest freshness: what was actually checked against sources, and when. */
+/**
+ * Freshness, not a scorecard. The per-status tally used to live here — how many
+ * confirmed, partly, corrected — but every one of those outcomes already shows
+ * on the claim it belongs to, where it can actually change a decision. What is
+ * left is the part a reference owes the reader: whether it was checked, and when.
+ */
 function VerificationSummary({ destinationId }: { destinationId: string }) {
   const c = destinationChecks(destinationId);
-  if (c.checked === 0) return <span>Not yet checked against sources</span>;
-  const parts = [
-    `${c.confirmed} confirmed`,
-    c.partial ? `${c.partial} partly` : null,
-    c.corrected ? `${c.corrected} corrected` : null,
-    c.unconfirmed ? `${c.unconfirmed} not found` : null,
-    c.stale ? `${c.stale} due for recheck` : null,
-  ].filter(Boolean);
-  return (
-    <span>
-      {c.checked} key claim{c.checked === 1 ? "" : "s"} checked against sources{" "}
-      {formatCheckDate(REVIEWED_AT)} · {parts.join(", ")}
-    </span>
-  );
+  if (c.checked === 0) return <span>Sources not yet checked</span>;
+  return <span>Sources checked {formatCheckDate(REVIEWED_AT)}</span>;
 }

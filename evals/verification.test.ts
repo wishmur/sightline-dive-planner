@@ -5,7 +5,7 @@ import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { DESTINATIONS, getDestination } from "@/lib/destinations";
 import { claimsFor } from "@/lib/claims";
-import { checkFor, destinationChecks, getReview } from "@/lib/verification";
+import { announces, checkFor, destinationChecks, getReview } from "@/lib/verification";
 
 const reviews = JSON.parse(readFileSync("data/verification/reviews.json", "utf8"));
 const corrections: { claimId: string; field: string; after: unknown }[] = JSON.parse(
@@ -87,5 +87,36 @@ describe("what divers see", () => {
   test("destination summaries add up", () => {
     const k = destinationChecks("komodo");
     expect(k.confirmed + k.partial + k.corrected + k.unconfirmed + k.stale).toBe(k.checked);
+  });
+});
+
+// A page that announces "confirmed" on every claim is bragging, not informing:
+// confirmation is the expected case, and saying it 50 times buries the 28 claims
+// that came back partial, corrected or unfound. The page stays quiet when the
+// check passed and speaks when it didn't.
+describe("a check only speaks when it found something", () => {
+  test("a confirmed claim is quiet; every weaker outcome announces itself", () => {
+    expect(announces("confirmed")).toBe(false);
+    for (const s of ["partial", "corrected", "unconfirmed", "stale", "due"] as const)
+      expect({ status: s, announces: announces(s) }).toEqual({ status: s, announces: true });
+  });
+
+  test("an unchecked claim makes no claim either way", () => {
+    expect(announces("unchecked")).toBe(false);
+  });
+
+  test("silence covers the majority, so the warnings are the visible ones", () => {
+    const totals = DESTINATIONS.reduce(
+      (a, d) => {
+        const c = destinationChecks(d.id);
+        a.confirmed += c.confirmed;
+        a.checked += c.checked;
+        return a;
+      },
+      { confirmed: 0, checked: 0 },
+    );
+    // Guards the premise: if most checks stopped being plain confirmations, the
+    // quiet-by-default choice would be hiding the common case instead.
+    expect(totals.confirmed / totals.checked).toBeGreaterThan(0.5);
   });
 });

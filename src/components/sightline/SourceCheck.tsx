@@ -1,14 +1,13 @@
 import { useState } from "react";
-import {
-  BadgeCheck,
-  ChevronDown,
-  CircleAlert,
-  CircleDashed,
-  Clock,
-  PencilLine,
-} from "lucide-react";
+import { ChevronDown, CircleAlert, CircleDashed, Clock, PencilLine } from "lucide-react";
 import { logEvent } from "@/lib/analytics";
-import { REVIEWED_AT, checkFor, formatCheckDate, type CheckStatus } from "@/lib/verification";
+import {
+  REVIEWED_AT,
+  announces,
+  checkFor,
+  formatCheckDate,
+  type CheckStatus,
+} from "@/lib/verification";
 
 function hostOf(url: string) {
   try {
@@ -19,10 +18,9 @@ function hostOf(url: string) {
 }
 
 const META: Record<
-  Exclude<CheckStatus, "unchecked">,
-  { icon: typeof BadgeCheck; label: string; tone: string }
+  Exclude<CheckStatus, "unchecked" | "confirmed">,
+  { icon: typeof CircleDashed; label: string; tone: string }
 > = {
-  confirmed: { icon: BadgeCheck, label: "Confirmed by its source", tone: "text-primary" },
   partial: {
     icon: CircleDashed,
     label: "Partly confirmed by its sources",
@@ -35,8 +33,13 @@ const META: Record<
 };
 
 /**
- * What a source check found for one claim: status, check date, and on demand
- * the verbatim passage it rests on. Quiet by default; nothing is hidden.
+ * What a source check found for one claim — when it found something.
+ *
+ * A claim that held up renders nothing at all. It is the expected outcome, the
+ * section already carries a "N sources" link for anyone who wants to go and
+ * look, and a badge repeating "confirmed" down the page buries the claims that
+ * came back partial, corrected or unfound. Those still speak, and still show the
+ * passage, because they change how much weight to put on what the page says.
  */
 export function SourceCheck({
   claimId,
@@ -55,8 +58,9 @@ export function SourceCheck({
       <p className="text-[11px] text-muted-foreground/70">Not yet checked against its sources</p>
     ) : null;
   }
+  if (!announces(status)) return null;
 
-  const meta = META[status];
+  const meta = META[status as keyof typeof META];
   const Icon = meta.icon;
   const date = formatCheckDate(review.correction?.correctedAt ?? REVIEWED_AT);
 
@@ -73,12 +77,12 @@ export function SourceCheck({
       >
         <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden />
         {meta.label}
-        <span className="font-normal text-muted-foreground">· checked {date}</span>
         <ChevronDown className={`h-3 w-3 transition ${open ? "rotate-180" : ""}`} aria-hidden />
       </button>
 
       {open && (
         <div className="mt-2 max-w-3xl space-y-2.5 border-l-2 border-primary/25 pl-3">
+          <p className="text-[11px] text-muted-foreground/70">Checked {date}</p>
           {review.correction && (
             <p className="text-xs leading-relaxed text-muted-foreground">
               <span className="font-semibold text-foreground">What changed: </span>
