@@ -27,6 +27,19 @@ export type Review = {
     reason: string;
     addedQuotes: string[];
   };
+  /**
+   * Set when a second reviewer adjudicated a disagreement between this review
+   * and the verifier (evals/adjudicate.ts). `verdict` is the post-adjudication
+   * gold and is present only on a flip; `verdict` above stays as reviewed, so
+   * the published pre-adjudication numbers keep replaying unchanged.
+   */
+  adjudication?: {
+    adjudicatedAt: string;
+    by: string;
+    outcome: "keep" | "flip" | "unclear";
+    verdict?: Verdict;
+    reason: string;
+  };
 };
 export type ReviewFile = {
   reviewedAt: string;

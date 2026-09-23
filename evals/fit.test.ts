@@ -136,3 +136,100 @@ describe("properties", () => {
     for (const b of BASE_BRIEFS.slice(0, 20)) expect(ids(b)).toEqual(ids(b));
   });
 });
+
+// A verdict marked "caveat" is shown behind a warning icon, so its text has to
+// say what the caveat is. "Scalloped hammerhead: peak in January" behind a
+// warning reads as a contradiction: the reason it was demoted (thin or disputed
+// sourcing) was in the flags and never in the words.
+describe("a caveat says what the caveat is", () => {
+  test("a species present at peak but flagged names the flag, not just the month", () => {
+    const run = runFit(brief({ month: 0, species: ["scalloped-hammerhead"] }));
+    const flagged = run.results
+      .flatMap((r) => r.verdicts)
+      .filter((v) => v.kind === "target" && v.status === "caveat" && v.flags.length);
+    expect(flagged.length).toBeGreaterThan(0);
+    for (const v of flagged) {
+      // "Shoulder" already says why it was demoted; every other flag has to be named.
+      const needsWhy = v.flags.some((f) => f !== "shoulder");
+      expect({ label: v.label, saysWhy: /—/.test(v.label) }).toEqual({
+        label: v.label,
+        saysWhy: needsWhy,
+      });
+      // The good news alone is never the whole caveat.
+      expect(v.label).not.toMatch(/^[^—]*peak in \w+$/);
+    }
+  });
+
+  test("every caveat verdict with flags explains itself, across all briefs", () => {
+    for (const b of BASE_BRIEFS) {
+      for (const r of runFit(b).results) {
+        for (const v of r.verdicts) {
+          if (v.status !== "caveat" || !v.flags.length) continue;
+          expect({ kind: v.kind, label: v.label, explained: v.label.length > 0 }).toEqual({
+            kind: v.kind,
+            label: v.label,
+            explained: true,
+          });
+        }
+      }
+    }
+  });
+
+  test("a clean peak month stays clean: no flags, no dash, status met", () => {
+    const run = runFit(brief({ month: 0, species: ["scalloped-hammerhead"] }));
+    const met = run.results
+      .flatMap((r) => r.verdicts)
+      .filter((v) => v.kind === "target" && v.status === "met");
+    for (const v of met) expect(v.label).not.toContain("—");
+  });
+});
+
+// "You qualify" is filler, but the line it sat on is not: it carries the
+// destination's experience claim. Malta's floor is Open Water while its wartime
+// wrecks are trimix dives, and dropping the met line dropped that claim from the
+// page — caught by catches.gold.ts, so the line stays and only the wording goes.
+describe("the cert line states the bar, without congratulating anyone", () => {
+  const certVerdicts = (f: Filters, id: string) => {
+    const run = runFit(f);
+    return (
+      [...run.results, ...run.nearMisses]
+        .find((r) => r.destination.id === id)
+        ?.verdicts.filter((v) => v.kind === "cert") ?? []
+    );
+  };
+  const floorIs = (need: string) =>
+    DESTINATIONS.filter((d) => d.conditions.min_cert === need).map((d) => d.id);
+
+  test("no verdict anywhere tells the diver they qualify", () => {
+    for (const cert of ["open_water", "advanced", "advanced_plus_experience"])
+      for (const r of runFit(brief({ cert })).results)
+        for (const v of r.verdicts) expect(v.label).not.toMatch(/you qualify/i);
+  });
+
+  test("a met floor still states the bar, at every rung", () => {
+    for (const need of ["open_water", "advanced"])
+      for (const id of floorIs(need).slice(0, 5)) {
+        const [v] = certVerdicts(brief({ cert: "advanced_plus_experience" }), id);
+        expect({ id, status: v?.status }).toEqual({ id, status: "met" });
+        expect(v!.label).toMatch(/minimum$/);
+      }
+  });
+
+  test("a floor the diver misses is always stated", () => {
+    for (const id of floorIs("advanced").slice(0, 6)) {
+      const [v] = certVerdicts(brief({ cert: "open_water" }), id);
+      expect({ id, status: v?.status, reason: v?.reason }).toEqual({
+        id,
+        status: "violated",
+        reason: "cert",
+      });
+    }
+  });
+
+  // The regression this pins: an Open Water diver reading Malta must still meet
+  // the experience claim, even though the nominal floor lets them in.
+  test("Malta still surfaces its experience claim to an Open Water diver", () => {
+    const [v] = certVerdicts(brief({ cert: "open_water" }), "malta");
+    expect(v?.claimIds).toContain("malta/experience");
+  });
+});

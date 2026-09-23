@@ -50,4 +50,26 @@ export const RESULTS = {
   },
   /** Adversarial inputs on the keyword path (evals/adversarial.gold.ts). */
   adversarial: { cases: 44, violations: 0, trip: [24, 27] as const, ask: [16, 17] as const },
+  /**
+   * Blind re-labelling of 60 frozen destination × concern pairs, 2026-09-23
+   * (`bun run label`, then `bun run agreement`).
+   *
+   * NOT inter-annotator agreement. The re-labeller is the same person who wrote
+   * the concern gold and the lexicon, re-labelling two days later without sight
+   * of the gold (the labelling module never loads it; evals/agreement.test.ts
+   * enforces that). So this measures test–retest repeatability of one labeller's
+   * notion of relevance, not independence from it. The one-labeller limitation
+   * stands until someone else labels the sample.
+   *
+   * The disagreement runs one way: the later pass marked 236 sentences relevant
+   * to the gold's 134, and at the pair level it added 7 while dropping none. The
+   * gold is the stricter pass, which is the pass `concerns.hit` is measured on.
+   */
+  agreement: {
+    pairs: { n: 60, kappa: 0.61, ci: [0.33, 0.84] as const, observed: 88 },
+    sentences: { n: 1790, kappa: 0.64, ci: [0.51, 0.77] as const, observed: 93, positive: 68 },
+    /** Sentences each pass marked and the other didn't. */
+    goldOnly: 9,
+    relabelOnly: 111,
+  },
 };

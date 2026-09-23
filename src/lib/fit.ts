@@ -277,14 +277,20 @@ function targetVerdict(d: Destination, target: Target, month: number | null): Ve
 
   const present = state === "peak" || state === "shoulder";
   const stateWord = present ? state : state === "off" ? "not reliably seen" : "not present";
+  // A caveat is shown behind a warning icon, so the words have to carry the
+  // reason. "Peak in January" behind a warning reads as a contradiction: the
+  // month is the good news and the flag is the catch. "Shoulder" already says
+  // why it was demoted, so only the other flags need spelling out.
+  const why = FLAG_PRIORITY.filter((f) => f !== "shoulder" && flags.includes(f))[0];
+  const because = present && why ? ` — ${FLAG_LABEL[why].toLowerCase()}` : "";
   const label =
     month === null
-      ? `${s.name}: ${seasonPhrase(s.months)}`
-      : `${s.name}: ${stateWord} in ${MONTHS[month]}`;
+      ? `${s.name}: ${seasonPhrase(s.months)}${because}`
+      : `${s.name}: ${stateWord} in ${MONTHS[month]}${because}`;
   const short =
     month === null
-      ? `${target.label}: ${seasonPhrase(s.months)}`
-      : `${target.label}: ${stateWord} in ${MONTHS[month]!.slice(0, 3)}`;
+      ? `${target.label}: ${seasonPhrase(s.months)}${because}`
+      : `${target.label}: ${stateWord} in ${MONTHS[month]!.slice(0, 3)}${because}`;
 
   return {
     kind: "target",
@@ -336,14 +342,19 @@ function seasonVerdict(d: Destination, month: number): Verdict {
 function certVerdicts(d: Destination, cert: string): Verdict[] {
   const need = d.conditions.min_cert;
   const ok = CERT_LADDER.indexOf(cert) >= CERT_LADDER.indexOf(need);
+  // "You qualify" is filler: clearing a bar is not news. The bar itself is, so
+  // the line states it flatly. The line is never dropped when it is met, even at
+  // the entry rung, because it carries the destination's experience claim —
+  // Malta's floor is Open Water and its wartime wrecks are trimix dives, and
+  // that claim is how a diver reading the page finds that out (evals/catches.gold.ts).
   const verdicts: Verdict[] = [
     {
       kind: "cert",
       status: ok ? "met" : "violated",
       reason: ok ? undefined : "cert",
       flags: [],
-      label: ok ? `${certLabel(need)} floor — you qualify` : `Needs ${certLabel(need)}`,
-      short: ok ? `${certLabel(need)} floor` : `Needs ${certLabel(need)}`,
+      label: ok ? `${certLabel(need)} minimum` : `Needs ${certLabel(need)}`,
+      short: ok ? `${certLabel(need)} minimum` : `Needs ${certLabel(need)}`,
       claimIds: [claimId.experience(d)],
     },
   ];

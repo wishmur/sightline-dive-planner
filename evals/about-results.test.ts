@@ -149,6 +149,42 @@ describe("About page results match the evals", () => {
       ask: [...RESULTS.adversarial.ask],
     });
   });
+
+  // The sample, the labels and the gold are all committed, so this recomputes
+  // without a key or a network. Pins the asymmetry too: the published figure is
+  // repeatability of one labeller, and the direction of the drift is part of it.
+  test("blind re-labelling of the 60 concern pairs", async () => {
+    const { compareLabels } = await import("./label/agreement-metrics");
+    const { loadSample, LABELS_FILE } = await import("./label/sample");
+    const { GOLD } = await import("./concern-metrics");
+    const labels = JSON.parse(readFileSync(LABELS_FILE, "utf8"));
+    const r = compareLabels(loadSample(), labels, GOLD);
+    const round2 = (x: number) => Number(x.toFixed(2));
+    const pct = (x: number) => Math.round(x * 100);
+    expect({
+      pairs: {
+        n: r.pairs.n,
+        kappa: round2(r.pairs.kappa),
+        ci: [round2(r.pairs.ci.low), round2(r.pairs.ci.high)],
+        observed: pct(r.pairs.observed),
+      },
+      sentences: {
+        n: r.sentences.n,
+        kappa: round2(r.sentences.kappa),
+        ci: [round2(r.sentences.ci.low), round2(r.sentences.ci.high)],
+        observed: pct(r.sentences.observed),
+        positive: pct(r.sentences.positiveAgreement),
+      },
+      goldOnly: r.sentences.table.b,
+      relabelOnly: r.sentences.table.c,
+    }).toEqual({
+      ...RESULTS.agreement,
+      pairs: { ...RESULTS.agreement.pairs, ci: [...RESULTS.agreement.pairs.ci] },
+      sentences: { ...RESULTS.agreement.sentences, ci: [...RESULTS.agreement.sentences.ci] },
+    });
+    // Every pair was labelled: a partial pass would quietly shrink the sample.
+    expect(r.unfinished).toBe(0);
+  });
 });
 
 // Claude's numbers, recomputed by replaying the committed responses: no network,

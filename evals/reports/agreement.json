@@ -1,0 +1,396 @@
+{
+  "sample": "9411a1752e6c",
+  "labeller": "Shailvi",
+  "labelledAt": "2026-09-23T00:43:35.417Z",
+  "unfinished": 0,
+  "pairs": {
+    "n": 60,
+    "table": {
+      "a": 46,
+      "b": 0,
+      "c": 7,
+      "d": 7
+    },
+    "kappa": 0.6052631578947366,
+    "ci": {
+      "low": 0.32692307692307676,
+      "high": 0.8392857142857142
+    },
+    "observed": 0.8833333333333333
+  },
+  "sentences": {
+    "n": 1790,
+    "table": {
+      "a": 125,
+      "b": 9,
+      "c": 111,
+      "d": 1545
+    },
+    "kappa": 0.6414334648745015,
+    "ci": {
+      "low": 0.5124539415013859,
+      "high": 0.7692830360138979
+    },
+    "observed": 0.9329608938547486,
+    "positiveAgreement": 0.6756756756756757
+  },
+  "disagreements": [
+    {
+      "destination": "aliwal-shoal",
+      "concern": "remote",
+      "goldOnly": [],
+      "secondOnly": [
+        "aliwal-shoal/experience#0",
+        "aliwal-shoal/highlight/4#1",
+        "aliwal-shoal/format/0#0",
+        "aliwal-shoal/format/1#0"
+      ]
+    },
+    {
+      "destination": "aliwal-shoal",
+      "concern": "non_diver",
+      "goldOnly": [],
+      "secondOnly": [
+        "aliwal-shoal/species/humpback-whale#1"
+      ]
+    },
+    {
+      "destination": "aliwal-shoal",
+      "concern": "rules",
+      "goldOnly": [],
+      "secondOnly": [
+        "aliwal-shoal/experience#2",
+        "aliwal-shoal/format/0#1",
+        "aliwal-shoal/format/1#1"
+      ]
+    },
+    {
+      "destination": "aliwal-shoal",
+      "concern": "photography",
+      "goldOnly": [],
+      "secondOnly": [
+        "aliwal-shoal/experience#4",
+        "aliwal-shoal/species/oceanic-blacktip-shark#0",
+        "aliwal-shoal/highlight/1#1",
+        "aliwal-shoal/highlight/1#3",
+        "aliwal-shoal/highlight/2#0",
+        "aliwal-shoal/highlight/3#1",
+        "aliwal-shoal/highlight/4#0",
+        "aliwal-shoal/format/1#0"
+      ]
+    },
+    {
+      "destination": "aliwal-shoal",
+      "concern": "seasickness",
+      "goldOnly": [],
+      "secondOnly": [
+        "aliwal-shoal/highlight/4#1",
+        "aliwal-shoal/format/1#0"
+      ]
+    },
+    {
+      "destination": "galapagos",
+      "concern": "getting_there",
+      "goldOnly": [
+        "galapagos/format/1#3"
+      ],
+      "secondOnly": [
+        "galapagos/operating#3",
+        "galapagos/format/1#0"
+      ]
+    },
+    {
+      "destination": "galapagos",
+      "concern": "weather",
+      "goldOnly": [],
+      "secondOnly": [
+        "galapagos/operating#0",
+        "galapagos/experience#0",
+        "galapagos/experience#1",
+        "galapagos/species/ocean-sunfish#0"
+      ]
+    },
+    {
+      "destination": "cabo-pulmo",
+      "concern": "crowds",
+      "goldOnly": [
+        "cabo-pulmo/format/0#1"
+      ],
+      "secondOnly": []
+    },
+    {
+      "destination": "cabo-pulmo",
+      "concern": "cold",
+      "goldOnly": [],
+      "secondOnly": [
+        "cabo-pulmo/format/0#1"
+      ]
+    },
+    {
+      "destination": "cabo-pulmo",
+      "concern": "remote",
+      "goldOnly": [],
+      "secondOnly": [
+        "cabo-pulmo/format/0#0"
+      ]
+    },
+    {
+      "destination": "cabo-pulmo",
+      "concern": "non_diver",
+      "goldOnly": [],
+      "secondOnly": [
+        "cabo-pulmo/species/whale-shark#1",
+        "cabo-pulmo/species/humpback-whale#1"
+      ]
+    },
+    {
+      "destination": "anilao",
+      "concern": "photography",
+      "goldOnly": [],
+      "secondOnly": [
+        "anilao/experience#2",
+        "anilao/experience#3",
+        "anilao/species/bobbit-worm#0",
+        "anilao/species/frogfish#0",
+        "anilao/species/ghost-pipefish#0",
+        "anilao/species/ghost-pipefish#1",
+        "anilao/highlight/1#1",
+        "anilao/highlight/2#1",
+        "anilao/highlight/2#2",
+        "anilao/highlight/3#0",
+        "anilao/highlight/3#1",
+        "anilao/highlight/3#2",
+        "anilao/highlight/4#0",
+        "anilao/highlight/4#1",
+        "anilao/format/0#1",
+        "anilao/format/1#1"
+      ]
+    },
+    {
+      "destination": "malta",
+      "concern": "getting_there",
+      "goldOnly": [],
+      "secondOnly": [
+        "malta/highlight/4#0",
+        "malta/highlight/4#1"
+      ]
+    },
+    {
+      "destination": "malta",
+      "concern": "weather",
+      "goldOnly": [
+        "malta/operating#1"
+      ],
+      "secondOnly": [
+        "malta/experience#1"
+      ]
+    },
+    {
+      "destination": "malta",
+      "concern": "experience",
+      "goldOnly": [
+        "malta/experience#1"
+      ],
+      "secondOnly": [
+        "malta/highlight/1#1",
+        "malta/cert/deep#0"
+      ]
+    },
+    {
+      "destination": "azores",
+      "concern": "remote",
+      "goldOnly": [],
+      "secondOnly": [
+        "azores/highlight/4#0",
+        "azores/format/0#0"
+      ]
+    },
+    {
+      "destination": "azores",
+      "concern": "non_diver",
+      "goldOnly": [],
+      "secondOnly": [
+        "azores/species/blue-whale#0"
+      ]
+    },
+    {
+      "destination": "azores",
+      "concern": "photography",
+      "goldOnly": [],
+      "secondOnly": [
+        "azores/operating#1",
+        "azores/experience#1",
+        "azores/species/blue-shark#0",
+        "azores/species/blue-shark#1",
+        "azores/species/shortfin-mako#0",
+        "azores/species/sicklefin-devil-ray#0",
+        "azores/species/sicklefin-devil-ray#1",
+        "azores/highlight/1#0",
+        "azores/highlight/1#1",
+        "azores/highlight/1#3",
+        "azores/highlight/2#0",
+        "azores/highlight/2#1",
+        "azores/highlight/2#2",
+        "azores/highlight/3#0"
+      ]
+    },
+    {
+      "destination": "komodo",
+      "concern": "seasickness",
+      "goldOnly": [],
+      "secondOnly": [
+        "komodo/operating#2",
+        "komodo/format/1#2"
+      ]
+    },
+    {
+      "destination": "komodo",
+      "concern": "current",
+      "goldOnly": [
+        "komodo/highlight/1#2"
+      ],
+      "secondOnly": [
+        "komodo/species/grey-reef-shark#0"
+      ]
+    },
+    {
+      "destination": "komodo",
+      "concern": "depth",
+      "goldOnly": [],
+      "secondOnly": [
+        "komodo/highlight/4#1"
+      ]
+    },
+    {
+      "destination": "komodo",
+      "concern": "getting_there",
+      "goldOnly": [],
+      "secondOnly": [
+        "komodo/format/2#0"
+      ]
+    },
+    {
+      "destination": "cocos",
+      "concern": "weather",
+      "goldOnly": [],
+      "secondOnly": [
+        "cocos/species/scalloped-hammerhead#0"
+      ]
+    },
+    {
+      "destination": "palau",
+      "concern": "non_diver",
+      "goldOnly": [
+        "palau/highlight/4#1"
+      ],
+      "secondOnly": [
+        "palau/highlight/4#2"
+      ]
+    },
+    {
+      "destination": "palau",
+      "concern": "photography",
+      "goldOnly": [],
+      "secondOnly": [
+        "palau/operating#1",
+        "palau/operating#2",
+        "palau/species/grey-reef-shark#0",
+        "palau/species/grey-reef-shark#1",
+        "palau/species/reef-manta-ray#0",
+        "palau/species/napoleon-wrasse#0",
+        "palau/species/golden-jellyfish#0",
+        "palau/species/golden-jellyfish#1",
+        "palau/species/golden-jellyfish#2",
+        "palau/highlight/1#1",
+        "palau/highlight/2#0",
+        "palau/highlight/3#0",
+        "palau/highlight/4#0",
+        "palau/highlight/4#1",
+        "palau/highlight/4#2",
+        "palau/format/2#0"
+      ]
+    },
+    {
+      "destination": "palau",
+      "concern": "seasickness",
+      "goldOnly": [
+        "palau/format/0#0"
+      ],
+      "secondOnly": []
+    },
+    {
+      "destination": "red-sea-brothers",
+      "concern": "getting_there",
+      "goldOnly": [
+        "red-sea-brothers/format/0#0"
+      ],
+      "secondOnly": [
+        "red-sea-brothers/experience#2",
+        "red-sea-brothers/highlight/4#2"
+      ]
+    },
+    {
+      "destination": "red-sea-brothers",
+      "concern": "weather",
+      "goldOnly": [
+        "red-sea-brothers/operating#2"
+      ],
+      "secondOnly": []
+    },
+    {
+      "destination": "red-sea-brothers",
+      "concern": "experience",
+      "goldOnly": [],
+      "secondOnly": [
+        "red-sea-brothers/highlight/3#1",
+        "red-sea-brothers/cert/deep#0"
+      ]
+    },
+    {
+      "destination": "baa-atoll",
+      "concern": "non_diver",
+      "goldOnly": [],
+      "secondOnly": [
+        "baa-atoll/highlight/1#2",
+        "baa-atoll/format/0#2",
+        "baa-atoll/format/2#0",
+        "baa-atoll/format/2#1"
+      ]
+    },
+    {
+      "destination": "baa-atoll",
+      "concern": "rules",
+      "goldOnly": [],
+      "secondOnly": [
+        "baa-atoll/highlight/2#0",
+        "baa-atoll/format/0#2"
+      ]
+    },
+    {
+      "destination": "rangiroa",
+      "concern": "photography",
+      "goldOnly": [],
+      "secondOnly": [
+        "rangiroa/operating#1",
+        "rangiroa/experience#0",
+        "rangiroa/species/bottlenose-dolphin#0",
+        "rangiroa/species/grey-reef-shark#0",
+        "rangiroa/species/great-hammerhead#0",
+        "rangiroa/species/reef-manta-ray#0",
+        "rangiroa/species/silky-shark#0",
+        "rangiroa/highlight/2#1",
+        "rangiroa/highlight/2#2",
+        "rangiroa/highlight/3#0",
+        "rangiroa/highlight/4#0"
+      ]
+    },
+    {
+      "destination": "rangiroa",
+      "concern": "current",
+      "goldOnly": [],
+      "secondOnly": [
+        "rangiroa/format/0#1"
+      ]
+    }
+  ]
+}

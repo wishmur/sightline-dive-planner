@@ -93,7 +93,7 @@ TypeScript, TanStack Start, Supabase, Claude API
 - Contract tests: `evals/llm-contract.test.ts`, `evals/llm-harness.test.ts` (local API stand-in behind the real SDK).
 - Pinned results: `evals/about-results.test.ts`.
 - Adversarial testing and threat model: `evals/adversarial*.ts`, `docs/threat-model.md`.
-- Inter-annotator agreement: blind labelling tool and Cohen's kappa with bootstrap intervals (`evals/label/`, `evals/agreement.ts`). *Built; the second labeller's labels and the kappa are still pending.*
+- Annotation reliability: blind re-labelling tool and Cohen's kappa with bootstrap intervals (`evals/label/`, `evals/agreement.ts`). 60 pairs re-labelled blind: pairs **κ 0.61** [0.33, 0.84], sentences **κ 0.64** [0.51, 0.77]. Same labeller two days apart, so this is test–retest repeatability, **not** inter-annotator agreement — reported as such, and the one-labeller limitation is left standing.
 - Pre-registered decision rules, paid-eval harness and error analysis: `docs/paid-evals.md` (results and every post-hoc change disclosed), `evals/harness/`, `evals/reports/*.record.json`.
 - LLM-as-judge, measured: the Claude verifier against 78 human-reviewed claims (`evals/verifier.ts`), not adopted.
 - Replay-verified results: `evals/about-results.test.ts` recomputes Claude's numbers from `evals/cache/llm/` in CI.

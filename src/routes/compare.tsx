@@ -8,7 +8,6 @@ import { VerdictIcon } from "@/components/sightline/TripFit";
 import { SentenceQuote } from "@/components/sightline/RecordEvidence";
 import { logEvent } from "@/lib/analytics";
 import {
-  DESTINATIONS,
   MONTHS,
   bestMonthsLabel,
   formatFormat,
@@ -406,8 +405,8 @@ function ComparePage() {
                       <Cell key={d.id}>
                         <span className="text-muted-foreground">
                           {c.checked === 0
-                            ? "Not yet checked"
-                            : `${c.checked} key claims: ${c.confirmed} confirmed${c.partial ? `, ${c.partial} partly` : ""}${c.corrected ? `, ${c.corrected} corrected` : ""}`}
+                            ? "Not checked yet"
+                            : `${c.confirmed} of ${c.checked} confirmed${c.partial ? `, ${c.partial} partly` : ""}${c.corrected ? `, ${c.corrected} corrected` : ""}`}
                         </span>
                       </Cell>
                     );
@@ -416,10 +415,6 @@ function ComparePage() {
               </div>
             </div>
           )}
-          <p className="mt-8 text-xs text-muted-foreground">
-            {DESTINATIONS.length} destinations in the reference. Comparisons use the same records,
-            rules and source checks as each destination page.
-          </p>
         </div>
       </main>
 
