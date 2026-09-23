@@ -93,8 +93,11 @@ CI re-verifies every Claude number by replaying the recorded responses.
 - The Claude test sets are small (30 held-out descriptions, 36 questions, and 30 confirmation
   questions). The tuned Describe numbers come after held-out errors had been viewed, so its
   untuned first run is the clean one.
-- One labeller, with AI assistance, wrote the worry labels. A blind second-labeller tool is
-  built; its agreement score is pending.
+- One labeller, with AI assistance, wrote the worry labels. A blind re-labelling of 60 pairs by
+  that same labeller two days later gives κ 0.61 (pairs) and 0.64 (sentences): repeatable, but
+  repeatability is not independence, so the limitation stands until someone else labels the
+  sample. The re-label was the more inclusive pass — 236 relevant sentences to the gold's 134,
+  adding 7 pairs and dropping none — so the published concern hit rate sits on the stricter gold.
 - 78 of 495 claims are source-checked. Every result is a test result, not usage data.
 
 ## Next steps

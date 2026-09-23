@@ -1,5 +1,5 @@
 /**
- * Agreement between the concern gold and the second labeller:
+ * Agreement between the concern gold and a second blind labelling pass:
  *   bun evals/label/server.ts     label the 60 sampled pairs (blind)
  *   bun evals/agreement.ts        this report → evals/reports/agreement.json
  *
@@ -7,6 +7,11 @@
  * on sentences, and every disagreement listed for adjudication. Adjudication
  * outcomes go in the gold's `changes` with a dated reason; the agreement number
  * is always the pre-adjudication one.
+ *
+ * What the number means depends on WHO labelled. A different annotator gives
+ * inter-annotator agreement. The gold's own author, re-labelling blind, gives
+ * test–retest repeatability of one person's notion of relevance — a weaker
+ * claim, and not a substitute for independence. The report states which it is.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { getDestination } from "@/lib/destinations";
@@ -34,8 +39,9 @@ const f = (x: number) => x.toFixed(2);
 const line = (name: string, l: Level) =>
   `${name.padEnd(10)} n=${String(l.n).padStart(4)} · κ ${f(l.kappa)} [${f(l.ci.low)}, ${f(l.ci.high)}] (${band(l.kappa)}) · observed agreement ${(l.observed * 100).toFixed(0)}% · table both/gold-only/second-only/neither ${l.table.a}/${l.table.b}/${l.table.c}/${l.table.d}`;
 
+console.log(`\n=== Label agreement · gold vs ${labels.labeller} · sample ${sample.version} ===`);
 console.log(
-  `\n=== Inter-annotator agreement · gold vs ${labels.labeller} · sample ${sample.version} ===`,
+  `If ${labels.labeller} also wrote the gold, this is test-retest repeatability of one labeller,\nnot inter-annotator agreement: report it as such.`,
 );
 if (r.unfinished)
   console.log(`(${r.unfinished} of ${sample.pairs.length} pairs not labelled yet: left out)`);

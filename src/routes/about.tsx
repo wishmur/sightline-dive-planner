@@ -121,6 +121,7 @@ const STEPS = [
 ];
 
 const c = RESULTS.concerns;
+const a = RESULTS.agreement;
 
 const RESULT_CARDS = [
   {
@@ -147,6 +148,7 @@ const RESULT_CARDS = [
 
 const LIMITS = [
   "One person wrote every test and checked every source. No other divers have reviewed the results yet.",
+  `That person re-labelled 60 relevance judgements blind two days later and agreed with themselves ${a.pairs.observed}% of the time (κ ${a.pairs.kappa}). That measures how repeatable the judgement is, not that another diver would make it.`,
   `${CHECKS.checked} of ${CLAIMS.length} claims have been checked so far. The rest are labelled “Not yet checked”.`,
   `The language model is measured on ${RESULTS.claude.cases.descriptions} test descriptions and ${RESULTS.claude.cases.questions} test questions, not yet on real visitors' words.`,
   `Seasickness is the hardest worry to find evidence for (${c.seasicknessHit}%): boat time is usually implied, not stated. Water temperatures are yearly ranges.`,
