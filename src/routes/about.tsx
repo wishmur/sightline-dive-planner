@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
+  ChevronDown,
   MessageSquareQuote,
   Scale,
   ShieldCheck,
@@ -14,8 +15,9 @@ import { SiteFooter } from "@/components/sightline/SiteFooter";
 import { FeedbackDialog } from "@/components/sightline/FeedbackDialog";
 import { DESTINATIONS, SPECIES_GROUPS } from "@/lib/destinations";
 import { claimsFor } from "@/lib/claims";
-import { CONCERNS } from "@/lib/concerns";
+import { CONCERNS, getConcern, type ConcernId } from "@/lib/concerns";
 import { getPassage } from "@/lib/passages";
+import { CONCERN_PHRASES } from "@/lib/retrieve";
 import { getReview, type VerificationVerdict } from "@/lib/verification";
 import { MEASURED_ON, RESULTS } from "@/lib/about-results";
 
@@ -100,24 +102,29 @@ function SectionHeader({
   );
 }
 
+/**
+ * The three stages, as a flow rather than three paragraphs. Each stage shows
+ * what it actually holds — a sentence, chips, a ranked list — and the note is
+ * the one thing about that stage a reader would otherwise have to be told.
+ */
 const STEPS = [
   {
     icon: <SlidersHorizontal className="h-5 w-5" />,
-    tag: "AI-assisted",
-    title: "Tell it your trip",
-    body: "Pick filters, or describe the trip in a sentence and it becomes the same editable filters: month, animals, certification, current, and what's on your mind. Reading your words is the one job a language model does here. Where it isn't switched on, keyword rules do the reading, and the page says which did. Sightline doesn't keep what you type.",
+    tag: "You",
+    title: "Say it how you'd say it",
+    note: "Claude reads the sentence where it's switched on, keyword rules where it isn't, and the page says which. Nothing you type is kept.",
   },
   {
     icon: <Scale className="h-5 w-5" />,
     tag: "Rules",
     title: "Rules judge the fit",
-    body: "Each destination is checked against each part of the trip: is the animal there that month, is it open, is it within your level. Good fits come first. A catch, like a snorkel-only encounter or rough water in your month, can move a place down but never up. Places that miss by one thing show when they would fit.",
+    note: "A catch can move a place down, never up. Places that miss by one thing show you the months they'd fit.",
   },
   {
     icon: <MessageSquareQuote className="h-5 w-5" />,
-    tag: "Verbatim",
+    tag: "The record",
     title: "The record answers",
-    body: "Worries and questions are answered with sentences from the destination's research notes, word for word, each with its source check. When the notes say nothing, Sightline says so. No model writes anything you read or decides the ranking.",
+    note: "Answers are sentences from the research notes, word for word. No model writes them or decides the order.",
   },
 ];
 
@@ -178,6 +185,81 @@ const TABS = [
 
 /** Anchors that belong to the testing tab, so an old deep link still lands. */
 const TESTING_HASHES = new Set(["testing", "limits-testing", "how-its-tested"]);
+
+/** The chips a described trip turns into, and the tiers it comes back sorted by. */
+const FLOW_CHIPS = ["September", "Manta ray", "Advanced", "Seasickness"];
+const FLOW_TIERS = [
+  { tone: "bg-primary", label: "Good fit" },
+  { tone: "bg-accent", label: "Fits, with a catch" },
+  { tone: "bg-muted-foreground/40", label: "Misses by one thing" },
+];
+
+/**
+ * What happens to a diver's sentence, drawn rather than described.
+ *
+ * Laid out in HTML rather than as one SVG so it reflows: three stages across on
+ * a wide screen, stacked on a phone, with the connector turning with it. An SVG
+ * wide enough to read on a laptop would scale down to unreadable text at 375px.
+ */
+function HowItWorksFlow() {
+  return (
+    <ol className="mt-8 grid items-stretch gap-3 lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:gap-0">
+      {STEPS.map((step, i) => (
+        <Fragment key={step.title}>
+          {i > 0 && (
+            <li aria-hidden className="flex items-center justify-center lg:px-3">
+              <ChevronDown className="h-5 w-5 text-muted-foreground/40 lg:-rotate-90" />
+            </li>
+          )}
+          <li className={`${CARD} flex flex-col`}>
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-primary">{step.icon}</span>
+              <span className={TAG}>{step.tag}</span>
+            </div>
+            <h3 className="mt-4 font-display text-lg text-foreground">{step.title}</h3>
+
+            <div className="mt-4 flex-1">
+              {i === 0 && (
+                <p className="font-display text-base leading-snug text-foreground/85">
+                  “Mantas in September. I'm Advanced, and I get seasick.”
+                </p>
+              )}
+              {i === 1 && (
+                <>
+                  <div className="flex flex-wrap gap-1.5">
+                    {FLOW_CHIPS.map((chip) => (
+                      <span
+                        key={chip}
+                        className="rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary ring-1 ring-inset ring-primary/20"
+                      >
+                        {chip}
+                      </span>
+                    ))}
+                  </div>
+                  <ul className="mt-3 space-y-1.5">
+                    {FLOW_TIERS.map((t) => (
+                      <li key={t.label} className="flex items-center gap-2 text-[11px]">
+                        <span aria-hidden className={`h-1.5 w-6 shrink-0 rounded-full ${t.tone}`} />
+                        <span className="text-muted-foreground">{t.label}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              {i === 2 && EXAMPLE && (
+                <blockquote className="border-l-2 border-primary/30 pl-3 text-sm leading-relaxed text-foreground/85 italic">
+                  “{EXAMPLE.text.length > 120 ? `${EXAMPLE.text.slice(0, 117)}…` : EXAMPLE.text}”
+                </blockquote>
+              )}
+            </div>
+
+            <p className="mt-4 text-xs leading-relaxed text-muted-foreground">{step.note}</p>
+          </li>
+        </Fragment>
+      ))}
+    </ol>
+  );
+}
 
 function AboutPage() {
   const [tab, setTab] = useState("how");
@@ -249,18 +331,21 @@ function AboutPage() {
       <div className="theme-light">
         <div className="page-frame py-16 lg:py-20">
           <Tabs value={tab} onValueChange={setTab}>
-            <TabsList className="grid w-full max-w-xl grid-cols-2 gap-1 rounded-full bg-foreground/[0.06] p-1">
+            {/* Reads as a section rule, not a settings control: the stock pill track
+                (a grey capsule with equal-width slabs) belongs to a preferences
+                panel, not to a page set in display type on a pale ground. */}
+            <TabsList className="flex h-auto w-full justify-start gap-8 rounded-none border-b border-border bg-transparent p-0">
               {TABS.map((t) => (
                 <TabsTrigger
                   key={t.value}
                   value={t.value}
-                  className="rounded-full px-5 py-2.5 text-sm font-semibold text-muted-foreground transition data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                  className="relative rounded-none border-0 bg-transparent px-0 pt-0 pb-3 font-display text-lg text-muted-foreground shadow-none transition after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-primary after:opacity-0 after:transition hover:text-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:after:opacity-100 sm:text-xl"
                 >
                   {t.label}
                 </TabsTrigger>
               ))}
             </TabsList>
-            <p className="mt-3 max-w-xl text-sm text-muted-foreground">
+            <p className="mt-4 max-w-3xl text-sm text-muted-foreground">
               {TABS.find((t) => t.value === tab)?.blurb}
             </p>
 
@@ -279,44 +364,42 @@ function AboutPage() {
                   </p>
                 </SectionHeader>
 
-                <ol className="mt-8 grid gap-4 lg:grid-cols-3">
-                  {STEPS.map((s) => (
-                    <li key={s.title} className={CARD}>
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-primary">{s.icon}</span>
-                        <span className={TAG}>{s.tag}</span>
-                      </div>
-                      <h3 className="mt-4 font-display text-lg text-foreground">{s.title}</h3>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
-                    </li>
-                  ))}
-                </ol>
+                <HowItWorksFlow />
 
-                {EXAMPLE && (
-                  <figure className={`${CARD} mt-4 grid gap-6 lg:grid-cols-2 lg:gap-10`}>
-                    <div>
-                      <p className="eyebrow">You ask</p>
-                      <p className="mt-1.5 font-display text-lg text-foreground">
-                        “Will I get seasick?”
-                      </p>
-                      <p className="eyebrow mt-5">The Tubbataha record says</p>
-                      <blockquote className="mt-1.5 text-sm leading-relaxed text-foreground/85">
-                        “{EXAMPLE.text}”
-                      </blockquote>
-                      <p className="mt-1.5 text-[11px] text-muted-foreground">
-                        {EXAMPLE.claim.label}
-                      </p>
-                    </div>
-                    <figcaption className="text-sm leading-relaxed text-muted-foreground lg:border-l lg:border-border lg:pl-10">
-                      Nobody writing up a dive site says “seasick”; they describe the crossing. So
-                      for each of {CONCERNS.length} common worries, Sightline looks for the words
-                      the notes actually use: crossings, swell and surf launches for seasickness;
-                      thermoclines and suit thickness for the cold. A question you type is matched
-                      against one destination's sentences the same way, or by the language model
-                      where it's switched on.
-                    </figcaption>
-                  </figure>
-                )}
+                <figure className={`${CARD} mt-4`}>
+                  <figcaption className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                    Nobody writing up a dive site says “seasick”; they describe the crossing. So for
+                    each of {CONCERNS.length} worries, Sightline looks for the words the notes
+                    actually use.
+                  </figcaption>
+                  <dl className="mt-5 space-y-3">
+                    {Object.entries(CONCERN_PHRASES).map(([id, phrases]) => (
+                      <div
+                        key={id}
+                        className="grid items-baseline gap-x-4 gap-y-1.5 border-t border-border pt-3 sm:grid-cols-[10rem_1fr]"
+                      >
+                        <dt className="font-display text-base text-foreground">
+                          {getConcern(id as ConcernId)?.label.split(" & ")[0]}
+                        </dt>
+                        <dd className="flex flex-wrap gap-1.5">
+                          {phrases!.map((phrase) => (
+                            <span
+                              key={phrase}
+                              className="rounded-full bg-secondary px-2.5 py-1 text-[11px] text-muted-foreground"
+                            >
+                              “{phrase}”
+                            </span>
+                          ))}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <p className="mt-5 border-t border-border pt-3 text-xs leading-relaxed text-muted-foreground">
+                    <span className="font-semibold text-foreground">You say it your way.</span> The
+                    record is searched for its way. A question you type is matched against one
+                    destination's sentences the same way, or by Claude where it's switched on.
+                  </p>
+                </figure>
               </section>
 
               {/* HOW IT'S CHECKED */}

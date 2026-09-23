@@ -361,6 +361,18 @@ const TYPE_PRIOR: Partial<Record<ConcernId, Partial<Record<Passage["claim"]["typ
 };
 
 /** Minimum lexicon score for a sentence to be shown as evidence. */
+/**
+ * A few phrases per worry, for the worked example on the About page: what a
+ * diver calls it, versus the words the notes actually use. Every phrase here is
+ * one the concern really matches — evals/concerns.test.ts checks that against
+ * CONCERN_TERMS, so the illustration cannot drift from the lexicon.
+ */
+export const CONCERN_PHRASES: Partial<Record<ConcernId, string[]>> = {
+  seasickness: ["a 10-12 hour crossing", "swell", "open-ocean passage"],
+  cold: ["thermocline", "5 mm wetsuit", "drysuit"],
+  current: ["strong current", "drift dive", "reef hook"],
+};
+
 export const LEXICON_THRESHOLD = 2;
 
 export function lexiconScore(concern: ConcernId, p: Passage) {
