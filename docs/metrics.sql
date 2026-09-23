@@ -234,3 +234,31 @@ select 'both', count(*) from (
   where event_type = 'experiment_exposure' and payload->>'experiment' = 'describe-v1'
   group by session_id having count(distinct payload->>'arm') > 1
 ) x;
+
+-- ---------------------------------------------------------------------------
+-- Inbox (added 2026-09-23). The feedback form and the "Suggest an operator"
+-- form both write to tables that have an INSERT policy for anon and no SELECT
+-- policy at all, and nothing emails anyone. That is the right default for
+-- privacy, but it means submissions are write-only: they are only ever seen if
+-- someone runs these. Run them when you run 13-16.
+
+-- 19. Unread feedback: corrections, destination requests, feature ideas.
+--     `email` is only present when the sender chose to leave one; treat it as
+--     personal data and don't paste it anywhere public.
+select
+  created_at,
+  kind,
+  coalesce(destination_id, '-') as destination,
+  case when email is null then 'no reply address' else 'reply requested' end as reply,
+  message
+from feedback
+order by created_at desc
+limit 100;
+
+-- 20. Operator suggestions waiting on review. The public read policy only
+--     exposes status = 'published', so a pending row is invisible on the site
+--     until it is promoted by hand.
+select created_at, destination_id, name, website, blurb, email
+from operators
+where status = 'pending'
+order by created_at desc;
