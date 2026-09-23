@@ -20,6 +20,7 @@ export function MonthStrip({
   selectedMonth = null,
   height = 28,
   showLabels = true,
+  labelClassName = "",
 }: {
   months: MonthState[];
   operating: OperatingState[];
@@ -27,6 +28,8 @@ export function MonthStrip({
   selectedMonth?: number | null;
   height?: number;
   showLabels?: boolean;
+  /** Extra classes on the month letter, e.g. "lg:hidden" where a shared header takes over. */
+  labelClassName?: string;
 }) {
   return (
     <div className="flex gap-[3px]" role="list">
@@ -70,7 +73,7 @@ export function MonthStrip({
               <span
                 className={`mt-1.5 block text-[10px] font-medium ${
                   selected ? "text-accent font-bold" : "text-muted-foreground"
-                }`}
+                } ${labelClassName}`}
               >
                 {MONTH_INITIALS[i]}
               </span>
