@@ -9,7 +9,7 @@ export function SightlineNav() {
     <header className="absolute top-0 right-0 left-0 z-50 backdrop-blur-sm">
       <div className="page-frame flex items-center justify-between py-6">
         <Link to="/" className="group flex flex-col leading-none">
-          <span className="font-wordmark text-2xl font-semibold tracking-[0.14em] text-foreground">
+          <span className="font-wordmark text-xl font-semibold tracking-[0.14em] text-foreground sm:text-2xl">
             SIGHTLINE<span className="text-primary">.</span>
           </span>
           <span className="mt-1 hidden text-[0.6875rem] tracking-[0.18em] text-muted-foreground uppercase sm:block">
