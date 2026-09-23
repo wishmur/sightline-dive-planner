@@ -24,6 +24,17 @@ export const RESULTS = {
     abstain: 85,
     seasicknessHit: 75,
     embeddingHit: [33, 44] as const,
+    /**
+     * The same 18 held-out destinations and the same question — is any relevant
+     * sentence found at all — for the two local embedding models the lexicon was
+     * compared against. These are the one set of figures the test can't
+     * recompute (they need a model download; `bun evals/concerns.ts --dense`),
+     * so a test checks them against `embeddingHit` instead, to catch drift.
+     */
+    embeddingModels: [
+      { name: "MiniLM", hit: 44 },
+      { name: "bge-small", hit: 33 },
+    ] as const,
   },
   /** Keyword-rules reading of 30 held-out trip descriptions (evals/understand.heldout.ts). */
   parser: { worries: 65, worryPrecision: 94, fields: 97 },

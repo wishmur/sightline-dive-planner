@@ -150,6 +150,20 @@ describe("About page results match the evals", () => {
     });
   });
 
+  // The named embedding figures drive the comparison chart on the About page and
+  // can't be recomputed here (they need a model download), so at minimum they
+  // must stay consistent with the range quoted beside them.
+  test("the named embedding models match the range they are quoted as", () => {
+    const hits = RESULTS.concerns.embeddingModels.map((m) => m.hit);
+    expect([Math.min(...hits), Math.max(...hits)]).toEqual([...RESULTS.concerns.embeddingHit]);
+    // Every model is measured on the same split as the lexicon it is compared to.
+    for (const m of RESULTS.concerns.embeddingModels)
+      expect({ name: m.name, beatenByLexicon: m.hit < RESULTS.concerns.hit }).toEqual({
+        name: m.name,
+        beatenByLexicon: true,
+      });
+  });
+
   // The sample, the labels and the gold are all committed, so this recomputes
   // without a key or a network. Pins the asymmetry too: the published figure is
   // repeatability of one labeller, and the direction of the drift is part of it.

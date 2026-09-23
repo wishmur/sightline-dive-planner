@@ -261,6 +261,65 @@ function HowItWorksFlow() {
   );
 }
 
+/**
+ * One measure, three methods, same test set — so one colour and no legend; the
+ * caption names what is being counted. Bars are plain divs rather than an SVG
+ * so the labels stay real text at any width, and every bar carries its own
+ * number, so nothing here is read from colour alone.
+ */
+function RetrievalChart() {
+  const rows = [
+    { name: "Curated vocabulary", hit: RESULTS.concerns.hit, ships: true },
+    ...RESULTS.concerns.embeddingModels.map((m) => ({
+      name: `${m.name} embeddings`,
+      hit: m.hit,
+      ships: false,
+    })),
+  ];
+  return (
+    <figure className={`${CARD} mt-4`}>
+      <figcaption className="max-w-2xl">
+        <p className="font-display text-lg text-foreground">
+          The obvious approach lost, so it isn't in the product.
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          Share of worries where a relevant sentence was found, across the{" "}
+          {RESULTS.concerns.testDestinations} destinations held out of tuning. Embedding search is
+          the usual answer to this problem; a hand-written vocabulary of the words dive notes
+          actually use beat both models by more than double, so no embedding model ships.
+        </p>
+      </figcaption>
+      <div className="mt-6 space-y-3">
+        {rows.map((r) => (
+          <div key={r.name} className="grid items-center gap-x-4 gap-y-1 sm:grid-cols-[11rem_1fr]">
+            <div className="flex items-baseline gap-2 text-sm">
+              <span className={r.ships ? "font-semibold text-foreground" : "text-muted-foreground"}>
+                {r.name}
+              </span>
+              {r.ships && <span className={TAG}>ships</span>}
+            </div>
+            <div className="flex items-center gap-3">
+              <div
+                className="h-2.5 flex-1 overflow-hidden rounded-full bg-muted"
+                role="img"
+                aria-label={`${r.name}: ${r.hit} percent`}
+              >
+                <div
+                  className={`h-full rounded-full ${r.ships ? "bg-primary" : "bg-primary/35"}`}
+                  style={{ width: `${r.hit}%` }}
+                />
+              </div>
+              <span className="w-10 shrink-0 text-right font-display text-base tabular-nums text-foreground">
+                {r.hit}%
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </figure>
+  );
+}
+
 function AboutPage() {
   const [tab, setTab] = useState("how");
   const [pendingHash, setPendingHash] = useState<string | null>(null);
@@ -521,6 +580,8 @@ function AboutPage() {
                     </li>
                   ))}
                 </ul>
+
+                <RetrievalChart />
 
                 <p className="mt-4 max-w-3xl text-sm leading-relaxed text-muted-foreground">
                   <span className="font-semibold text-foreground">
