@@ -59,6 +59,17 @@ function isDue(claimId: string, review: Review, now: Date) {
 
 export type Check = { status: CheckStatus; review?: Review };
 
+/**
+ * Whether a check is worth saying out loud on the page.
+ *
+ * Confirmation is the expected outcome and the common one, so announcing it on
+ * every claim is noise that buries the checks that came back weaker. The page
+ * stays quiet when a claim held up and speaks when it didn't; a confirmed claim
+ * still shows where it came from, as a plain source link.
+ */
+export const announces = (status: CheckStatus): boolean =>
+  status !== "confirmed" && status !== "unchecked";
+
 export function getReview(claimId: string): Review | undefined {
   return REVIEWS[claimId];
 }

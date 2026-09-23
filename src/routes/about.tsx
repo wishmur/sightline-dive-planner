@@ -323,10 +323,12 @@ function AboutPage() {
               <section id="how-its-checked" className="scroll-mt-20">
                 <SectionHeader eyebrow="How it's checked" title="Every claim keeps its sources">
                   <p>
-                    Every claim keeps the sources it came from. Key claims are checked against the
-                    exact passage, and the quote and date sit next to the claim. Where sources
-                    disagree, both sides stay visible; where evidence is thin, the claim says so.
-                    When a source changes, the checks that rest on it come up for review.
+                    Every claim keeps the sources it came from, and key claims are checked against
+                    the exact passage. A claim that held up says nothing: the section's source links
+                    are there if you want to look. A claim the check found only partly supported,
+                    corrected, or missing from its source says so on the spot, with the passage and
+                    the date. Where sources disagree, both sides stay visible. When a source
+                    changes, the checks that rest on it come up for review.
                   </p>
                   <p>
                     The logic is tested too, against cases written before the code.{" "}
